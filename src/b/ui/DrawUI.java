@@ -1,0 +1,75 @@
+package b.ui;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.collect.Multimap;
+
+import b.ai.BonjwAIGame;
+import b.idmap.MapUnitID;
+import b.map.MapDraw;
+import bwapi.Game;
+import bwapi.Player;
+import bwapi.Position;
+import bwapi.Unit;
+import bwapi.UnitType;
+
+public class DrawUI {
+
+	public static void updateUI(Game game, Player self, Multimap<UnitType, Integer> bArmyMap, 
+			Multimap<UnitType, Integer> bStructMap, ArrayList<Position> eBasePos,
+			ArrayList<Integer> bResources) {
+		game.drawTextScreen(10, 10, "Playing as " + "bonjwAI" + " - " + self.getRace());
+		game.drawTextScreen(10, 20, "APM: " + game.getAPM() );
+		
+		game.drawTextScreen(10, 40, "aM: " + bResources.get(0) );
+		game.drawTextScreen(10, 50, "rM: " + bResources.get(1) );
+		game.drawTextScreen(10, 60, "aG: " + bResources.get(2) );
+		game.drawTextScreen(10, 70, "rG: " + bResources.get(3) );
+		game.drawTextScreen(10, 80, "aS: " + bResources.get(4) );
+		game.drawTextScreen(10, 90, "eS: " + bResources.get(5) );
+		
+		game.drawTextScreen(10, 110, "Number of eBuildings seen: " + eBasePos.size());
+		drawUnitCounts(game, self, bArmyMap);
+		drawUnitIDs(game, bArmyMap, bStructMap);
+		
+		drawInfo(game, self, bArmyMap, bStructMap);
+	}
+	
+	public static void drawUnitCounts(Game game, Player self, 
+			Multimap<UnitType, Integer> bArmyMap ) {		
+		int x = 175;
+		int y = 20;
+		for ( UnitType uT : bArmyMap.keySet() ) {
+			game.drawTextScreen(x, y, "Number of " + uT + ": " + MapUnitID.getArmyCount(game, bArmyMap, uT));
+			y += 10;
+		}
+	}
+	
+	public static void drawUnitIDs(Game game, Multimap<UnitType, Integer> bArmyMap, 
+			Multimap<UnitType, Integer> bStructMap ) {
+		int x = 350;
+		int y = 20;
+		for ( UnitType uT : bStructMap.keySet() ) {
+			game.drawTextScreen(x, y, "Number of " + uT + ": " + 
+					MapUnitID.getStructCount(game, bArmyMap, bStructMap, uT));
+			y += 10;
+		}
+	}
+	
+	public static void drawInfo(Game game, Player self, Multimap<UnitType, Integer> armyMap, 
+			Multimap<UnitType, Integer> structMap) {
+		drawUnitVectors(game, armyMap);
+	}
+	
+	// Draw vectors from unit to destination
+	public static void drawUnitVectors(Game game, Multimap<UnitType, Integer> armyMap) {
+		for (Integer uID : armyMap.values() ) {
+			Unit myUnit = game.getUnit(uID);
+			game.drawTextMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(), myUnit.getOrder().toString());
+			game.drawLineMap(myUnit.getPosition().getX(), myUnit.getPosition().getY(),
+					myUnit.getOrderTargetPosition().getX(), myUnit.getOrderTargetPosition().getY(), bwapi.Color.Black);
+		}
+	}
+	
+}
