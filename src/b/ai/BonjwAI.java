@@ -223,7 +223,7 @@ public class BonjwAI extends DefaultBWListener {
 
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
 		
-		// asdf
+		// test
 				
 	}
 
