@@ -209,4 +209,54 @@ public class MapInformation {
 		}
 	}
 	
+	// Define 4 setups
+	// 1 -> minerals above main
+	// 2 -> minerals right of main
+	// 3 -> minerals below main
+	// 4 -> minerals left of main
+	
+	public static int findMineralSetup( Game game, BaseLocation startingCC ) {
+		int startingCC_X = startingCC.getX();
+		int startingCC_Y = startingCC.getY();
+		
+		boolean allAbove = true;
+		boolean allRight = true;
+		boolean allBelow = true;
+		boolean allLeft = true;
+		
+		for ( Unit nUnit : game.neutral().getUnits() ) {
+			if ( (nUnit.getType().isMineralField() && nUnit.isVisible() )) {
+				if ( nUnit.getX() < startingCC_X ) {
+					allRight = false;
+				}
+				if ( nUnit.getX() > startingCC_X ) {
+					allLeft = false;
+				}
+				if ( nUnit.getY() < startingCC_Y ) {
+					allAbove = false;
+				}
+				if ( nUnit.getY() > startingCC_Y ) {
+					allBelow = false;
+				}
+				
+			}
+		}
+		if ( allAbove == true ) {
+			return 1;
+		}
+		if ( allRight == true ) {
+			return 2;
+		}
+		if ( allBelow == true ) {
+			return 3;
+		}
+		if ( allLeft == true ) {
+			return 4;
+		}
+		// error
+		return 0;
+	}
+	
+	
+	
 }

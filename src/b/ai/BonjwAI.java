@@ -81,6 +81,8 @@ public class BonjwAI extends DefaultBWListener {
 		BonjwAIGame.initializeArmyMap(bArmyMap);
 		BonjwAIGame.initializeStructMap(bStructMap);
 		MapInformation.findNearBasePos(game, bBasePos);	
+		
+		System.out.println ( MapInformation.findMineralSetup(game, bBasePos.get(0)) );
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -218,10 +220,10 @@ public class BonjwAI extends DefaultBWListener {
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 		
 		
-		MapInformation.initMapInfo(game, bStructMap, resourceZone, buildZone);
-		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);
+		//MapInformation.initMapInfo(game, bStructMap, resourceZone, buildZone);
+		//MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);
 
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
+		//DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
 		
 		// test
 				

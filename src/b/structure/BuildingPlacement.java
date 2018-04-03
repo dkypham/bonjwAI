@@ -113,4 +113,23 @@ public class BuildingPlacement {
 		return builder.getTilePosition();
 	}
 	
+	// Building implementation for 1st supply depot
+	public static TilePosition getBuildPositionFirstSD(Game game, Unit builder ) {
+		
+		
+		
+		
+		
+		return builder.getTilePosition();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
