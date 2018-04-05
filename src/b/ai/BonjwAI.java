@@ -3,6 +3,7 @@ package b.ai;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -13,6 +14,7 @@ import b.economy.ResourceManager;
 import b.economy.SupplyManager;
 import b.economy.WorkerManager;
 import b.idmap.MapUnitID;
+import b.map.MapDraw;
 import b.map.MapInformation;
 import b.map.ScoutManager;
 import b.structure.BuildingManager;
@@ -47,6 +49,9 @@ public class BonjwAI extends DefaultBWListener {
 	
 	private List<Integer> resourceZone = new ArrayList<Integer>();
 	private List<Integer> buildZone = new ArrayList<Integer>();
+	
+	private Map<UnitType, Integer> bArmyMap2 = new HashMap<UnitType, Integer>();
+	
 	
 	public void run() {
 		mirror.getModule().setEventListener(this);
@@ -101,6 +106,18 @@ public class BonjwAI extends DefaultBWListener {
 		switch (BonjwAIGame.switchFlags(self, u)) {
 		case 1:
 			MapUnitID.addToIDMap(bArmyMap, u);
+			break;
+		case 2:
+			MapUnitID.addStructToIDMap(bStructMap, u);
+			break;
+		default:
+			break;
+		}
+		
+		// hashmap implementation
+		switch (BonjwAIGame.switchFlags(self, u)) {
+		case 1:
+			MapUnitID.addUnitToIDMap(bArmyMap2, u);
 			break;
 		case 2:
 			MapUnitID.addStructToIDMap(bStructMap, u);
@@ -216,13 +233,11 @@ public class BonjwAI extends DefaultBWListener {
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 		
 		
-		//MapInformation.initMapInfo(game, bStructMap, resourceZone, buildZone);
-		//MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);
-
+		MapInformation.initMapInfo(game, bStructMap, resourceZone, buildZone);
+		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);
 		//DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
 		
-		// test
-				
+		// test			
 	}
 
 	public void onEnd() {

@@ -1,6 +1,7 @@
 package b.idmap;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Multimap;
 
@@ -58,6 +59,14 @@ public class MapUnitID {
 			Multimap<UnitType, Integer> armyMap,
 			UnitType armyUnit) {
 		return armyMap.get(armyUnit).size();
+	}
+	
+	
+	// hash map functions
+	public static void addUnitToIDMap(Map<UnitType, Integer> unitIDMap, 
+			Unit unit) {
+		unitIDMap.put(unit.getType(), Integer.valueOf(unit.getID()));
+		System.out.println("added unit " + unit.getType() + "with ID: " + unit.getID());
 	}
 	
 }
