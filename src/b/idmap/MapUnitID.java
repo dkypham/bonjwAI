@@ -61,12 +61,4 @@ public class MapUnitID {
 		return armyMap.get(armyUnit).size();
 	}
 	
-	
-	// hash map functions
-	public static void addUnitToIDMap(Map<UnitType, Integer> unitIDMap, 
-			Unit unit) {
-		unitIDMap.put(unit.getType(), Integer.valueOf(unit.getID()));
-		System.out.println("added unit " + unit.getType() + "with ID: " + unit.getID());
-	}
-	
 }
