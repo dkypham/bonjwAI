@@ -17,10 +17,51 @@ import bwta.BaseLocation;
 public class MapInformation {
 	
 	public static void initMapInfo(Game game, Multimap<UnitType, Integer> bStructMap,
-			List<Integer> resourceZone, List<Integer> buildZone) {
-		initResourceZone(game, resourceZone, bStructMap);
-		initBuildZone(game, resourceZone, bStructMap);
+			//List<Integer> resourceZone, List<Integer> buildZone
+			ArrayList<BaseLocation> bBasePos) {
+		//initResourceZone(game, resourceZone, bStructMap);
+		//initBuildZone(game, resourceZone, bStructMap);
+		findNearBasePos(game, bBasePos);
 	}
+	
+	// Populate bBases based on base visibility
+	// Finds starting space, expansion 1, expansion 2
+	public static void findNearBasePos(Game game, ArrayList<BaseLocation> baseList) {
+		for ( BaseLocation b : BWTA.getStartLocations() ) {
+			if ( isExplored(game,b.getPoint()) ) {
+				baseList.add(b);
+			}
+		}
+		// get second index
+		baseList.add(getClosestUniqueBase(baseList));
+    	// get third index
+		baseList.add(getClosestUniqueBase(baseList)); 	
+	}
+	
+	// checks if a Position is explored
+	public static boolean isExplored(Game game, Position position) {
+		return game.isExplored(position.toTilePosition());
+	}
+	
+	// checks if 
+	public static BaseLocation getClosestUniqueBase( List<BaseLocation> myBases ) {
+		double distance = -1;
+		double tempDistance = -1;
+		BaseLocation potentialBase = myBases.get(0);
+		
+		for ( BaseLocation b : BWTA.getBaseLocations() ) {
+			if ( !(myBases.contains(b)) ) {
+				tempDistance = BWTA.getGroundDistance(myBases.get(0).getTilePosition(), 
+						b.getTilePosition());
+				if ( distance == -1 || tempDistance < distance ) {
+					potentialBase = b;
+					distance = tempDistance;
+				}
+			}
+		}
+		return potentialBase;
+	}
+	
 	
 	public static void initResourceZone(Game game, List<Integer> resourceZone,
 			Multimap<UnitType, Integer> bStructMap) {
@@ -109,24 +150,6 @@ public class MapInformation {
 		return null;
 	}
 	
-	public static BaseLocation getClosestUniqueBase( List<BaseLocation> myBases ) {
-		double distance = -1;
-		double tempDistance = -1;
-		BaseLocation potentialBase = myBases.get(0);
-		
-		for ( BaseLocation b : BWTA.getBaseLocations() ) {
-			if ( !(myBases.contains(b)) ) {
-				tempDistance = BWTA.getGroundDistance(myBases.get(0).getTilePosition(), 
-						b.getTilePosition());
-				if ( distance == -1 || tempDistance < distance ) {
-					potentialBase = b;
-					distance = tempDistance;
-				}
-			}
-		}
-		return potentialBase;
-	}
-	
 	public static BaseLocation getClosestStartLocation( Position pos ) {
 		double distance = -1;
 		double tempDistance = 0;
@@ -147,23 +170,6 @@ public class MapInformation {
 		baseList.add(getClosestUniqueBase(baseList));
     	// get third index
 		baseList.add(getClosestUniqueBase(baseList)); 
-	}
-	
-	public static void findNearBasePos(Game game, ArrayList<BaseLocation> baseList) {
-		for ( BaseLocation b : BWTA.getStartLocations() ) {
-			if ( isExplored(game,b.getPoint()) ) {
-				baseList.add(b);
-			}
-		}
-		// get second index
-		baseList.add(getClosestUniqueBase(baseList));
-    	// get third index
-		baseList.add(getClosestUniqueBase(baseList)); 
-		
-	}
-	
-	public static boolean isExplored(Game game, Position position) {
-		return game.isExplored(position.toTilePosition());
 	}
 	
 	public static void updateEnemyBuildingMemory(Game game, List<Position> enemyBuildingMemory) {
@@ -214,7 +220,6 @@ public class MapInformation {
 	// 2 -> minerals right of main
 	// 3 -> minerals below main
 	// 4 -> minerals left of main
-	
 	public static int findMineralSetup( Game game, BaseLocation startingCC ) {
 		int startingCC_X = startingCC.getX();
 		int startingCC_Y = startingCC.getY();

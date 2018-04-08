@@ -35,15 +35,6 @@ public class BonjwAIGame {
 		}
 	}
 	
-	
-	public static void initializeArmyMap(Multimap<UnitType, Integer> armyMap) {
-		// TODO
-	} 
-	
-	public static void initializeStructMap(Multimap<UnitType, Integer> structMap) {
-		// TODO
-	}
-	
 	public static boolean updateUnderAttack(Game game,
 			Multimap<UnitType, Integer> armyMap,
 			Multimap<UnitType, Integer> structMap) {

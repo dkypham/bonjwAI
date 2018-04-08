@@ -37,19 +37,26 @@ public class BonjwAI extends DefaultBWListener {
 	private Game game;
 	private Player self;
 	
+	/* Managers section */
 	public static BuildingPlacement bpInstance;
 	public static ArmyManager armyManager;
 	
+	/* Persistent data section */
+	// bArmyMap - IDs of all of our army units grouped by UnitType
 	private Multimap<UnitType, Integer> bArmyMap = ArrayListMultimap.create();
+	// bStructMap - IDs all of our buildings grouped by UnitType
 	private Multimap<UnitType, Integer> bStructMap = ArrayListMultimap.create();
+	// eStructPos - positions of enemy buildings seen
 	private ArrayList<Position> eStructPos = new ArrayList<Position>();
+	// bBasePos - list of BaseLocations for bonjwAI to build bases
 	private ArrayList<BaseLocation> bBasePos = new ArrayList<BaseLocation>();
+	// eBasePos - list of BaseLocations enemy is predicted to build at
 	private ArrayList<BaseLocation> eBasePos = new ArrayList<BaseLocation>();
+	// bResources - list of bonjwAI's resources defined in ResourceManager
 	private ArrayList<Integer> bResources = new ArrayList<Integer>();
-	private ArrayList<Medic> medics = new ArrayList<Medic>();
 	
-	private List<Integer> resourceZone = new ArrayList<Integer>();
-	private List<Integer> buildZone = new ArrayList<Integer>();
+	//private List<Integer> resourceZone = new ArrayList<Integer>();
+	//private List<Integer> buildZone = new ArrayList<Integer>();
 	
 	public void run() {
 		mirror.getModule().setEventListener(this);
@@ -66,22 +73,25 @@ public class BonjwAI extends DefaultBWListener {
 		BWTA.buildChokeNodes();
 		System.out.println("Map data ready");
 		
-		// Enable user input
+		/* Enable user input */
 		game.enableFlag(1);
-		// Enable map hack
-		// game.sendText("black sheep wall");
+
+		/* Enable hacks for single player testing */
+		//game.sendText("black sheep wall");
 		//game.sendText("power overwhelming");
 		
+		/* Enable game speed */
 		game.setLocalSpeed(15);
 		
+		/* Define manager instances here */
 		bpInstance = BuildingPlacement.getInstance();
 		armyManager = ArmyManager.getInstance();
 		
-		BonjwAIGame.initializeArmyMap(bArmyMap);
-		BonjwAIGame.initializeStructMap(bStructMap);
-		MapInformation.findNearBasePos(game, bBasePos);	
+		/* On start functions */
+		MapInformation.initMapInfo(game, bStructMap, bBasePos);
+		//MapInformation.findNearBasePos(game, bBasePos);	
 		
-		System.out.println ( MapInformation.findMineralSetup(game, bBasePos.get(0)) );
+		//System.out.println ( MapInformation.findMineralSetup(game, bBasePos.get(0)) );
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -96,11 +106,6 @@ public class BonjwAI extends DefaultBWListener {
 	@Override
 	// when a unit is starting to be built
 	public void onUnitCreate(Unit u) {
-		if (u.getType() == UnitType.Terran_Medic) {
-			Medic medic = new Medic(u.getID());
-			medics.add(medic);
-			System.out.println("size of medics: " + medics.size() );
-		}
 		switch (BonjwAIGame.switchFlags(self, u)) {
 		case 1:
 			MapUnitID.addToIDMap(bArmyMap, u);
@@ -203,7 +208,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * 
 		 */
 		ArmyManager.updateArmyManager(game, self, bArmyMap, bStructMap, bBasePos, 
-				eStructPos, medics);
+				eStructPos);
 		//armyManager.updateMedics(medics);
 		
 		
@@ -219,11 +224,10 @@ public class BonjwAI extends DefaultBWListener {
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 		
 		
-		MapInformation.initMapInfo(game, bStructMap, resourceZone, buildZone);
-		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);
+		//MapInformation.initMapInfo(game, bStructMap, resourceZone, buildZone);	// Implement without persistent data
+		//MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		// Implement without persistent data
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
-		
-		// test			
+	
 	}
 
 	public void onEnd() {

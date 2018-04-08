@@ -42,8 +42,7 @@ public class ArmyManager {
 			Multimap<UnitType, Integer> armyMap, 
 			Multimap<UnitType, Integer> structMap,
 			List<BaseLocation> myBases, 
-			ArrayList<Position> enemyBuildingMemory,
-			ArrayList<Medic> medics ) {
+			ArrayList<Position> enemyBuildingMemory ) {
 		boolean underAttack = BonjwAIGame.updateUnderAttack(game, armyMap, structMap);
 		updateMarines(game, self, armyMap, myBases, enemyBuildingMemory, underAttack);
 	}
