@@ -54,6 +54,9 @@ public class BonjwAI extends DefaultBWListener {
 	private ArrayList<BaseLocation> eBasePos = new ArrayList<BaseLocation>();
 	// bResources - list of bonjwAI's resources defined in ResourceManager
 	private ArrayList<Integer> bResources = new ArrayList<Integer>();
+
+	// mineralSetup - tells us the configuration of the minerals relative to CC
+	private int mineralSetup = -1;
 	
 	//private List<Integer> resourceZone = new ArrayList<Integer>();
 	//private List<Integer> buildZone = new ArrayList<Integer>();
@@ -88,10 +91,9 @@ public class BonjwAI extends DefaultBWListener {
 		armyManager = ArmyManager.getInstance();
 		
 		/* On start functions */
-		MapInformation.initMapInfo(game, bStructMap, bBasePos);
-		//MapInformation.findNearBasePos(game, bBasePos);	
+		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, mineralSetup);
 		
-		//System.out.println ( MapInformation.findMineralSetup(game, bBasePos.get(0)) );
+		System.out.println ( mineralSetup );
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -228,6 +230,9 @@ public class BonjwAI extends DefaultBWListener {
 		//MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		// Implement without persistent data
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
 	
+		
+		// testing
+		game.drawTextMap( bBasePos.get(0).getX(), bBasePos.get(0).getY(), "BL1");
 	}
 
 	public void onEnd() {

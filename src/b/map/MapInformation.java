@@ -16,12 +16,14 @@ import bwta.BaseLocation;
 
 public class MapInformation {
 	
-	public static void initMapInfo(Game game, Multimap<UnitType, Integer> bStructMap,
+	public static int initMapInfo(Game game, Multimap<UnitType, Integer> bStructMap,
 			//List<Integer> resourceZone, List<Integer> buildZone
-			ArrayList<BaseLocation> bBasePos) {
+			ArrayList<BaseLocation> bBasePos,
+			int mineralSetup ) {
 		//initResourceZone(game, resourceZone, bStructMap);
 		//initBuildZone(game, resourceZone, bStructMap);
 		findNearBasePos(game, bBasePos);
+		return findMineralSetup(game, bBasePos, mineralSetup);
 	}
 	
 	// Populate bBases based on base visibility
@@ -62,6 +64,56 @@ public class MapInformation {
 		return potentialBase;
 	}
 	
+	// Define 4 setups
+	// 12 -> minerals above main
+	// 3 -> minerals right of main
+	// 6 -> minerals below main
+	// 9 -> minerals left of main
+	public static int findMineralSetup( Game game, List<BaseLocation> bBasePos,
+			int mineralSetup ) {
+		int startingCC_X = bBasePos.get(0).getX();
+		int startingCC_Y = bBasePos.get(0).getY();
+		
+		boolean allAbove = true;
+		boolean allRight = true;
+		boolean allBelow = true;
+		boolean allLeft = true;
+		
+		for ( Unit nUnit : game.neutral().getUnits() ) {
+			if ( (nUnit.getType().isMineralField() && nUnit.isVisible() )) {
+				if ( nUnit.getX() < startingCC_X ) {
+					allRight = false;
+				}
+				if ( nUnit.getX() > startingCC_X ) {
+					allLeft = false;
+				}
+				if ( nUnit.getY() < startingCC_Y ) {
+					allAbove = false;
+				}
+				if ( nUnit.getY() > startingCC_Y ) {
+					allBelow = false;
+				}
+				
+			}
+		}
+		if ( allAbove == true ) {
+			return mineralSetup = 12;
+		}
+		if ( allRight == true ) {
+			return mineralSetup = 3;
+		}
+		if ( allBelow == true ) {
+			return mineralSetup = 6;
+		}
+		if ( allLeft == true ) {
+			return mineralSetup = 9;
+		}
+		
+		System.out.println(mineralSetup);
+		
+		// error
+		return -2;
+	}
 	
 	public static void initResourceZone(Game game, List<Integer> resourceZone,
 			Multimap<UnitType, Integer> bStructMap) {
@@ -213,53 +265,6 @@ public class MapInformation {
 				}
 			}
 		}
-	}
-	
-	// Define 4 setups
-	// 1 -> minerals above main
-	// 2 -> minerals right of main
-	// 3 -> minerals below main
-	// 4 -> minerals left of main
-	public static int findMineralSetup( Game game, BaseLocation startingCC ) {
-		int startingCC_X = startingCC.getX();
-		int startingCC_Y = startingCC.getY();
-		
-		boolean allAbove = true;
-		boolean allRight = true;
-		boolean allBelow = true;
-		boolean allLeft = true;
-		
-		for ( Unit nUnit : game.neutral().getUnits() ) {
-			if ( (nUnit.getType().isMineralField() && nUnit.isVisible() )) {
-				if ( nUnit.getX() < startingCC_X ) {
-					allRight = false;
-				}
-				if ( nUnit.getX() > startingCC_X ) {
-					allLeft = false;
-				}
-				if ( nUnit.getY() < startingCC_Y ) {
-					allAbove = false;
-				}
-				if ( nUnit.getY() > startingCC_Y ) {
-					allBelow = false;
-				}
-				
-			}
-		}
-		if ( allAbove == true ) {
-			return 1;
-		}
-		if ( allRight == true ) {
-			return 2;
-		}
-		if ( allBelow == true ) {
-			return 3;
-		}
-		if ( allLeft == true ) {
-			return 4;
-		}
-		// error
-		return 0;
 	}
 	
 	
