@@ -17,10 +17,11 @@ import bwta.BaseLocation;
 public class MapInformation {
 	
 	public static int initMapInfo(Game game, Multimap<UnitType, Integer> bStructMap,
-			//List<Integer> resourceZone, List<Integer> buildZone
+			List<Integer> resourceZone, 
+			//List<Integer> buildZone,
 			ArrayList<BaseLocation> bBasePos,
 			int mineralSetup ) {
-		//initResourceZone(game, resourceZone, bStructMap);
+		initResourceZone(game, resourceZone, bBasePos);
 		//initBuildZone(game, resourceZone, bStructMap);
 		findNearBasePos(game, bBasePos);
 		return findMineralSetup(game, bBasePos, mineralSetup);
@@ -116,6 +117,51 @@ public class MapInformation {
 	}
 	
 	public static void initResourceZone(Game game, List<Integer> resourceZone,
+			List<BaseLocation> bBasePos) {
+		int lx = -1, mx = -1, ly = -1, my = -1;
+		
+		// iterate over mineral fields and gas geysers
+		for ( Unit nUnit : game.neutral().getUnits() ) {
+			if ( (nUnit.getType().isMineralField() || nUnit.getType().isRefinery())
+					&& nUnit.isVisible() ) {
+				if ( nUnit.getX() < lx || lx == -1 ) {
+					lx = nUnit.getX();
+				}
+				if ( nUnit.getX() > mx || mx == -1 ) {
+					mx = nUnit.getX();
+				}
+				if ( nUnit.getY() < ly || ly == -1 ) {
+					ly = nUnit.getY();
+				}
+				if ( nUnit.getY() > my || my == -1 ) {
+					my = nUnit.getY();
+				}
+			}
+		}
+		
+		int startingCC_X = bBasePos.get(0).getX();
+		int startingCC_Y = bBasePos.get(0).getY();
+		if ( startingCC_X < lx) {
+			lx = startingCC_X;
+		}
+		if ( startingCC_X > mx) {
+			mx = startingCC_X;
+		}
+		if ( startingCC_Y < ly) {
+			ly = startingCC_Y;
+		}
+		if ( startingCC_Y > my) {
+		}
+		
+		// left, top, right, bottom
+		resourceZone.add(lx);
+		resourceZone.add(ly);
+		resourceZone.add(mx);
+		resourceZone.add(my);
+		//return resourceZone;
+	}
+	/*
+	public static void initResourceZone(Game game, List<Integer> resourceZone,
 			Multimap<UnitType, Integer> bStructMap) {
 		int lx = -1, mx = -1, ly = -1, my = -1;
 		
@@ -161,7 +207,7 @@ public class MapInformation {
 		resourceZone.add(my);
 		//return resourceZone;
 	}
-	
+	*/
 	public static void initBuildZone(Game game, List<Integer> buildZone,
 			Multimap<UnitType, Integer> bStructMap) {
 		

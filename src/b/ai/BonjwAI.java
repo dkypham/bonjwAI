@@ -58,7 +58,8 @@ public class BonjwAI extends DefaultBWListener {
 	// mineralSetup - tells us the configuration of the minerals relative to CC
 	private int mineralSetup = -1;
 	
-	//private List<Integer> resourceZone = new ArrayList<Integer>();
+	// resourceZone - coordinates for resources
+	private List<Integer> resourceZone = new ArrayList<Integer>();
 	//private List<Integer> buildZone = new ArrayList<Integer>();
 	
 	public void run() {
@@ -91,9 +92,8 @@ public class BonjwAI extends DefaultBWListener {
 		armyManager = ArmyManager.getInstance();
 		
 		/* On start functions */
-		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, mineralSetup);
-		
-		System.out.println ( mineralSetup );
+		mineralSetup = MapInformation.initMapInfo(game, bStructMap, resourceZone, bBasePos, mineralSetup);
+		//System.out.println ( mineralSetup );
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -225,9 +225,7 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 		
-		
-		//MapInformation.initMapInfo(game, bStructMap, resourceZone, buildZone);	// Implement without persistent data
-		//MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		// Implement without persistent data
+		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		// Implement without persistent data
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
 	
 		
