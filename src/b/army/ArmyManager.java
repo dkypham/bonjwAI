@@ -63,34 +63,26 @@ public class ArmyManager {
 			
 			// step back if during attack frame
 			if (uMarine.isAttacking() ) {
-				uMarine.stop();
-				uMarine.move(myBases.get(0).getPosition());
-				System.out.println("Issued stop command");
+
 			}
 			
 			// if idle, then issue commands
 			if ( uMarine.isIdle() ) {
 				// if under attack
 				if ( underAttack == true ) {
-					Unit enemy = getNearbyEnemies(uMarine, 1000);
-					if ( enemy != null ) {
-						uMarine.attack(enemy.getPosition());
-					}
+
 				}	
 				// if not under attack, but should attack
 				else if ( marineIDMap.size() > 30 ) {
 					if ( !uMarine.isAttacking() ) {
-						for ( Position enemyPos : enemyBuildingMemory ) {
-							uMarine.attack(enemyPos);
-							break;
-						}
+
 					}
 				}
 				// if not under attack and should not attack
 				else if ( uMarine.getDistance( myBases.get(1).getPosition()) > dFromPoint
 						&& !uMarine.isAttacking()
 						&& !uMarine.isUnderAttack() ) {
-					uMarine.attack(myBases.get(1).getPosition());
+
 				}
 			}
 

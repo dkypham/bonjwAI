@@ -160,64 +160,7 @@ public class MapInformation {
 		resourceZone.add(my);
 		//return resourceZone;
 	}
-	/*
-	public static void initResourceZone(Game game, List<Integer> resourceZone,
-			Multimap<UnitType, Integer> bStructMap) {
-		int lx = -1, mx = -1, ly = -1, my = -1;
-		
-		// iterate over mineral fields and gas geysers
-		for ( Unit nUnit : game.neutral().getUnits() ) {
-			if ( (nUnit.getType().isMineralField() || nUnit.getType().isRefinery())
-					&& nUnit.isVisible() ) {
-				if ( nUnit.getX() < lx || lx == -1 ) {
-					lx = nUnit.getX();
-				}
-				if ( nUnit.getX() > mx || mx == -1 ) {
-					mx = nUnit.getX();
-				}
-				if ( nUnit.getY() < ly || ly == -1 ) {
-					ly = nUnit.getY();
-				}
-				if ( nUnit.getY() > my || my == -1 ) {
-					my = nUnit.getY();
-				}
-			}
-		}
-		
-		for ( Integer CCID : bStructMap.get(UnitType.Terran_Command_Center ) ) {
-			Unit startingCC = game.getUnit(CCID);
-			if ( startingCC.getX() < lx || lx == -1 ) {
-				lx = startingCC.getX();
-			}
-			if ( startingCC.getX() > mx || mx == -1 ) {
-				mx = startingCC.getX();
-			}
-			if ( startingCC.getY() < ly || ly == -1 ) {
-				ly = startingCC.getY();
-			}
-			if ( startingCC.getY() > my || my == -1 ) {
-				my = startingCC.getY();
-			}
-		}
-		
-		// left, top, right, bottom
-		resourceZone.add(lx);
-		resourceZone.add(ly);
-		resourceZone.add(mx);
-		resourceZone.add(my);
-		//return resourceZone;
-	}
-	*/
-	public static void initBuildZone(Game game, List<Integer> buildZone,
-			Multimap<UnitType, Integer> bStructMap) {
-		
-		
-		
-		
-		
-		
-	}
-	
+
 	
 	// bonjwAI baselocations
 	private static List<Position> getStartingLocations(Game game) {
