@@ -55,6 +55,10 @@ public class BonjwAI extends DefaultBWListener {
 	// bResources - list of bonjwAI's resources defined in ResourceManager
 	private ArrayList<Integer> bResources = new ArrayList<Integer>();
 
+	// bResources2 - duplicate list used to maintain resource info persistently, instead recalcualting
+	// every frame
+	private Integer[] bResources2 = new Integer[6];
+	
 	// mineralSetup - tells us the configuration of the minerals relative to CC
 	private int mineralSetup = -1;
 	
@@ -92,8 +96,17 @@ public class BonjwAI extends DefaultBWListener {
 		armyManager = ArmyManager.getInstance();
 		
 		/* On start functions */
+		
+		/*
+		 * initMapInfo:
+		 * -findNearBasePos: populate first 3 indices of bBasePos
+		 * -initResourceZone: find nobuild zone
+		 * -findMineralSetup: find position of minerals relative to startingCC
+		 */
 		mineralSetup = MapInformation.initMapInfo(game, bStructMap, resourceZone, bBasePos, mineralSetup);
-		//System.out.println ( mineralSetup );
+		
+		// testing function, for bResources2
+		ResourceManager.initResources(game, self, bResources2);
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -150,12 +163,14 @@ public class BonjwAI extends DefaultBWListener {
 		 * 		5	>	reserved supply (queued for construction)
 		 * 
 		 * Iterative functions:
-		 * --clearBResources()	>	clear array of all values (reset)
-		 * --updateBRresources()	>	calculate each index value
-		 * --getReservedMinerals()	>	calculated reserved minerals
+		 * --clearBResources():	clear array of all values (reset)
+		 * --updateBRresources(): calculate each index value
+		 * --getReservedMinerals():	calculated reserved minerals
 		 * 
 		 */
 		ResourceManager.updateResources(game, self, bResources, bArmyMap);
+
+		System.out.println(bResources2[0]);
 		
 		// Scout Manager:
 		/*
@@ -209,8 +224,8 @@ public class BonjwAI extends DefaultBWListener {
 		 * --updateMarines()	>	marine targeting and micro
 		 * 
 		 */
-		ArmyManager.updateArmyManager(game, self, bArmyMap, bStructMap, bBasePos, 
-				eStructPos);
+		//ArmyManager.updateArmyManager(game, self, bArmyMap, bStructMap, bBasePos, 
+		//		eStructPos);
 		//armyManager.updateMedics(medics);
 		
 		
@@ -224,7 +239,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * --makeWorkersMineGas()	> 	count number of gas miners, then assign some if low
 		 */
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
-		
+
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		// Implement without persistent data
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
 	

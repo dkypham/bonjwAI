@@ -21,9 +21,9 @@ public class MapInformation {
 			//List<Integer> buildZone,
 			ArrayList<BaseLocation> bBasePos,
 			int mineralSetup ) {
-		initResourceZone(game, resourceZone, bBasePos);
 		//initBuildZone(game, resourceZone, bStructMap);
 		findNearBasePos(game, bBasePos);
+		initResourceZone(game, resourceZone, bBasePos);
 		return findMineralSetup(game, bBasePos, mineralSetup);
 	}
 	
@@ -138,7 +138,7 @@ public class MapInformation {
 				}
 			}
 		}
-		
+
 		int startingCC_X = bBasePos.get(0).getX();
 		int startingCC_Y = bBasePos.get(0).getY();
 		if ( startingCC_X < lx) {
@@ -151,14 +151,13 @@ public class MapInformation {
 			ly = startingCC_Y;
 		}
 		if ( startingCC_Y > my) {
-		}
-		
+		}		
+
 		// left, top, right, bottom
 		resourceZone.add(lx);
 		resourceZone.add(ly);
 		resourceZone.add(mx);
 		resourceZone.add(my);
-		//return resourceZone;
 	}
 
 	
