@@ -55,8 +55,8 @@ public class BonjwAI extends DefaultBWListener {
 	// bResources - list of bonjwAI's resources defined in ResourceManager
 	private ArrayList<Integer> bResources = new ArrayList<Integer>();
 
-	// bResources2 - duplicate list used to maintain resource info persistently, instead recalcualting
-	// every frame
+	// bResources2 - duplicate list used to maintain resource info persistently, 
+	// instead of recalcualting every frame
 	private Integer[] bResources2 = new Integer[6];
 	
 	// mineralSetup - tells us the configuration of the minerals relative to CC
@@ -103,10 +103,9 @@ public class BonjwAI extends DefaultBWListener {
 		 * -initResourceZone: find nobuild zone
 		 * -findMineralSetup: find position of minerals relative to startingCC
 		 */
-		mineralSetup = MapInformation.initMapInfo(game, bStructMap, resourceZone, bBasePos, mineralSetup);
-		
-		// testing function, for bResources2
-		ResourceManager.initResources(game, self, bResources2);
+		mineralSetup = MapInformation.initMapInfo(game, bStructMap, resourceZone, 
+				bBasePos, mineralSetup);
+	
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -185,7 +184,8 @@ public class BonjwAI extends DefaultBWListener {
 		 * 		..	>	..
 		 * 
 		 * Iterative functions:
-		 * --scoutForUnknownEnemy	> if eStructPos is empty, then scout for an enemy struct
+		 * --scoutForUnknownEnemy	> 	if eStructPos is empty, then scout for an 
+		 * 								enemy struct
 		 * 
 		 */
 		ScoutManager.updateScoutManager(game, self, bArmyMap, eStructPos, eBasePos);
@@ -196,9 +196,11 @@ public class BonjwAI extends DefaultBWListener {
 		 * --
 		 * 
 		 * Iterative functions:
-		 * --needSupplyCheck()	>	step function determining if supply needs to be built
+		 * --needSupplyCheck()	>	step function determining if supply needs to 
+		 * 							be built
 		 */
-		SupplyManager.updateSupplyManager(game, self, bArmyMap, bStructMap , bResources);
+		SupplyManager.updateSupplyManager(game, self, bArmyMap, bStructMap ,
+				bResources);
 
 		// Building Manager:
 		/*
@@ -236,11 +238,13 @@ public class BonjwAI extends DefaultBWListener {
 		 * 
 		 * Iterative functions:
 		 * --makeIdleWorkersMine()	>	make idle SCVS mine minerals
-		 * --makeWorkersMineGas()	> 	count number of gas miners, then assign some if low
+		 * --makeWorkersMineGas()	> 	count number of gas miners, then assign 
+		 * 								some if low
 		 */
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 
-		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		// Implement without persistent data
+		// Implement without persistent data
+		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
 	
 		
