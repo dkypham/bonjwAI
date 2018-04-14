@@ -168,8 +168,6 @@ public class BonjwAI extends DefaultBWListener {
 		 * 
 		 */
 		ResourceManager.updateResources(game, self, bResources, bArmyMap);
-
-		System.out.println(bResources2[0]);
 		
 		// Scout Manager:
 		/*

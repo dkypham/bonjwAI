@@ -16,12 +16,6 @@ public class ResourceManager {
 	static UnitType T_SD = UnitType.Terran_Supply_Depot;
 	static UnitType T_SCV = UnitType.Terran_SCV;
 	
-	public static void initResources(Game game, Player self, Integer[] bResources2) {
-		bResources2[0] = 50;
-		bResources2[1] = 0;
-	}
-	
-	
 	public static void updateResources(Game game, Player self, ArrayList<Integer> bResources,
 			Multimap<UnitType, Integer> bArmyMap) {
 		clearBResources(bResources);
