@@ -20,14 +20,6 @@ public class SupplyManager {
 
 	static UnitType SD = UnitType.Terran_Supply_Depot;
 	static UnitType CC = UnitType.Terran_Command_Center;
-
-	public static void updateSupplyManager(Game game, Player self, Multimap<UnitType, Integer> armyMap,
-			Multimap<UnitType, Integer> structMap,
-			ArrayList<Integer> bResources) {
-		if ( needSupplyCheck(self,bResources.get(5)) && (bResources.get(0)-bResources.get(1)) >= 100 ) {
-			WorkerManager.issueBuild(game, self, armyMap, structMap, SD);
-		}
-	}
 	
 	/*
 	public static int manageSupply(Game game, Player self, Multimap<UnitType, Integer> armyMap,

@@ -17,6 +17,11 @@ import bwapi.UnitType;
 public class WorkerManager {
 
 	static int MAX_SCV_GAS_MINERS = 1;
+	static int SUPPLY_VALUE_SD = 16;
+	static int SUPPLY_VALUE_CC = 20;
+
+	static UnitType SD = UnitType.Terran_Supply_Depot;
+	static UnitType CC = UnitType.Terran_Command_Center;
 	
 	public static void updateWorkerManager(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap) {
@@ -85,6 +90,19 @@ public class WorkerManager {
 			System.out.println("Issued order to build: " + building);
 			return;
 		}	
+	}
+	
+	public static void issueBuildAtLocation(Game game,
+			Multimap<UnitType, Integer> bArmyMap,
+			TilePosition pos ) {
+		//if ( bStructMap.containsEntry(building,-1) ) {
+		//	//System.out.println("" + building + "is already being built");
+		//	return;
+		//}
+		game.drawTextMap( pos.getX(), pos.getY(), "build here2222222222");
+		Unit SCV = 	game.getUnit(getFreeSCVID(game,bArmyMap));
+		SCV.stop();
+		SCV.build(SD,pos);
 	}
 	
 	public static int getMineralMinerCount(Game game, Multimap<UnitType, Integer> armyMap) {

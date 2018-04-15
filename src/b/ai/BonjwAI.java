@@ -197,8 +197,8 @@ public class BonjwAI extends DefaultBWListener {
 		 * --needSupplyCheck()	>	step function determining if supply needs to 
 		 * 							be built
 		 */
-		SupplyManager.updateSupplyManager(game, self, bArmyMap, bStructMap ,
-				bResources);
+		//SupplyManager.updateSupplyManager(game, self, bArmyMap, bStructMap ,
+		//		bResources);
 
 		// Building Manager:
 		/*
@@ -213,7 +213,9 @@ public class BonjwAI extends DefaultBWListener {
 		 * --factoryManager()	>	build two factories when conditions are met
 		 * --buildingProduction()	>	build marines/medics when conditions are met
 		 */
-		BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources);
+		BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup);
+		
+		BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
 		
 		// Army Manager:
 		/*

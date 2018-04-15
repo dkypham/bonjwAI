@@ -1,5 +1,6 @@
 package b.structure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import b.ai.BonjwAI;
@@ -7,6 +8,7 @@ import bwapi.Game;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
+import bwta.BaseLocation;
 
 public class BuildingPlacement {
 	
@@ -114,13 +116,32 @@ public class BuildingPlacement {
 	}
 	
 	// Building implementation for 1st supply depot
-	public static TilePosition getBuildPositionFirstSD(Game game, Unit builder ) {
+	public static TilePosition getBuildPositionFirstSD(Game game, //Unit builder, 
+			ArrayList<BaseLocation> bBasePos,
+			int mineralSetup ) {
+		int startingCC_X = bBasePos.get(0).getX();
+		int startingCC_Y = bBasePos.get(0).getY();
 		
+		TilePosition pos = bBasePos.get(0).getTilePosition();
 		
+		if ( mineralSetup == 12 ) { 
+			game.drawTextMap( startingCC_X, startingCC_Y, "build here");
+		}		
+		if ( mineralSetup == 3 ) { 
+			game.drawTextMap( startingCC_X - 160 - 1, startingCC_Y - 32, "build here");
+			pos = new TilePosition( startingCC_X - 160, startingCC_Y - 32);
+		}		
+		if ( mineralSetup == 6 ) { 
+			game.drawTextMap( startingCC_X, startingCC_Y, "build here");
+		}		
+		if ( mineralSetup == 9 ) { 
+			game.drawTextMap( startingCC_X + 64 + 1, startingCC_Y - 64, "build here");
+			pos = new TilePosition( startingCC_X + 64, startingCC_Y - 64);
+		}
 		
+		return pos;
 		
-		
-		return builder.getTilePosition();
+		//return builder.getTilePosition();
 	}
 	
 	
