@@ -130,6 +130,7 @@ public class BuildingPlacement {
 		if ( mineralSetup == 3 ) { 
 			game.drawTextMap( startingCC_X - 160 - 1, startingCC_Y - 32, "build here");
 			pos = new TilePosition( startingCC_X - 160, startingCC_Y - 32);
+			pos = new TilePosition( startingCC_X - 300, startingCC_Y - 32);
 		}		
 		if ( mineralSetup == 6 ) { 
 			game.drawTextMap( startingCC_X, startingCC_Y, "build here");
@@ -137,6 +138,7 @@ public class BuildingPlacement {
 		if ( mineralSetup == 9 ) { 
 			game.drawTextMap( startingCC_X + 64 + 1, startingCC_Y - 64, "build here");
 			pos = new TilePosition( startingCC_X + 64, startingCC_Y - 64);
+			pos = new TilePosition( startingCC_X + 200, startingCC_Y - 64);
 		}
 		
 		return pos;

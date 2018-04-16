@@ -101,7 +101,14 @@ public class WorkerManager {
 		//}
 		game.drawTextMap( pos.getX(), pos.getY(), "build here2222222222");
 		Unit SCV = 	game.getUnit(getFreeSCVID(game,bArmyMap));
-		SCV.stop();
+		if ( SCV == null ) {
+			System.out.println("Null SCV");
+		}
+		//SCV.stop();
+		pos = game.getBuildLocation(SD, pos);
+		if ( !game.canBuildHere(pos,  SD, SCV, false)) {
+			System.out.println("Cannot build here");
+		}
 		SCV.build(SD,pos);
 	}
 	
