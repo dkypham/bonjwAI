@@ -93,21 +93,25 @@ public class BuildingManager {
 		}
 		return structCount;
 	}
-	
+
 	public static void updateSupplyManager(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap,
 			ArrayList<Integer> bResources,
 			ArrayList<BaseLocation> bBasePos,
 			int mineralSetup ) {
 		int numSupply = MapUnitID.getStructCount(game, bArmyMap, bStructMap, SD);
+		System.out.println("Num supply" + numSupply);
 		if ( SupplyManager.needSupplyCheck(self,bResources.get(5)) && (bResources.get(0)-bResources.get(1)) >= 100 ) {
-			if ( numSupply < 1 ) {
+			if ( numSupply == 0 ) {
+				// find pos of first SD
 				TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
+				//game.drawTextMap( pos.toPosition().getX(), pos.toPosition().getY(), "build SD here");
+				// issue build at TilePosition found
 				WorkerManager.issueBuildAtLocation(game, bArmyMap, pos);
 				System.out.println("issued custom build pos");
 			}
 			else {
-				WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, SD);
+				//WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, SD);
 			}
 		}
 	}

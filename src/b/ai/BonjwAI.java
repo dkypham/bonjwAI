@@ -25,6 +25,7 @@ import bwapi.Game;
 import bwapi.Mirror;
 import bwapi.Player;
 import bwapi.Position;
+import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
@@ -215,7 +216,8 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup);
 		
-		BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
+		TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
+		game.drawTextMap( pos.toPosition().getX(), pos.toPosition().getY(), "build SD here");
 		
 		// Army Manager:
 		/*

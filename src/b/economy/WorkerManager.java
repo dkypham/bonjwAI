@@ -99,16 +99,16 @@ public class WorkerManager {
 		//	//System.out.println("" + building + "is already being built");
 		//	return;
 		//}
-		game.drawTextMap( pos.getX(), pos.getY(), "build here2222222222");
+		//game.drawTextMap( pos.getX(), pos.getY(), "build here2222222222");
 		Unit SCV = 	game.getUnit(getFreeSCVID(game,bArmyMap));
 		if ( SCV == null ) {
 			System.out.println("Null SCV");
 		}
 		//SCV.stop();
-		pos = game.getBuildLocation(SD, pos);
-		if ( !game.canBuildHere(pos,  SD, SCV, false)) {
-			System.out.println("Cannot build here");
-		}
+		pos = game.getBuildLocation(SD, pos, 1);
+		//if ( !game.canBuildHere(pos,  SD, SCV, false)) {
+		//	System.out.println("Cannot build here");
+		//}
 		SCV.build(SD,pos);
 	}
 	

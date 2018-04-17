@@ -119,8 +119,11 @@ public class BuildingPlacement {
 	public static TilePosition getBuildPositionFirstSD(Game game, //Unit builder, 
 			ArrayList<BaseLocation> bBasePos,
 			int mineralSetup ) {
-		int startingCC_X = bBasePos.get(0).getX();
-		int startingCC_Y = bBasePos.get(0).getY();
+		//int startingCC_X = bBasePos.get(0).getX();
+		//int startingCC_Y = bBasePos.get(0).getY();
+		
+		int startingCC_X = bBasePos.get(0).getTilePosition().getX();
+		int startingCC_Y = bBasePos.get(0).getTilePosition().getY();
 		
 		TilePosition pos = bBasePos.get(0).getTilePosition();
 		
@@ -128,18 +131,27 @@ public class BuildingPlacement {
 			game.drawTextMap( startingCC_X, startingCC_Y, "build here");
 		}		
 		if ( mineralSetup == 3 ) { 
-			game.drawTextMap( startingCC_X - 160 - 1, startingCC_Y - 32, "build here");
-			pos = new TilePosition( startingCC_X - 160, startingCC_Y - 32);
-			pos = new TilePosition( startingCC_X - 300, startingCC_Y - 32);
+			pos = new TilePosition( startingCC_X - 3, startingCC_Y + 1);
+			pos = game.getBuildLocation(UnitType.Terran_Supply_Depot,pos, 1);		
+			if ( !game.canBuildHere(pos, UnitType.Terran_Supply_Depot)) {
+				System.out.println("Cannot build here222");
+			}
+
 		}		
 		if ( mineralSetup == 6 ) { 
 			game.drawTextMap( startingCC_X, startingCC_Y, "build here");
-		}		
+		}	
+		
 		if ( mineralSetup == 9 ) { 
-			game.drawTextMap( startingCC_X + 64 + 1, startingCC_Y - 64, "build here");
-			pos = new TilePosition( startingCC_X + 64, startingCC_Y - 64);
-			pos = new TilePosition( startingCC_X + 200, startingCC_Y - 64);
+			pos = new TilePosition( startingCC_X + 4, startingCC_Y - 1);
+			pos = game.getBuildLocation(UnitType.Terran_Supply_Depot,pos, 1);		
+			if ( !game.canBuildHere(pos, UnitType.Terran_Supply_Depot)) {
+				System.out.println("Cannot build here3");
+				System.out.println( pos.getX() + " " + pos.getY() );
+			}
+
 		}
+		
 		
 		return pos;
 		
