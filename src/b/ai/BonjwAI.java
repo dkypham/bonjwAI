@@ -216,9 +216,6 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup);
 		
-		TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
-		game.drawTextMap( pos.toPosition().getX(), pos.toPosition().getY(), "build SD here");
-		
 		// Army Manager:
 		/*
 		 * Variables:

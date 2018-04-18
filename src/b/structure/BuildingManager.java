@@ -99,19 +99,21 @@ public class BuildingManager {
 			ArrayList<Integer> bResources,
 			ArrayList<BaseLocation> bBasePos,
 			int mineralSetup ) {
+		// get number of supply depots
 		int numSupply = MapUnitID.getStructCount(game, bArmyMap, bStructMap, SD);
-		System.out.println("Num supply" + numSupply);
+
+		// if conditions met to build a supply depot
 		if ( SupplyManager.needSupplyCheck(self,bResources.get(5)) && (bResources.get(0)-bResources.get(1)) >= 100 ) {
+			// first supply depot position
 			if ( numSupply == 0 ) {
 				// find pos of first SD
 				TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
-				//game.drawTextMap( pos.toPosition().getX(), pos.toPosition().getY(), "build SD here");
 				// issue build at TilePosition found
 				WorkerManager.issueBuildAtLocation(game, bArmyMap, pos);
-				System.out.println("issued custom build pos");
 			}
 			else {
-				//WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, SD);
+				// default build alg
+				WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, SD);
 			}
 		}
 	}
