@@ -44,4 +44,10 @@ public class MapDraw {
 		
 	}
 	
+	// given top left TP, get position of bottom right TP so that we can use game.drawBoxScreen
+	public static Position getBottomRightBuildZonePos( TilePosition tpos, int right, int below ) {
+		TilePosition tempTpos = new TilePosition( tpos.getX() + right, tpos.getY() + below );
+		return tempTpos.toPosition();
+	}
+	
 }

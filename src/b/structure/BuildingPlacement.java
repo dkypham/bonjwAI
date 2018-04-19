@@ -128,7 +128,12 @@ public class BuildingPlacement {
 		
 		// minerals above CC
 		if ( mineralSetup == 12 ) { 
-			game.drawTextMap( startingCC_X, startingCC_Y, "build here");
+			pos = new TilePosition( startingCC_X, startingCC_Y + 3);
+			pos = game.getBuildLocation(UnitType.Terran_Supply_Depot,pos, 1);		
+			if ( !game.canBuildHere(pos, UnitType.Terran_Supply_Depot)) {
+				System.out.println("Cannot build first supply depot here");
+				System.out.println( pos.getX() + " " + pos.getY() );
+			}
 		}	
 		// minerals right of CC
 		if ( mineralSetup == 3 ) { 
@@ -141,7 +146,12 @@ public class BuildingPlacement {
 		}		
 		// minerals bottom of CC
 		if ( mineralSetup == 6 ) { 
-			game.drawTextMap( startingCC_X, startingCC_Y, "build here");
+			pos = new TilePosition( startingCC_X, startingCC_Y - 3);
+			pos = game.getBuildLocation(UnitType.Terran_Supply_Depot,pos, 1);		
+			if ( !game.canBuildHere(pos, UnitType.Terran_Supply_Depot)) {
+				System.out.println("Cannot build first supply depot here");
+				System.out.println( pos.getX() + " " + pos.getY() );
+			}
 		}	
 		// minerals left of CC
 		if ( mineralSetup == 9 ) { 

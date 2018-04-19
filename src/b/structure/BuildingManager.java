@@ -135,6 +135,7 @@ public class BuildingManager {
 				&& SupplyManager.needSupplyCheck(self, bResources.get(5)) == false ) {
 			// build Refinery
 			WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, Refinery);
+			System.out.println("Num refinery" + numRefinery);
 		}
 	}
 	

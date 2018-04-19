@@ -20,6 +20,7 @@ import b.map.ScoutManager;
 import b.structure.BuildingManager;
 import b.structure.BuildingPlacement;
 import b.ui.DrawUI;
+import bwapi.Color;
 import bwapi.DefaultBWListener;
 import bwapi.Game;
 import bwapi.Mirror;
@@ -56,10 +57,6 @@ public class BonjwAI extends DefaultBWListener {
 	// bResources - list of bonjwAI's resources defined in ResourceManager
 	private ArrayList<Integer> bResources = new ArrayList<Integer>();
 
-	// bResources2 - duplicate list used to maintain resource info persistently, 
-	// instead of recalcualting every frame
-	private Integer[] bResources2 = new Integer[6];
-	
 	// mineralSetup - tells us the configuration of the minerals relative to CC
 	private int mineralSetup = -1;
 	
@@ -106,6 +103,7 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		mineralSetup = MapInformation.initMapInfo(game, bStructMap, resourceZone, 
 				bBasePos, mineralSetup);
+		System.out.println("Mineral setup: " + mineralSetup);
 	
 	}
 
@@ -246,9 +244,14 @@ public class BonjwAI extends DefaultBWListener {
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
 	
-		
 		// testing
-		game.drawTextMap( bBasePos.get(0).getX(), bBasePos.get(0).getY(), "BL1");
+		TilePosition firstSDPos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup );
+		Position bottomfirstSDPos = MapDraw.getBottomRightBuildZonePos(firstSDPos, 3, 1);
+		game.drawBoxScreen( firstSDPos.toPosition().getX(), firstSDPos.toPosition().getY(), bottomfirstSDPos.getX(), 
+				bottomfirstSDPos.getY(), Color.Green );
+		
+		game.drawBoxScreen( firstSDPos.toPosition().getX(), firstSDPos.toPosition().getY(), firstSDPos.toPosition().getX() + 3, 
+				firstSDPos.toPosition().getY() + 1, Color.Green );
 	}
 
 	public void onEnd() {
