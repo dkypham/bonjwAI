@@ -64,6 +64,9 @@ public class BonjwAI extends DefaultBWListener {
 	private List<Integer> resourceZone = new ArrayList<Integer>();
 	//private List<Integer> buildZone = new ArrayList<Integer>();
 	
+	// testing/temp variables
+	TilePosition firstSDPos = null;
+	
 	public void run() {
 		mirror.getModule().setEventListener(this);
 		mirror.startGame();
@@ -245,13 +248,22 @@ public class BonjwAI extends DefaultBWListener {
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
 	
 		// testing
-		TilePosition firstSDPos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup );
-		Position bottomfirstSDPos = MapDraw.getBottomRightBuildZonePos(firstSDPos, 3, 1);
+		if ( firstSDPos == null ) {
+			firstSDPos =  BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup );
+		}
+		Position bottomfirstSDPos = MapDraw.getBottomRightBuildZonePos(firstSDPos, 
+				UnitType.Terran_Supply_Depot.tileWidth(), 
+				UnitType.Terran_Supply_Depot.tileHeight() );
+		
+		game.drawTextMap(firstSDPos.toPosition(), "First Supply Depot");
+		game.drawBoxMap(firstSDPos.toPosition(), bottomfirstSDPos, Color.Green);
+		/*
 		game.drawBoxScreen( firstSDPos.toPosition().getX(), firstSDPos.toPosition().getY(), bottomfirstSDPos.getX(), 
 				bottomfirstSDPos.getY(), Color.Green );
 		
 		game.drawBoxScreen( firstSDPos.toPosition().getX(), firstSDPos.toPosition().getY(), firstSDPos.toPosition().getX() + 3, 
 				firstSDPos.toPosition().getY() + 1, Color.Green );
+		*/
 	}
 
 	public void onEnd() {
