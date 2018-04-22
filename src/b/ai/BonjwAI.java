@@ -64,6 +64,9 @@ public class BonjwAI extends DefaultBWListener {
 	private List<Integer> resourceZone = new ArrayList<Integer>();
 	//private List<Integer> buildZone = new ArrayList<Integer>();
 	
+	private List<Position> drawStructPos = new ArrayList<Position>();
+	private List<String> drawStructLabel = new ArrayList<String>();
+	
 	// testing/temp variables
 	TilePosition firstSDPos = null;
 	
@@ -107,7 +110,10 @@ public class BonjwAI extends DefaultBWListener {
 		mineralSetup = MapInformation.initMapInfo(game, bStructMap, resourceZone, 
 				bBasePos, mineralSetup);
 		System.out.println("Mineral setup: " + mineralSetup);
-	
+		
+		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
+		System.out.println("Size of drawStructPos: " + drawStructPos.size());
+		System.out.println("Size of drawStructLabel: " + drawStructLabel.size());
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -215,7 +221,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * --factoryManager()	>	build two factories when conditions are met
 		 * --buildingProduction()	>	build marines/medics when conditions are met
 		 */
-		BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup);
+		BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel);
 		
 		// Army Manager:
 		/*
@@ -247,23 +253,14 @@ public class BonjwAI extends DefaultBWListener {
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
 	
-		// testing
-		if ( firstSDPos == null ) {
-			firstSDPos =  BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup );
-		}
-		Position bottomfirstSDPos = MapDraw.getBottomRightBuildZonePos(firstSDPos, 
-				UnitType.Terran_Supply_Depot.tileWidth(), 
-				UnitType.Terran_Supply_Depot.tileHeight() );
+		//testing
+		game.drawBoxMap(drawStructPos.get(0), 
+				MapDraw.getBottomRightBuildZonePos(drawStructPos.get(0).toTilePosition(), UnitType.Terran_Supply_Depot.tileWidth(), UnitType.Terran_Supply_Depot.tileHeight() ), 
+				Color.Green);
 		
-		game.drawTextMap(firstSDPos.toPosition(), "First Supply Depot");
-		game.drawBoxMap(firstSDPos.toPosition(), bottomfirstSDPos, Color.Green);
-		/*
-		game.drawBoxScreen( firstSDPos.toPosition().getX(), firstSDPos.toPosition().getY(), bottomfirstSDPos.getX(), 
-				bottomfirstSDPos.getY(), Color.Green );
+		//game.drawBoxScreen( firstSDPos.toPosition().getX(), firstSDPos.toPosition().getY(), firstSDPos.toPosition().getX() + 3, 
+		//		firstSDPos.toPosition().getY() + 1, Color.Green );
 		
-		game.drawBoxScreen( firstSDPos.toPosition().getX(), firstSDPos.toPosition().getY(), firstSDPos.toPosition().getX() + 3, 
-				firstSDPos.toPosition().getY() + 1, Color.Green );
-		*/
 	}
 
 	public void onEnd() {

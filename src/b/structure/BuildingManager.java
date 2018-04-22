@@ -13,6 +13,7 @@ import b.economy.WorkerManager;
 import b.idmap.MapUnitID;
 import bwapi.Game;
 import bwapi.Player;
+import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -42,7 +43,10 @@ public class BuildingManager {
 				Multimap<UnitType, Integer> bStructMap,
 				ArrayList<Integer> bResources, 
 				ArrayList<BaseLocation> bBasePos,
-				int mineralSetup ) {
+				int mineralSetup,
+				List<Position> drawStructPos,
+				List<String> drawStructLabel ) {
+		//getBuildingPlan(game,self,bArmyMap, bStructMap, drawStructPos,drawStructLabel,mineralSetup, bBasePos);
 		buildWorkers(game,self,bArmyMap,bStructMap,bResources);
 		updateSupplyManager(game,self,bArmyMap,bStructMap,bResources, bBasePos, mineralSetup);
 		refineryManager(game,self,bArmyMap,bStructMap,bResources);
@@ -54,6 +58,14 @@ public class BuildingManager {
 	
 	// COMMAND CENTER FUNCTIONS
 	
+	public static void getBuildingPlan(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
+			Multimap<UnitType, Integer> bStructMap, List<Position> drawStructPos,
+			List<String> drawStructLabel, int mineralSetup, ArrayList<BaseLocation> bBasePos) {
+		drawStructPos.add( (BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup)).toPosition());
+		drawStructLabel.add("First Supply Depot");
+		
+	}
+
 	// function to build workers
 	public static void buildWorkers(Game game, Player self, 
 			Multimap<UnitType, Integer> bArmyMap, 
