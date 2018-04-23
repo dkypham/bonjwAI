@@ -18,7 +18,9 @@ public class DrawUI {
 
 	public static void updateUI(Game game, Player self, Multimap<UnitType, Integer> bArmyMap, 
 			Multimap<UnitType, Integer> bStructMap, ArrayList<Position> eBasePos,
-			ArrayList<Integer> bResources) {
+			ArrayList<Integer> bResources,
+			List<UnitType> buildOrderStruct,
+			List<Integer> buildOrderSupply) {
 		game.drawTextScreen(10, 10, "Playing as " + "bonjwAI" + " - " + self.getRace());
 		game.drawTextScreen(10, 20, "APM: " + game.getAPM() );
 		
@@ -29,11 +31,19 @@ public class DrawUI {
 		game.drawTextScreen(10, 80, "aS: " + bResources.get(4) );
 		game.drawTextScreen(10, 90, "eS: " + bResources.get(5) );
 		
-		game.drawTextScreen(10, 110, "Number of eBuildings seen: " + eBasePos.size());
+		drawNextBuilding(game, buildOrderStruct, buildOrderSupply);
+		
+		game.drawTextScreen(10, 120, "Number of eBuildings seen: " + eBasePos.size());
 		drawUnitCounts(game, self, bArmyMap);
 		drawUnitIDs(game, bArmyMap, bStructMap);
 		
 		drawInfo(game, self, bArmyMap, bStructMap);
+	}
+	
+	public static void drawNextBuilding(Game game, List<UnitType> buildOrderStruct,
+			List<Integer> buildOrderSupply) {
+		game.drawTextScreen(10, 100, "Next building: " + buildOrderStruct.get(0) + " at " + 
+			buildOrderSupply.get(0) + " supply.");
 	}
 	
 	public static void drawUnitCounts(Game game, Player self, 

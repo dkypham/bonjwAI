@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -18,6 +19,7 @@ import b.map.MapDraw;
 import b.map.MapInformation;
 import b.map.ScoutManager;
 import b.structure.BuildingManager;
+import b.structure.BuildingOrder;
 import b.structure.BuildingPlacement;
 import b.ui.DrawUI;
 import bwapi.Color;
@@ -67,6 +69,11 @@ public class BonjwAI extends DefaultBWListener {
 	private List<Position> drawStructPos = new ArrayList<Position>();
 	private List<String> drawStructLabel = new ArrayList<String>();
 	
+	private List<UnitType> buildOrderStruct = new ArrayList<UnitType>();
+	private List<Integer> buildOrderSupply = new ArrayList<Integer>();
+	
+	//private Queue<UnitType> test2 = new Queue<UnitType>();
+	
 	// testing/temp variables
 	TilePosition firstSDPos = null;
 	
@@ -111,9 +118,10 @@ public class BonjwAI extends DefaultBWListener {
 				bBasePos, mineralSetup);
 		System.out.println("Mineral setup: " + mineralSetup);
 		
+		
+		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
+		
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
-		System.out.println("Size of drawStructPos: " + drawStructPos.size());
-		System.out.println("Size of drawStructLabel: " + drawStructLabel.size());
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -251,7 +259,7 @@ public class BonjwAI extends DefaultBWListener {
 
 		// Implement without persistent data
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources);
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources, buildOrderStruct, buildOrderSupply);
 	
 		//testing
 		game.drawBoxMap(drawStructPos.get(0), 
