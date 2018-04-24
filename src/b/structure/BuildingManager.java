@@ -51,7 +51,7 @@ public class BuildingManager {
 		updateSupplyManager(game,self,bArmyMap,bStructMap,bResources, bBasePos, mineralSetup);
 		refineryManager(game,self,bArmyMap,bStructMap,bResources);
 		academyManager(game,self,bArmyMap,bStructMap,bResources);
-		barracksManager(game,self,bArmyMap,bStructMap,bResources);
+		barracksManager(game,self,bArmyMap,bStructMap,bResources, bBasePos, mineralSetup);
 		factoryManager(game,self,bArmyMap,bStructMap,bResources);
 		buildingProduction(game,self,bArmyMap,bStructMap,bResources);
 	}
@@ -173,7 +173,9 @@ public class BuildingManager {
 	public static void barracksManager(Game game, Player self,
 			Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap,
-			ArrayList<Integer> bResources) {
+			ArrayList<Integer> bResources,
+			ArrayList<BaseLocation> bBasePos,
+			int mineralSetup) {
 		// IMPLEMENT build barracks when minerals > 150
 		int numBarracks = MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks);
 		int numAcademy = MapUnitID.getStructCount(game, bArmyMap, bStructMap, Academy);
@@ -183,6 +185,11 @@ public class BuildingManager {
 				&& (numBarracks < 2 || numAcademy == 1) && numBarracks < 4
 				&& SupplyManager.needSupplyCheck(self, bResources.get(5)) == false ) {
 			// build Barracks
+			if ( numBarracks == 0 ) {
+				TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
+				// issue build at TilePosition found
+				WorkerManager.issueBuildAtLocation(game, bArmyMap, pos);
+			}
 			WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, Barracks);
 		}
 	}

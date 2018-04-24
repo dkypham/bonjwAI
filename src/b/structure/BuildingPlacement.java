@@ -169,5 +169,58 @@ public class BuildingPlacement {
 		return pos;
 	}
 	
+	// Building implementation for 1st supply depot
+	public static TilePosition getBuildPositionFirstBarracks(Game game, //Unit builder, 
+			ArrayList<BaseLocation> bBasePos,
+			int mineralSetup ) {
+		// relative to startingCC location
+		int startingCC_X = bBasePos.get(0).getTilePosition().getX();
+		int startingCC_Y = bBasePos.get(0).getTilePosition().getY();
+		
+		// default pos
+		TilePosition pos = bBasePos.get(0).getTilePosition();
+		
+		// minerals above CC
+		if ( mineralSetup == 12 ) { 
+			pos = new TilePosition( startingCC_X, startingCC_Y + 3);
+			pos = game.getBuildLocation(UnitType.Terran_Barracks,pos, 1);		
+			if ( !game.canBuildHere(pos, UnitType.Terran_Barracks)) {
+				System.out.println("Cannot build first barracks here");
+				System.out.println( pos.getX() + " " + pos.getY() );
+			}
+		}	
+		// minerals right of CC
+		if ( mineralSetup == 3 ) { 
+			pos = new TilePosition( startingCC_X - 4, startingCC_Y + 5);
+			pos = game.getBuildLocation(UnitType.Terran_Barracks,pos, 1);		
+			if ( !game.canBuildHere(pos, UnitType.Terran_Barracks)) {
+				System.out.println("Cannot build first barracks here");
+				System.out.println( pos.getX() + " " + pos.getY() );
+			}
+		}		
+		// minerals bottom of CC
+		if ( mineralSetup == 6 ) { 
+			pos = new TilePosition( startingCC_X, startingCC_Y - 3);
+			pos = game.getBuildLocation(UnitType.Terran_Barracks,pos, 1);		
+			if ( !game.canBuildHere(pos, UnitType.Terran_Barracks)) {
+				System.out.println("Cannot build first barracks here");
+				System.out.println( pos.getX() + " " + pos.getY() );
+			}
+		}	
+		// minerals left of CC
+		if ( mineralSetup == 9 ) { 
+			pos = new TilePosition( startingCC_X + 7, startingCC_Y - 1);
+			pos = game.getBuildLocation(UnitType.Terran_Barracks,pos, 1);		
+			if ( !game.canBuildHere(pos, UnitType.Terran_Barracks)) {
+				System.out.println("Cannot build first barracks here");
+				System.out.println( pos.getX() + " " + pos.getY() );
+			}
+		}
+		
+		if ( pos == null ) {
+			System.out.println("Null value with first barracks position");
+		}
+		return pos;
+	}
 	
 }
