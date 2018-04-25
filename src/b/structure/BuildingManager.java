@@ -63,7 +63,8 @@ public class BuildingManager {
 			List<String> drawStructLabel, int mineralSetup, ArrayList<BaseLocation> bBasePos) {
 		drawStructPos.add( (BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup)).toPosition());
 		drawStructLabel.add("First Supply Depot");
-		
+		drawStructPos.add( (BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup)).toPosition());
+		drawStructLabel.add("First Barracks");
 	}
 
 	// function to build workers
@@ -121,7 +122,7 @@ public class BuildingManager {
 				// find pos of first SD
 				TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
 				// issue build at TilePosition found
-				WorkerManager.issueBuildAtLocation(game, bArmyMap, pos);
+				WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD);
 			}
 			else {
 				// default build alg
@@ -186,11 +187,13 @@ public class BuildingManager {
 				&& SupplyManager.needSupplyCheck(self, bResources.get(5)) == false ) {
 			// build Barracks
 			if ( numBarracks == 0 ) {
-				TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
+				TilePosition pos = BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup);
 				// issue build at TilePosition found
-				WorkerManager.issueBuildAtLocation(game, bArmyMap, pos);
+				WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks);
 			}
-			WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, Barracks);
+			else {
+				WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, Barracks);
+			}
 		}
 	}
 	

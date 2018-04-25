@@ -94,7 +94,8 @@ public class WorkerManager {
 	
 	public static void issueBuildAtLocation(Game game,
 			Multimap<UnitType, Integer> bArmyMap,
-			TilePosition pos ) {
+			TilePosition pos,
+			UnitType building ) {
 		//if ( bStructMap.containsEntry(building,-1) ) {
 		//	//System.out.println("" + building + "is already being built");
 		//	return;
@@ -105,11 +106,11 @@ public class WorkerManager {
 			System.out.println("Null SCV");
 		}
 		//SCV.stop();
-		pos = game.getBuildLocation(SD, pos, 1);
+		pos = game.getBuildLocation(building, pos, 1);
 		//if ( !game.canBuildHere(pos,  SD, SCV, false)) {
 		//	System.out.println("Cannot build here");
 		//}
-		SCV.build(SD,pos);
+		SCV.build(building,pos);
 	}
 	
 	public static int getMineralMinerCount(Game game, Multimap<UnitType, Integer> armyMap) {

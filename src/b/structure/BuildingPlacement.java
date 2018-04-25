@@ -143,6 +143,7 @@ public class BuildingPlacement {
 				System.out.println("Cannot build first supply depot here");
 				System.out.println( pos.getX() + " " + pos.getY() );
 			}
+			//System.out.println("BuildingPlacement: SD position at" + pos);
 		}		
 		// minerals bottom of CC
 		if ( mineralSetup == 6 ) { 
@@ -161,6 +162,7 @@ public class BuildingPlacement {
 				System.out.println("Cannot build first supply depot here");
 				System.out.println( pos.getX() + " " + pos.getY() );
 			}
+			//System.out.println("BuildingPlacement: SD position at" + pos);
 		}
 		
 		if ( pos == null ) {
@@ -191,12 +193,13 @@ public class BuildingPlacement {
 		}	
 		// minerals right of CC
 		if ( mineralSetup == 3 ) { 
-			pos = new TilePosition( startingCC_X - 4, startingCC_Y + 5);
+			pos = new TilePosition( startingCC_X - 4, startingCC_Y + 3);
 			pos = game.getBuildLocation(UnitType.Terran_Barracks,pos, 1);		
 			if ( !game.canBuildHere(pos, UnitType.Terran_Barracks)) {
 				System.out.println("Cannot build first barracks here");
 				System.out.println( pos.getX() + " " + pos.getY() );
 			}
+			//System.out.println("BuildingPlacement: barracks position at" + pos);
 		}		
 		// minerals bottom of CC
 		if ( mineralSetup == 6 ) { 
@@ -215,6 +218,7 @@ public class BuildingPlacement {
 				System.out.println("Cannot build first barracks here");
 				System.out.println( pos.getX() + " " + pos.getY() );
 			}
+			//System.out.println("BuildingPlacement: barracks position at" + pos);
 		}
 		
 		if ( pos == null ) {

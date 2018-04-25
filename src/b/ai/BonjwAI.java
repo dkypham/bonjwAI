@@ -120,7 +120,6 @@ public class BonjwAI extends DefaultBWListener {
 		
 		
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
-		
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
 	}
 
@@ -264,6 +263,10 @@ public class BonjwAI extends DefaultBWListener {
 		//testing
 		game.drawBoxMap(drawStructPos.get(0), 
 				MapDraw.getBottomRightBuildZonePos(drawStructPos.get(0).toTilePosition(), UnitType.Terran_Supply_Depot.tileWidth(), UnitType.Terran_Supply_Depot.tileHeight() ), 
+				Color.Green);
+		
+		game.drawBoxMap(drawStructPos.get(1), 
+				MapDraw.getBottomRightBuildZonePos(drawStructPos.get(1).toTilePosition(), UnitType.Terran_Barracks.tileWidth(), UnitType.Terran_Barracks.tileHeight() ), 
 				Color.Green);
 		
 		//game.drawBoxScreen( firstSDPos.toPosition().getX(), firstSDPos.toPosition().getY(), firstSDPos.toPosition().getX() + 3, 
