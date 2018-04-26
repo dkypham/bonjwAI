@@ -8,6 +8,7 @@ import com.google.common.collect.Multimap;
 import b.ai.BonjwAIGame;
 import b.idmap.MapUnitID;
 import b.map.MapDraw;
+import bwapi.Color;
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.Position;
@@ -20,7 +21,9 @@ public class DrawUI {
 			Multimap<UnitType, Integer> bStructMap, ArrayList<Position> eBasePos,
 			ArrayList<Integer> bResources,
 			List<UnitType> buildOrderStruct,
-			List<Integer> buildOrderSupply) {
+			List<Integer> buildOrderSupply,
+			List<Position> drawStructPos,
+			List<String> drawStructLabel) {
 		game.drawTextScreen(10, 10, "Playing as " + "bonjwAI" + " - " + self.getRace());
 		game.drawTextScreen(10, 20, "APM: " + game.getAPM() );
 		
@@ -38,6 +41,21 @@ public class DrawUI {
 		drawUnitIDs(game, bArmyMap, bStructMap);
 		
 		drawInfo(game, self, bArmyMap, bStructMap);
+	
+		drawBuildingPlan(game, drawStructPos, drawStructLabel);
+	}
+	
+	public static void drawBuildingPlan( Game game,
+			List<Position> drawStructPos,
+			List<String> drawStructLabel ) {
+		game.drawBoxMap(drawStructPos.get(0), 
+				MapDraw.getBottomRightBuildZonePos(drawStructPos.get(0).toTilePosition(), UnitType.Terran_Supply_Depot.tileWidth(), UnitType.Terran_Supply_Depot.tileHeight() ), 
+				Color.Green);
+		game.drawTextMap(drawStructPos.get(0), drawStructLabel.get(0));
+		game.drawBoxMap(drawStructPos.get(1), 
+				MapDraw.getBottomRightBuildZonePos(drawStructPos.get(1).toTilePosition(), UnitType.Terran_Barracks.tileWidth(), UnitType.Terran_Barracks.tileHeight() ), 
+				Color.Green);
+		game.drawTextMap(drawStructPos.get(1), drawStructLabel.get(1));
 	}
 	
 	public static void drawNextBuilding(Game game, List<UnitType> buildOrderStruct,
