@@ -45,19 +45,21 @@ public class BuildingManager {
 				ArrayList<BaseLocation> bBasePos,
 				int mineralSetup,
 				List<Position> drawStructPos,
-				List<String> drawStructLabel ) {
+				List<String> drawStructLabel,
+				List<UnitType> buildOrderStruct,
+				List<Integer> buildOrderSupply) {
 		//getBuildingPlan(game,self,bArmyMap, bStructMap, drawStructPos,drawStructLabel,mineralSetup, bBasePos);
 		buildWorkers(game,self,bArmyMap,bStructMap,bResources);
-		updateSupplyManager(game,self,bArmyMap,bStructMap,bResources, bBasePos, mineralSetup);
-		refineryManager(game,self,bArmyMap,bStructMap,bResources);
-		academyManager(game,self,bArmyMap,bStructMap,bResources);
-		barracksManager(game,self,bArmyMap,bStructMap,bResources, bBasePos, mineralSetup);
-		factoryManager(game,self,bArmyMap,bStructMap,bResources);
-		buildingProduction(game,self,bArmyMap,bStructMap,bResources);
+		//updateSupplyManager(game,self,bArmyMap,bStructMap,bResources, bBasePos, mineralSetup);
+		//refineryManager(game,self,bArmyMap,bStructMap,bResources);
+		//academyManager(game,self,bArmyMap,bStructMap,bResources);
+		//barracksManager(game,self,bArmyMap,bStructMap,bResources, bBasePos, mineralSetup);
+		//factoryManager(game,self,bArmyMap,bStructMap,bResources);
 	}
 	
 	// COMMAND CENTER FUNCTIONS
 	
+	// method to find build locations
 	public static void getBuildingPlan(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap, List<Position> drawStructPos,
 			List<String> drawStructLabel, int mineralSetup, ArrayList<BaseLocation> bBasePos) {
@@ -65,6 +67,30 @@ public class BuildingManager {
 		drawStructLabel.add("First Supply Depot");
 		drawStructPos.add( (BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup)).toPosition());
 		drawStructLabel.add("First Barracks");
+	}
+	
+	// Given an array for order of buildings and array with supplies, issue a build order for that building if
+	// given supply is met
+	public static void issueBuildOrder(Game game, Player self, 
+			Multimap<UnitType, Integer> bArmyMap,
+			Multimap<UnitType, Integer> bStructMap, 
+			List<Position> drawStructPos,
+			List<String> drawStructLabel, 
+			int mineralSetup, 
+			ArrayList<BaseLocation> bBasePos,
+			List<UnitType> buildOrderStruct,
+			List<Integer> buildOrderSupply,
+			ArrayList<Integer> bResources ) {
+		for ( int i = 0; i < buildOrderStruct.size(); i++ ) {
+			// if supply used < supplyTotal 
+			if ( (self.supplyTotal() * 2) < buildOrderSupply.get(i) ) {
+				// production
+				buildingProduction(game,self,bArmyMap,bStructMap,bResources);
+				break;
+			}
+			
+		}
+		
 	}
 
 	// function to build workers

@@ -228,7 +228,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * --factoryManager()	>	build two factories when conditions are met
 		 * --buildingProduction()	>	build marines/medics when conditions are met
 		 */
-		BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel);
+		BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
 		
 		// Army Manager:
 		/*
@@ -261,15 +261,7 @@ public class BonjwAI extends DefaultBWListener {
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources, buildOrderStruct, buildOrderSupply, drawStructPos, drawStructLabel);
 	
 		//testing
-		/*
-		game.drawBoxMap(drawStructPos.get(0), 
-				MapDraw.getBottomRightBuildZonePos(drawStructPos.get(0).toTilePosition(), UnitType.Terran_Supply_Depot.tileWidth(), UnitType.Terran_Supply_Depot.tileHeight() ), 
-				Color.Green);
-		
-		game.drawBoxMap(drawStructPos.get(1), 
-				MapDraw.getBottomRightBuildZonePos(drawStructPos.get(1).toTilePosition(), UnitType.Terran_Barracks.tileWidth(), UnitType.Terran_Barracks.tileHeight() ), 
-				Color.Green);
-		*/
+
 	}
 
 	public void onEnd() {
