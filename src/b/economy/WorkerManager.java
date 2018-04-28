@@ -101,6 +101,7 @@ public class WorkerManager {
 		//	return;
 		//}
 		//game.drawTextMap( pos.getX(), pos.getY(), "build here2222222222");
+
 		Unit SCV = 	game.getUnit(getFreeSCVID(game,bArmyMap));
 		if ( SCV == null ) {
 			System.out.println("Null SCV");
@@ -111,6 +112,7 @@ public class WorkerManager {
 		//	System.out.println("Cannot build here");
 		//}
 		SCV.build(building,pos);
+		System.out.println("issued build order");
 	}
 	
 	public static int getMineralMinerCount(Game game, Multimap<UnitType, Integer> armyMap) {

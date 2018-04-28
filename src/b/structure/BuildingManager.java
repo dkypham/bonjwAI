@@ -11,6 +11,7 @@ import b.ai.BonjwAIGame;
 import b.economy.SupplyManager;
 import b.economy.WorkerManager;
 import b.idmap.MapUnitID;
+import bwapi.Color;
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.Position;
@@ -38,6 +39,7 @@ public class BuildingManager {
 	static int MAX_MEDIC_COUNT = 8;
 	
 	// BUILDING MANAGER
+	/*
 	public static void buildingManager( Game game, Player self,
 				Multimap<UnitType, Integer> bArmyMap,
 				Multimap<UnitType, Integer> bStructMap,
@@ -55,6 +57,63 @@ public class BuildingManager {
 		//academyManager(game,self,bArmyMap,bStructMap,bResources);
 		//barracksManager(game,self,bArmyMap,bStructMap,bResources, bBasePos, mineralSetup);
 		//factoryManager(game,self,bArmyMap,bStructMap,bResources);
+	}
+	*/
+	public static void buildingManager( Game game, Player self,
+			ArrayList<BaseLocation> bBasePos,
+			Multimap<UnitType, Integer> bArmyMap,
+			Multimap<UnitType, Integer> bStructMap,
+			int productionMode, ArrayList<Integer> bResources,
+			List<UnitType> buildOrderStruct,
+			List<Integer> buildOrderSupply,
+			int mineralSetup) {
+		// check if something needs to be built at this supply
+		if ( self.supplyUsed() == buildOrderSupply.get(0)*2 ) {
+			// issue build
+			buildStruct(game, self, bBasePos, mineralSetup, 
+					bArmyMap, bStructMap, bResources, 
+					buildOrderStruct.get(0) );
+		}
+		// if not, issue build of ONE unit
+		else {
+			// issue build
+			if ( productionMode == 0 ) {
+				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
+			}
+			
+		}
+	}
+	
+	public static void buildStruct( Game game, Player self, 
+			ArrayList<BaseLocation> bBasePos,
+			int mineralSetup,
+			Multimap<UnitType, Integer> bArmyMap,
+			Multimap<UnitType, Integer> bStructMap,
+			ArrayList<Integer> bResources,
+			UnitType struct ) {
+		// if building type is SD
+		if ( struct == SD ) {
+			TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
+			// issue build at TilePosition found
+			//System.out.println("tryna build SD");
+			game.drawBoxMap(pos.toPosition().getX(),
+					pos.toPosition().getY(),
+					pos.toPosition().getX() + 10,
+					pos.toPosition().getY() + 10,
+					Color.Green);
+			WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD);
+		}
+
+	}
+	
+	
+	public static void buildUnit( Game game, Player self, 			
+			Multimap<UnitType, Integer> bArmyMap,
+			Multimap<UnitType, Integer> bStructMap,
+			int buildingMode, ArrayList<Integer> bResources ) {
+		if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources) ) {
+			return;
+		}
 	}
 	
 	// COMMAND CENTER FUNCTIONS
@@ -94,21 +153,22 @@ public class BuildingManager {
 	}
 
 	// function to build workers
-	public static void buildWorkers(Game game, Player self, 
+	public static boolean buildWorkers(Game game, Player self, 
 			Multimap<UnitType, Integer> bArmyMap, 
 			Multimap<UnitType, Integer> bStructMap,
 			ArrayList<Integer> bResources ) {
 		int SCVcount = bArmyMap.get(UnitType.Terran_SCV).size();
 		boolean needSupply = SupplyManager.needSupplyCheck(self, bResources.get(5));
 		int reservedMinerals = bResources.get(1);	
-		
 		for ( Integer CCID : bStructMap.get(UnitType.Terran_Command_Center) ) {
 			Unit CC = game.getUnit(CCID);
 			if (CC.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && 
 					SCVcount < (16 * bStructMap.get(UnitType.Terran_Command_Center).size() ) ) {
 				CC.train(UnitType.Terran_SCV);
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public static int getNumPlannedStruct(Game game, Multimap<UnitType, Integer> bArmyMap, UnitType struct) {
@@ -156,7 +216,7 @@ public class BuildingManager {
 			}
 		}
 	}
-	
+	/*
 	// TODO: Write a function that assigns first 16 SCVs to CC1, next 16 to CC2
 	// using getUnitsInRadius or make func above only build scvs if num SCVs near CC is <16
 
@@ -241,7 +301,7 @@ public class BuildingManager {
 			WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, Factory);
 		}
 	}
-	
+	*/
 	// TRAIN UNITS
 	public static void buildingProduction(Game game, Player self, 
 			Multimap<UnitType, Integer> bArmyMap,

@@ -16,12 +16,13 @@ import bwta.BaseLocation;
 
 public class MapInformation {
 	
+	// On initialization: 
+	// populate resourceZone
+	// find mineral setup
 	public static int initMapInfo(Game game, Multimap<UnitType, Integer> bStructMap,
-			List<Integer> resourceZone, 
-			//List<Integer> buildZone,
 			ArrayList<BaseLocation> bBasePos,
+			List<Integer> resourceZone, 
 			int mineralSetup ) {
-		//initBuildZone(game, resourceZone, bStructMap);
 		findNearBasePos(game, bBasePos);
 		initResourceZone(game, resourceZone, bBasePos);
 		return findMineralSetup(game, bBasePos, mineralSetup);

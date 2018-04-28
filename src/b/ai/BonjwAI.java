@@ -72,7 +72,8 @@ public class BonjwAI extends DefaultBWListener {
 	private List<UnitType> buildOrderStruct = new ArrayList<UnitType>();
 	private List<Integer> buildOrderSupply = new ArrayList<Integer>();
 	
-	//private Queue<UnitType> test2 = new Queue<UnitType>();
+	// building stuff
+	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
 	
 	// testing/temp variables
 	TilePosition firstSDPos = null;
@@ -114,10 +115,8 @@ public class BonjwAI extends DefaultBWListener {
 		 * -initResourceZone: find nobuild zone
 		 * -findMineralSetup: find position of minerals relative to startingCC
 		 */
-		mineralSetup = MapInformation.initMapInfo(game, bStructMap, resourceZone, 
-				bBasePos, mineralSetup);
+		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, resourceZone, mineralSetup);
 		System.out.println("Mineral setup: " + mineralSetup);
-		
 		
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
@@ -222,13 +221,10 @@ public class BonjwAI extends DefaultBWListener {
 		 * 
 		 * Iterative functions:
 		 * --buildWorkers()	>	build workers based on number of command centers
-		 * --refineryManager()	>	manage number of gas miners per refinery
-		 * --academyManager()	>	build one academy when conditions are met
-		 * --barracksManager()	>	build five barracks when conditions are met
-		 * --factoryManager()	>	build two factories when conditions are met
 		 * --buildingProduction()	>	build marines/medics when conditions are met
 		 */
-		BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
+		//BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
+		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, productionMode );
 		
 		// Army Manager:
 		/*
