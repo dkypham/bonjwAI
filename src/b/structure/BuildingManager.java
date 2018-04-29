@@ -70,9 +70,13 @@ public class BuildingManager {
 		// check if something needs to be built at this supply
 		if ( self.supplyUsed() == buildOrderSupply.get(0)*2 ) {
 			// issue build
-			buildStruct(game, self, bBasePos, mineralSetup, 
+			if ( buildStruct(game, self, bBasePos, mineralSetup, 
 					bArmyMap, bStructMap, bResources, 
-					buildOrderStruct.get(0) );
+					buildOrderStruct.get(0) ) ) {
+				buildOrderStruct.remove(0);
+				buildOrderSupply.remove(0);
+				System.out.println(buildOrderStruct.get(0));
+			}
 		}
 		// if not, issue build of ONE unit
 		else {
@@ -84,7 +88,7 @@ public class BuildingManager {
 		}
 	}
 	
-	public static void buildStruct( Game game, Player self, 
+	public static boolean buildStruct( Game game, Player self, 
 			ArrayList<BaseLocation> bBasePos,
 			int mineralSetup,
 			Multimap<UnitType, Integer> bArmyMap,
@@ -92,21 +96,14 @@ public class BuildingManager {
 			ArrayList<Integer> bResources,
 			UnitType struct ) {
 		// if building type is SD
-		if ( struct == SD && checkIfBeingBuilt(game, SD) ) {
+		if ( struct == SD ) {
 			TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
-			// issue build at TilePosition found
-			//System.out.println("tryna build SD");
-			game.drawBoxMap(pos.toPosition().getX(),
-					pos.toPosition().getY(),
-					pos.toPosition().getX() + 10,
-					pos.toPosition().getY() + 10,
-					Color.Green);
-			WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD);
+			return WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD);
 		}
-
-	}
-	
-	public static boolean checkIfBeingBuilt(Game game, UnitType struct) {
+		if ( struct == Barracks ) {
+			TilePosition pos = BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup);
+			return WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks);
+		}
 		
 		return false;
 	}

@@ -92,7 +92,7 @@ public class WorkerManager {
 		}	
 	}
 	
-	public static void issueBuildAtLocation(Game game,
+	public static boolean issueBuildAtLocation(Game game,
 			Multimap<UnitType, Integer> bArmyMap,
 			TilePosition pos,
 			UnitType building ) {
@@ -111,8 +111,8 @@ public class WorkerManager {
 		//if ( !game.canBuildHere(pos,  SD, SCV, false)) {
 		//	System.out.println("Cannot build here");
 		//}
-		SCV.build(building,pos);
-		System.out.println("issued build order");
+		return SCV.build(building,pos);
+		//System.out.println("issued build order");
 	}
 	
 	public static int getMineralMinerCount(Game game, Multimap<UnitType, Integer> armyMap) {
