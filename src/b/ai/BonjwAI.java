@@ -224,7 +224,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * --buildingProduction()	>	build marines/medics when conditions are met
 		 */
 		//BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
-		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, productionMode );
+		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, mineralSetup );
 		
 		// Army Manager:
 		/*

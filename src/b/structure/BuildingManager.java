@@ -92,7 +92,7 @@ public class BuildingManager {
 			ArrayList<Integer> bResources,
 			UnitType struct ) {
 		// if building type is SD
-		if ( struct == SD ) {
+		if ( struct == SD && checkIfBeingBuilt(game, SD) ) {
 			TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
 			// issue build at TilePosition found
 			//System.out.println("tryna build SD");
@@ -106,6 +106,10 @@ public class BuildingManager {
 
 	}
 	
+	public static boolean checkIfBeingBuilt(Game game, UnitType struct) {
+		
+		return false;
+	}
 	
 	public static void buildUnit( Game game, Player self, 			
 			Multimap<UnitType, Integer> bArmyMap,

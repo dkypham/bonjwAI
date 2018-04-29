@@ -132,7 +132,7 @@ public class BuildingPlacement {
 			pos = game.getBuildLocation(UnitType.Terran_Supply_Depot,pos, 1);		
 			if ( !game.canBuildHere(pos, UnitType.Terran_Supply_Depot)) {
 				System.out.println("Cannot build first supply depot here");
-				System.out.println( pos.getX() + " " + pos.getY() );
+				//System.out.println( pos.getX() + " " + pos.getY() );
 			}
 		}	
 		// minerals right of CC
@@ -168,6 +168,7 @@ public class BuildingPlacement {
 		if ( pos == null ) {
 			System.out.println("Null value with first supply depot position");
 		}
+		
 		return pos;
 	}
 	
