@@ -16,7 +16,7 @@ import bwapi.UnitType;
 
 public class WorkerManager {
 
-	static int MAX_SCV_GAS_MINERS = 1;
+	static int MAX_SCV_GAS_MINERS = 3;
 	static int SUPPLY_VALUE_SD = 16;
 	static int SUPPLY_VALUE_CC = 20;
 
@@ -71,10 +71,10 @@ public class WorkerManager {
 		return 0;
 	}
 	
-	public static void issueBuild(Game game, Player self, 
+	public static boolean issueBuild(Game game, Player self, 
 			Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap,
-			UnitType building) {
+			UnitType struct) {
 		//if ( bStructMap.containsEntry(building,-1) ) {
 		//	//System.out.println("" + building + "is already being built");
 		//	return;
@@ -82,14 +82,16 @@ public class WorkerManager {
 		
 		Unit SCV = 	game.getUnit(getFreeSCVID(game,bArmyMap));
 		SCV.stop();
-		TilePosition buildTile = BuildingPlacement.getBuildTile(game, SCV, building,
+		TilePosition buildTile = BuildingPlacement.getBuildTile(game, SCV, struct,
 				self.getStartLocation());
 		if (buildTile != null) {
-			SCV.build(building, buildTile);
-			//bStructMap.put(building, -1);
-			System.out.println("Issued order to build: " + building);
-			return;
-		}	
+			if ( SCV.build(struct, buildTile) ) {
+				//bStructMap.put(building, -1);
+				System.out.println("Issued order to build: " + struct);
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static boolean issueBuildAtLocation(Game game,

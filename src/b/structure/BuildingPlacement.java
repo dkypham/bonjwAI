@@ -222,9 +222,6 @@ public class BuildingPlacement {
 			//System.out.println("BuildingPlacement: barracks position at" + pos);
 		}
 		
-		if ( pos == null ) {
-			System.out.println("Null value with first barracks position");
-		}
 		return pos;
 	}
 	

@@ -98,14 +98,19 @@ public class BuildingManager {
 		// if building type is SD
 		if ( struct == SD ) {
 			TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
-			return WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD);
+			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD) ) {
+				return true;
+			}
 		}
 		if ( struct == Barracks ) {
 			TilePosition pos = BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup);
-			return WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks);
+			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks) ) {
+				return true;
+			}
 		}
 		
-		return false;
+		return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);
+		//return false;
 	}
 	
 	public static void buildUnit( Game game, Player self, 			
