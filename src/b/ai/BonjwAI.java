@@ -139,7 +139,7 @@ public class BonjwAI extends DefaultBWListener {
 			MapUnitID.addToIDMap(bArmyMap, u);
 			break;
 		case 2:
-			MapUnitID.addStructToIDMap(bStructMap, u);
+			MapUnitID.addStructToIDMap(bStructMap, u, buildOrderStruct, buildOrderSupply);
 			break;
 		default:
 			break;

@@ -3,7 +3,11 @@ package b.structure;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Multimap;
+
 import b.ai.BonjwAI;
+import b.economy.WorkerManager;
+import b.idmap.MapUnitID;
 import bwapi.Game;
 import bwapi.TilePosition;
 import bwapi.Unit;
@@ -11,6 +15,10 @@ import bwapi.UnitType;
 import bwta.BaseLocation;
 
 public class BuildingPlacement {
+	
+	static UnitType SD = UnitType.Terran_Supply_Depot;
+	static UnitType CC = UnitType.Terran_Command_Center;
+	static UnitType Barracks = UnitType.Terran_Barracks;
 	
 	private static BuildingPlacement buildingPlacement = new BuildingPlacement();
 	private Game game;
@@ -113,6 +121,22 @@ public class BuildingPlacement {
 	
 	public static TilePosition getBuildTileNew(Game game, Unit builder, UnitType buildingType) {
 		return builder.getTilePosition();
+	}
+	
+	public static TilePosition getBuildPositionSD(Game game, Multimap<UnitType, Integer> bArmyMap,
+			Multimap<UnitType, Integer> bStructMap,
+			ArrayList<BaseLocation> bBasePos, int mineralSetup) {
+		// if num SD == 0
+		// getBuildPositionFirstSD
+		if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, SD) == 0 ) {
+			return getBuildPositionFirstSD(game, bBasePos, mineralSetup);	
+		}
+		// else
+		// naive build
+		
+		Unit SCV = 	game.getUnit(WorkerManager.getFreeSCVID(game,bArmyMap));
+		
+		return getBuildTile(game, SCV, SD, bBasePos.get(0).getTilePosition() );
 	}
 	
 	// Building implementation for 1st supply depot

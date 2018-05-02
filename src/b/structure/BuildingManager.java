@@ -73,8 +73,9 @@ public class BuildingManager {
 			if ( buildStruct(game, self, bBasePos, mineralSetup, 
 					bArmyMap, bStructMap, bResources, 
 					buildOrderStruct.get(0) ) ) {
-				buildOrderStruct.remove(0);
-				buildOrderSupply.remove(0);
+				//buildOrderStruct.remove(0);
+				//buildOrderSupply.remove(0);
+				buildOrderSupply.set(0, -1);
 				System.out.println(buildOrderStruct.get(0));
 			}
 		}
@@ -97,7 +98,7 @@ public class BuildingManager {
 			UnitType struct ) {
 		// if building type is SD
 		if ( struct == SD ) {
-			TilePosition pos = BuildingPlacement.getBuildPositionFirstSD(game, bBasePos, mineralSetup);
+			TilePosition pos = BuildingPlacement.getBuildPositionSD(game, bArmyMap, bStructMap, bBasePos, mineralSetup);
 			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD) ) {
 				return true;
 			}
