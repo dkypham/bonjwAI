@@ -51,6 +51,8 @@ public class ScoutManager {
 				Unit SCV = game.getUnit(scvID);
 				if ( !SCV.isConstructing() && !SCV.isCarryingMinerals() 
 					&& !SCV.isGatheringGas() ) {
+					// add scout to bArmyMap
+					bArmyMap.put(UnitType.Protoss_Scout, SCV.getID() );
 					return scvID;
 				}
 			}

@@ -75,7 +75,7 @@ public class BuildingManager {
 					buildOrderStruct.get(0) ) ) {
 				//buildOrderStruct.remove(0);
 				//buildOrderSupply.remove(0);
-				buildOrderSupply.set(0, -1);
+				buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
 				System.out.println(buildOrderStruct.get(0));
 			}
 		}
@@ -97,13 +97,13 @@ public class BuildingManager {
 			ArrayList<Integer> bResources,
 			UnitType struct ) {
 		// if building type is SD
-		if ( struct == SD ) {
+		if ( struct == SD && checkIfEnoughResources(bResources, struct) ) {
 			TilePosition pos = BuildingPlacement.getBuildPositionSD(game, bArmyMap, bStructMap, bBasePos, mineralSetup);
 			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD) ) {
 				return true;
 			}
 		}
-		if ( struct == Barracks ) {
+		if ( struct == Barracks && checkIfEnoughResources(bResources, struct) ) {
 			TilePosition pos = BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup);
 			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks) ) {
 				return true;
@@ -112,6 +112,21 @@ public class BuildingManager {
 		
 		return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);
 		//return false;
+	}
+	
+	public static boolean checkIfEnoughResources( ArrayList<Integer> bResources, 
+			UnitType struct ) {
+		// check minerals
+		if ( bResources.get(0) - bResources.get(2) < struct.mineralPrice() ) {
+			return false;
+		}
+		if ( bResources.get(1) - bResources.get(3) < struct.gasPrice() ) {
+			return false;
+		}
+		
+		// check gas
+		
+		return true;
 	}
 	
 	public static void buildUnit( Game game, Player self, 			

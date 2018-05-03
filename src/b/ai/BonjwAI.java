@@ -72,6 +72,7 @@ public class BonjwAI extends DefaultBWListener {
 	private List<UnitType> buildOrderStruct = new ArrayList<UnitType>();
 	private List<Integer> buildOrderSupply = new ArrayList<Integer>();
 	
+	
 	// building stuff
 	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
 	

@@ -64,11 +64,20 @@ public class WorkerManager {
 		for ( Integer SCVID : arraySCV ) {
 			Unit SCV = game.getUnit(SCVID);		
 			if (SCV.isConstructing() == false && SCV.isCarryingMinerals() == false && 
-					SCV.isCarryingGas() == false ) {
+					SCV.isCarryingGas() == false
+					&& checkIfScoutSCV( SCVID, bArmyMap ) == false
+					) {
 				return SCVID;
 			}
 		}
 		return 0;
+	}
+	
+	public static boolean checkIfScoutSCV(int SCVID, Multimap<UnitType, Integer> bArmyMap) {
+		if ( bArmyMap.containsKey(UnitType.Protoss_Scout) ) {
+			return bArmyMap.containsEntry(UnitType.Protoss_Scout, SCVID);
+		}
+		return false;
 	}
 	
 	public static boolean issueBuild(Game game, Player self, 

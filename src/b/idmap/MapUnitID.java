@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.common.collect.Multimap;
 
+import b.economy.WorkerManager;
 import bwapi.Game;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -39,7 +40,10 @@ public class MapUnitID {
 			Multimap<UnitType, Integer> unitIDMap, Unit unit) {
 		unitIDMap.remove(unit.getType(), Integer.valueOf(unit.getID()));
 		
-		// TODO: handle case if unit that dies was scout
+		// handle case if unit that dies was scout
+		if ( WorkerManager.checkIfScoutSCV(unit.getID(), unitIDMap) ) {
+			unitIDMap.remove( UnitType.Protoss_Scout, Integer.valueOf(unit.getID()));	
+		}
 	}
 
 	// This function takes an int unitID and returns a unit associated with that ID
