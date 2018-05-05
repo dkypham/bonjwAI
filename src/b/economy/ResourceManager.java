@@ -61,6 +61,11 @@ public class ResourceManager {
 		bResources.set(5, bResources.get(4) + (T_SUPPLY_VALUE * numSupplyBeingBuilt) );
 	
 	}
+	
+	public static void addBuildingCost( ArrayList<Integer> bResources, UnitType struct ) {
+		bResources.set( 1 , bResources.get(1) + struct.mineralPrice() );
+		bResources.set( 3 , bResources.get(3) + struct.gasPrice() );
+	}
 
 	public static int getReservedMinerals(Game game, Multimap<UnitType, Integer> armyMap) {
 		int reservedMineral = 0;

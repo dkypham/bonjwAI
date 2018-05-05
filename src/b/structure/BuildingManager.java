@@ -8,6 +8,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import b.ai.BonjwAIGame;
+import b.economy.ResourceManager;
 import b.economy.SupplyManager;
 import b.economy.WorkerManager;
 import b.idmap.MapUnitID;
@@ -98,20 +99,34 @@ public class BuildingManager {
 			UnitType struct ) {
 		// if building type is SD
 		if ( struct == SD && checkIfEnoughResources(bResources, struct) ) {
-			TilePosition pos = BuildingPlacement.getBuildPositionSD(game, bArmyMap, bStructMap, bBasePos, mineralSetup);
-			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD) ) {
-				return true;
+			// first SD
+			if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, struct) == 0 ) {
+				TilePosition pos = BuildingPlacement.getBuildPositionSD(game, bArmyMap, bStructMap, bBasePos, mineralSetup);
+				if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD) ) {
+					// update bResources
+					ResourceManager.addBuildingCost( bResources, struct );
+					return true;
+				}
+			}
+			else {
+				ResourceManager.addBuildingCost( bResources, struct );
+				return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);				
 			}
 		}
 		if ( struct == Barracks && checkIfEnoughResources(bResources, struct) ) {
 			TilePosition pos = BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup);
 			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks) ) {
+				ResourceManager.addBuildingCost( bResources, struct );
 				return true;
 			}
 		}
 		
-		return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);
-		//return false;
+		// general case
+		if ( checkIfEnoughResources(bResources, struct) ) {
+			ResourceManager.addBuildingCost( bResources, struct );
+			return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);
+		}
+		return false;
 	}
 	
 	public static boolean checkIfEnoughResources( ArrayList<Integer> bResources, 
