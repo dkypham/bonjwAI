@@ -109,6 +109,7 @@ public class BuildingManager {
 				}
 			}
 			else {
+				System.out.println("trying to build 2nd depot");
 				ResourceManager.addBuildingCost( bResources, struct );
 				return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);				
 			}

@@ -126,6 +126,10 @@ public class BonjwAI extends DefaultBWListener {
 	public void onUnitMorph(Unit u) {
 		if ( u.getType() == UnitType.Terran_Refinery ) {
 			MapUnitID.addToIDMap(bStructMap, u);
+			if ( buildOrderStruct.get(0) == UnitType.Terran_Refinery ) {
+				buildOrderStruct.remove(0);
+				buildOrderSupply.remove(0);
+			}
 		}
 		if ( u.getType() == UnitType.Resource_Vespene_Geyser ) {
 			MapUnitID.removeFromIDMap(bStructMap, u);
@@ -253,12 +257,13 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 
-		// Implement without persistent data
+		// Implement without persistent data	
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources, buildOrderStruct, buildOrderSupply, drawStructPos, drawStructLabel);
 	
 		//testing
-
+		//System.out.println(buildOrderStruct.get(0));
+		//System.out.println(buildOrderSupply.get(0));
 	}
 
 	public void onEnd() {

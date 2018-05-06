@@ -7,6 +7,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import b.ai.BonjwAI;
+import b.idmap.MapUnitID;
 import b.structure.BuildingPlacement;
 import bwapi.Game;
 import bwapi.Player;
@@ -22,11 +23,12 @@ public class WorkerManager {
 
 	static UnitType SD = UnitType.Terran_Supply_Depot;
 	static UnitType CC = UnitType.Terran_Command_Center;
+	static UnitType GasMiner = UnitType.Powerup_Terran_Gas_Tank_Type_1;
 	
 	public static void updateWorkerManager(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap) {
 		WorkerManager.makeIdleWorkersMine(game, bArmyMap);
-		if ( WorkerManager.getGasMinerCount(game, bArmyMap) < 1 ) {
+		if ( WorkerManager.getGasMinerCount(game, bArmyMap) < MAX_SCV_GAS_MINERS ) { // for one bas
 			WorkerManager.makeWorkersMineGas(game, self, bArmyMap, bStructMap);
 		}
 	}
@@ -37,6 +39,7 @@ public class WorkerManager {
 	}
 	
 	// WORKER IDLE METHOD
+
 	public static void makeIdleWorkersMine(Game game, Multimap<UnitType, Integer> bArmyMap) {
 		List<Integer> arraySCVID = (List<Integer>) bArmyMap.get(UnitType.Terran_SCV);
 		for ( Integer SCVID : arraySCVID) {
@@ -66,6 +69,7 @@ public class WorkerManager {
 			if (SCV.isConstructing() == false && SCV.isCarryingMinerals() == false && 
 					SCV.isCarryingGas() == false
 					&& checkIfScoutSCV( SCVID, bArmyMap ) == false
+					&& checkIfGasSCV( SCVID, bArmyMap) == false
 					) {
 				return SCVID;
 			}
@@ -76,6 +80,13 @@ public class WorkerManager {
 	public static boolean checkIfScoutSCV(int SCVID, Multimap<UnitType, Integer> bArmyMap) {
 		if ( bArmyMap.containsKey(UnitType.Protoss_Scout) ) {
 			return bArmyMap.containsEntry(UnitType.Protoss_Scout, SCVID);
+		}
+		return false;
+	}
+	
+	public static boolean checkIfGasSCV(int SCVID, Multimap<UnitType, Integer> bArmyMap) {
+		if ( bArmyMap.containsKey(GasMiner) ) {
+			return bArmyMap.containsEntry(GasMiner, SCVID);
 		}
 		return false;
 	}
@@ -140,6 +151,7 @@ public class WorkerManager {
 	}
 
 	public static int getGasMinerCount(Game game, Multimap<UnitType, Integer> armyMap) {
+		/*
 		int gasMinerCount = 0;
 		List<Integer> arraySCV = (List<Integer>) armyMap.get(UnitType.Terran_SCV);
 		for ( Integer scvID : arraySCV ) {
@@ -150,6 +162,8 @@ public class WorkerManager {
 			
 		}	
 		return gasMinerCount;
+		*/
+		return armyMap.get(GasMiner).size();
 	}
 	
 	public static boolean checkIfRefineryExists(Player self) {
@@ -162,6 +176,7 @@ public class WorkerManager {
 	}
 
 	// MAKE 3 WORKERS MINE GAS
+	/*
 	public static void makeWorkersMineGas(Game game, Player self, Multimap<UnitType, Integer> armyMap,
 			 Multimap<UnitType, Integer> structMap) {
 		int gasMinerCount = getGasMinerCount(game, armyMap);
@@ -178,6 +193,30 @@ public class WorkerManager {
 					return;
 				}
 				
+			}
+		}
+	}
+	*/
+	public static void makeWorkersMineGas(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
+			 Multimap<UnitType, Integer> structMap) {
+		int gasMinerCount = getGasMinerCount(game, bArmyMap);
+		System.out.println(gasMinerCount);
+		if ( gasMinerCount < MAX_SCV_GAS_MINERS && checkIfRefineryExists(self) ) {
+			List<Integer> arraySCV = (List<Integer>) bArmyMap.get(UnitType.Terran_SCV);
+			for ( Integer SCVID : arraySCV ) {
+				if ( checkIfScoutSCV( SCVID, bArmyMap ) == false
+					 && checkIfGasSCV( SCVID, bArmyMap) == false ) {
+					Unit scv = game.getUnit(SCVID);		
+					if ( !scv.isConstructing() && !scv.isCarryingMinerals() 
+							&& !scv.isGatheringGas()) {
+						List<Integer> arrayRefinery = (List<Integer>) structMap.get(UnitType.Terran_Refinery);
+						Unit refinery = game.getUnit(arrayRefinery.get(0));
+						scv.gather(refinery);
+						MapUnitID.addToIDMapSpecial(bArmyMap, scv, GasMiner);
+						//gasMinerCount++;
+						return;
+					}
+				}
 			}
 		}
 	}

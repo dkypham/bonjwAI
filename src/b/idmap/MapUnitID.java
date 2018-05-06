@@ -20,6 +20,13 @@ public class MapUnitID {
 	}
 	
 	// This function adds a <Unit,Integer> value into unitIDMap
+	public static void addToIDMapSpecial(Multimap<UnitType, Integer> unitIDMap, 
+			Unit unit, UnitType specialUnitType) {
+		unitIDMap.put(specialUnitType, Integer.valueOf(unit.getID()));
+
+	}
+	
+	// This function adds a <Unit,Integer> value into unitIDMap
 	public static void addStructToIDMap(Multimap<UnitType, Integer> unitIDMap, 
 			Unit unit, List<UnitType> buildOrderStruct, List<Integer> buildOrderSupply) {
 		if ( unitIDMap.containsEntry(unit, -1) ) {
