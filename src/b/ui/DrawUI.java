@@ -37,12 +37,20 @@ public class DrawUI {
 		drawNextBuilding(game, buildOrderStruct, buildOrderSupply);
 		
 		game.drawTextScreen(10, 120, "Number of eBuildings seen: " + eBasePos.size());
+		
+		int offset = 10;
+		for( int ID : bArmyMap.get(UnitType.Powerup_Terran_Gas_Tank_Type_1) ) {
+			game.drawTextScreen(10, 120 + offset, "Gas Miner: " + Integer.toString(ID) );
+			offset += 10;
+		}		
+		
 		drawUnitCounts(game, self, bArmyMap);
 		drawUnitIDs(game, bArmyMap, bStructMap);
 		
 		drawInfo(game, self, bArmyMap, bStructMap);
 	
 		drawBuildingPlan(game, drawStructPos, drawStructLabel);
+		drawUnitID(game, bArmyMap );
 	}
 	
 	public static void drawBuildingPlan( Game game,
@@ -100,4 +108,10 @@ public class DrawUI {
 		}
 	}
 	
+	public static void drawUnitID(Game game, Multimap<UnitType, Integer> bArmyMap ) {
+		for (Integer uID : bArmyMap.values() ) {
+			Unit myUnit = game.getUnit(uID);
+			game.drawTextMap(myUnit.getPosition().getX(), myUnit.getPosition().getY()+10, Integer.toString(myUnit.getID()) );
+		}
+	}
 }
