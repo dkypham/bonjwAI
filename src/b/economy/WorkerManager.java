@@ -200,10 +200,10 @@ public class WorkerManager {
 	public static void makeWorkersMineGas(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
 			 Multimap<UnitType, Integer> structMap) {
 		int gasMinerCount = getGasMinerCount(game, bArmyMap);
-		System.out.println(gasMinerCount);
 		if ( gasMinerCount < MAX_SCV_GAS_MINERS && checkIfRefineryExists(self) ) {
 			List<Integer> arraySCV = (List<Integer>) bArmyMap.get(UnitType.Terran_SCV);
 			for ( Integer SCVID : arraySCV ) {
+				// check if SCV is a scout or gas miner
 				if ( checkIfScoutSCV( SCVID, bArmyMap ) == false
 					 && checkIfGasSCV( SCVID, bArmyMap) == false ) {
 					Unit scv = game.getUnit(SCVID);		
@@ -211,9 +211,10 @@ public class WorkerManager {
 							&& !scv.isGatheringGas()) {
 						List<Integer> arrayRefinery = (List<Integer>) structMap.get(UnitType.Terran_Refinery);
 						Unit refinery = game.getUnit(arrayRefinery.get(0));
-						scv.gather(refinery);
-						MapUnitID.addToIDMapSpecial(bArmyMap, scv, GasMiner);
-						//gasMinerCount++;
+						if ( scv.canGather(refinery) ) {
+							scv.gather(refinery);
+							MapUnitID.addToIDMapSpecial(bArmyMap, scv, GasMiner);
+						}
 						return;
 					}
 				}
