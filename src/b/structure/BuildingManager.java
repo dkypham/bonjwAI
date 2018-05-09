@@ -82,6 +82,10 @@ public class BuildingManager {
 		}
 		// if not, issue build of ONE unit
 		else {
+			if ( buildOrderSupply.get(0) < 0 ) {
+				// do not build unit if building is queued
+				return;
+			}
 			// issue build
 			if ( productionMode == 0 ) {
 				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
@@ -132,11 +136,12 @@ public class BuildingManager {
 	
 	public static boolean checkIfEnoughResources( ArrayList<Integer> bResources, 
 			UnitType struct ) {
-		// check minerals
-		if ( bResources.get(0) - bResources.get(2) < struct.mineralPrice() ) {
+		// if actual minerals - reserved minerals < mineral price
+		if ( bResources.get(0) - bResources.get(1) < struct.mineralPrice() ) {
 			return false;
 		}
-		if ( bResources.get(1) - bResources.get(3) < struct.gasPrice() ) {
+		// if actual gas - reserved gas < gas price
+		if ( bResources.get(2) - bResources.get(3) < struct.gasPrice() ) {
 			return false;
 		}
 		
