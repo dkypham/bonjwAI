@@ -126,6 +126,16 @@ public class BuildingManager {
 			}
 		}
 		
+		// special case: addon
+		if ( struct == UnitType.Terran_Machine_Shop && checkIfEnoughResources(bResources, struct) ) {
+			for ( Integer factoryID : bStructMap.get(UnitType.Terran_Factory ) ) {
+				Unit factory = game.getUnit(factoryID);
+				if ( factory.canBuildAddon() ) {
+					return factory.buildAddon( struct );
+				}
+			}
+		}
+		
 		// general case
 		if ( checkIfEnoughResources(bResources, struct) ) {
 			ResourceManager.addBuildingCost( bResources, struct );
@@ -377,6 +387,14 @@ public class BuildingManager {
 				struct.train(UnitType.Terran_Marine);
 			}
 		}
+	}
+	
+	public static boolean isAddOn( UnitType struct ) {
+		if ( struct == UnitType.Terran_Machine_Shop || struct == UnitType.Terran_Comsat_Station
+				|| struct == UnitType.Terran_Control_Tower ) {
+			return true;
+		}
+		return false;
 	}
 	
 }

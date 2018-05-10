@@ -22,6 +22,9 @@ public class BuildingOrder {
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 15);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 16);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, MachineShop, 20);
+		
+		// so game doesn't crash when build order is finished
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, UnitType.Special_Terran_Flag_Beacon, 200);
 	}
 	
 	public static void addToBuildOrder(List<UnitType> buildOrderStruct,
