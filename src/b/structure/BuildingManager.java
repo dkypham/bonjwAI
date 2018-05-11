@@ -73,7 +73,8 @@ public class BuildingManager {
 			// issue build
 			if ( buildStruct(game, self, bBasePos, mineralSetup, 
 					bArmyMap, bStructMap, bResources, 
-					buildOrderStruct.get(0) ) ) {
+					buildOrderStruct.get(0), 
+					productionMode ) ) {
 				//buildOrderStruct.remove(0);
 				//buildOrderSupply.remove(0);
 				buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
@@ -90,6 +91,10 @@ public class BuildingManager {
 			if ( productionMode == 0 ) {
 				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
 			}
+			else if ( productionMode == 1 ) {
+				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
+					
+			}
 			
 		}
 	}
@@ -100,7 +105,8 @@ public class BuildingManager {
 			Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap,
 			ArrayList<Integer> bResources,
-			UnitType struct ) {
+			UnitType struct,
+			int productionMode ) {
 		// if building type is SD
 		if ( struct == SD && checkIfEnoughResources(bResources, struct) ) {
 			// first SD
@@ -122,6 +128,9 @@ public class BuildingManager {
 			TilePosition pos = BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup);
 			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks) ) {
 				ResourceManager.addBuildingCost( bResources, struct );
+				if ( productionMode == 0 ) {
+					productionMode = 1;
+				}
 				return true;
 			}
 		}
@@ -163,12 +172,22 @@ public class BuildingManager {
 	public static void buildUnit( Game game, Player self, 			
 			Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap,
-			int buildingMode, ArrayList<Integer> bResources ) {
-		if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources) ) {
-			return;
+			int productionMode, ArrayList<Integer> bResources ) {
+		if ( productionMode == 0 ) {
+			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources) ) {
+				return;
+			}	
+		}
+		if ( productionMode == 0 ) {
+			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources) ) {
+				return;
+			}
+			if ( buildMarines(game, self, bArmyMap, bStructMap, bResources) ) {
+				
+			}
 		}
 	}
-	
+		
 	// COMMAND CENTER FUNCTIONS
 	
 	// method to find build locations
@@ -218,6 +237,25 @@ public class BuildingManager {
 			if (CC.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && 
 					SCVcount < (16 * bStructMap.get(UnitType.Terran_Command_Center).size() ) ) {
 				CC.train(UnitType.Terran_SCV);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	// function to build marines
+	public static boolean buildMarines(Game game, Player self, 
+			Multimap<UnitType, Integer> bArmyMap, 
+			Multimap<UnitType, Integer> bStructMap,
+			ArrayList<Integer> bResources ) {
+		int marineCount = bArmyMap.get(UnitType.Terran_Marine).size();
+		boolean needSupply = SupplyManager.needSupplyCheck(self, bResources.get(5));
+		int reservedMinerals = bResources.get(1);	
+		for ( Integer barracksID : bStructMap.get(UnitType.Terran_Barracks) ) {
+			Unit barracks = game.getUnit(barracksID);
+			if (barracks.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && 
+					marineCount < (16 * bStructMap.get(UnitType.Terran_Barracks).size() ) ) {
+				barracks.train(UnitType.Terran_Marine);
 				return true;
 			}
 		}
