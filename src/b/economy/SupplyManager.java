@@ -50,7 +50,7 @@ public class SupplyManager {
 				needSupply = true;
 			} 
 		}
-		
+		/*
 		// need supply at 15/18
 		else if (self.supplyTotal() < 36 ) {
 			if (effectiveSupply - self.supplyUsed() < 6) {
@@ -79,6 +79,7 @@ public class SupplyManager {
 		else {
 			needSupply = false;
 		}
+		*/
 
 		return needSupply;
 	}
