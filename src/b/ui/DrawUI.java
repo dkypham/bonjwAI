@@ -23,7 +23,8 @@ public class DrawUI {
 			List<UnitType> buildOrderStruct,
 			List<Integer> buildOrderSupply,
 			List<Position> drawStructPos,
-			List<String> drawStructLabel) {
+			List<String> drawStructLabel,
+			int productionMode ) {
 		game.drawTextScreen(10, 10, "Playing as " + "bonjwAI" + " - " + self.getRace());
 		game.drawTextScreen(10, 20, "APM: " + game.getAPM() );
 		
@@ -43,6 +44,8 @@ public class DrawUI {
 			game.drawTextScreen(10, 120 + offset, "Gas Miner: " + Integer.toString(ID) );
 			offset += 10;
 		}		
+		
+		game.drawTextScreen(10,  160, "Production Mode: " + productionMode );
 		
 		drawUnitCounts(game, self, bArmyMap);
 		drawUnitIDs(game, bArmyMap, bStructMap);
@@ -114,4 +117,5 @@ public class DrawUI {
 			game.drawTextMap(myUnit.getPosition().getX(), myUnit.getPosition().getY()+10, Integer.toString(myUnit.getID()) );
 		}
 	}
+	
 }

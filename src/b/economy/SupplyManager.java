@@ -50,37 +50,21 @@ public class SupplyManager {
 				needSupply = true;
 			} 
 		}
-		/*
-		// need supply at 15/18
-		else if (self.supplyTotal() < 36 ) {
-			if (effectiveSupply - self.supplyUsed() < 6) {
-				needSupply = true;
-			} 
+		if (self.supplyTotal() <= 60) {
+			return false; 
 		}
-		
-		// need supply at 22/26
-		else if (self.supplyTotal() < 52 ) {
-			if (effectiveSupply - self.supplyUsed() < 8) {
-				needSupply = true;
-			}
-		} 
-		
 		// need supply at supply - 6
 		else if (self.supplyTotal() < 100) {
 			if (effectiveSupply - self.supplyUsed() < 12) {
 				needSupply = true;
 			}
 		}
-		
 		else if (effectiveSupply - self.supplyUsed() < 20 ) {
 			needSupply = true;
-		}
-			
+		}	
 		else {
 			needSupply = false;
 		}
-		*/
-
 		return needSupply;
 	}
 }

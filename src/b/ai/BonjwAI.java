@@ -230,6 +230,7 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		//BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
 		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, mineralSetup );
+		productionMode = BuildingManager.updateProductionMode(game, bArmyMap, bArmyMap, productionMode);
 		
 		// Army Manager:
 		/*
@@ -259,11 +260,12 @@ public class BonjwAI extends DefaultBWListener {
 
 		// Implement without persistent data	
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources, buildOrderStruct, buildOrderSupply, drawStructPos, drawStructLabel);
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources, buildOrderStruct, buildOrderSupply, drawStructPos, drawStructLabel, productionMode);
 	
 		//testing
 		//System.out.println(buildOrderStruct.get(0));
 		//System.out.println(buildOrderSupply.get(0));
+
 	}
 
 	public void onEnd() {

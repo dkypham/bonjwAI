@@ -78,4 +78,14 @@ public class MapUnitID {
 		return armyMap.get(armyUnit).size();
 	}
 	
+	public static Unit getStruct(Game game, Multimap<UnitType, Integer> bStructMap, UnitType struct) {
+		for ( Integer structID : bStructMap.get( struct ) ) {
+			Unit structUnit = getUnit( game, structID);
+			if ( structUnit.isCompleted() ) {
+				return structUnit;
+			}
+		}
+		return null;
+	}
+	
 }

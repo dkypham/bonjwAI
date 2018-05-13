@@ -3,6 +3,7 @@ package b.structure;
 import java.util.ArrayList;
 import java.util.List;
 
+import bwapi.TechType;
 import bwapi.UnitType;
 
 public class BuildingOrder {
@@ -12,6 +13,7 @@ public class BuildingOrder {
 	static UnitType Refinery = UnitType.Terran_Refinery;
 	static UnitType Factory = UnitType.Terran_Factory;
 	static UnitType MachineShop = UnitType.Terran_Machine_Shop;
+	static UnitType CC = UnitType.Terran_Command_Center;
 	
 	public static void initializeBuildOrder(List<UnitType> buildOrderStruct,
 			List<Integer> buildOrderSupply ) {
@@ -22,6 +24,12 @@ public class BuildingOrder {
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 15);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 16);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, MachineShop, 20);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, UnitType.Terran_Siege_Tank_Tank_Mode, 22);
+		//addToBuildOrder( buildOrderStruct, buildOrderSupply, TechType.Tank_Siege_Mode, 22);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 23);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, CC, 28);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 28);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 32);
 		
 		// so game doesn't crash when build order is finished
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, UnitType.Special_Terran_Flag_Beacon, 200);
@@ -33,5 +41,22 @@ public class BuildingOrder {
 			Integer supply) {
 		buildOrderStruct.add(uT);
 		buildOrderSupply.add(supply);
+	}
+	
+	public static void initializeTechOrder(List<TechType> techOrderTech,
+			List<Integer> techOrderSupply ) {
+		// default implementation: 1 Fact FE
+		addToTechOrder( techOrderTech, techOrderSupply, TechType.Tank_Siege_Mode, 22);
+
+		// so game doesn't crash when build order is finished
+		addToTechOrder( techOrderTech, techOrderSupply, TechType.None, 200);
+	}
+	 
+	public static void addToTechOrder(List<TechType> techOrderTech,
+			List<Integer> techOrderSupply,
+			TechType tT,
+			Integer supply) {
+		techOrderTech.add(tT);
+		techOrderSupply.add(supply);
 	}
 }

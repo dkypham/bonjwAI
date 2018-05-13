@@ -16,6 +16,7 @@ import bwapi.Color;
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.Position;
+import bwapi.TechType;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -95,6 +96,20 @@ public class BuildingManager {
 				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
 					
 			}
+			else if ( productionMode == 2 ) {
+				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
+				
+			}
+			/*
+			else if ( productionMode == 2 ) {
+				if ( !self.hasResearched(TechType.Tank_Siege_Mode) ) {
+					Unit machineShop = MapUnitID.getStruct(game, bStructMap, UnitType.Terran_Machine_Shop);
+					if ( machineShop != null ) {
+						machineShop.research( TechType.Tank_Siege_Mode);
+					}
+				}
+			}
+			*/
 			
 		}
 	}
@@ -128,9 +143,7 @@ public class BuildingManager {
 			TilePosition pos = BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup);
 			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks) ) {
 				ResourceManager.addBuildingCost( bResources, struct );
-				if ( productionMode == 0 ) {
-					productionMode = 1;
-				}
+
 				return true;
 			}
 		}
@@ -178,14 +191,22 @@ public class BuildingManager {
 				return;
 			}	
 		}
-		if ( productionMode == 0 ) {
+		if ( productionMode == 1 ) {
 			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources) ) {
 				return;
 			}
 			if ( buildMarines(game, self, bArmyMap, bStructMap, bResources) ) {
-				
+				return;
 			}
 		}
+		if ( productionMode == 2 ) {
+			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources) ) {
+				return;
+			}
+			if ( buildMarines(game, self, bArmyMap, bStructMap, bResources) ) {
+				return;
+			}
+		} 
 	}
 		
 	// COMMAND CENTER FUNCTIONS
@@ -233,10 +254,10 @@ public class BuildingManager {
 		boolean needSupply = SupplyManager.needSupplyCheck(self, bResources.get(5));
 		int reservedMinerals = bResources.get(1);	
 		for ( Integer CCID : bStructMap.get(UnitType.Terran_Command_Center) ) {
-			Unit CC = game.getUnit(CCID);
-			if (CC.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && 
-					SCVcount < (16 * bStructMap.get(UnitType.Terran_Command_Center).size() ) ) {
-				CC.train(UnitType.Terran_SCV);
+			Unit CCUnit = game.getUnit(CCID);
+			if (CCUnit.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && 
+					SCVcount < (16 * MapUnitID.getStructCount(game, bArmyMap, bStructMap, CC)) ) {
+				CCUnit.train(UnitType.Terran_SCV);
 				return true;
 			}
 		}
@@ -254,7 +275,7 @@ public class BuildingManager {
 		for ( Integer barracksID : bStructMap.get(UnitType.Terran_Barracks) ) {
 			Unit barracks = game.getUnit(barracksID);
 			if (barracks.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && 
-					marineCount < (16 * bStructMap.get(UnitType.Terran_Barracks).size() ) ) {
+					marineCount < (16 * MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks) ) ) {
 				barracks.train(UnitType.Terran_Marine);
 				return true;
 			}
@@ -433,6 +454,19 @@ public class BuildingManager {
 			return true;
 		}
 		return false;
+	}
+
+	public static int updateProductionMode( Game game,
+			Multimap<UnitType, Integer> bArmyMap,
+			Multimap<UnitType, Integer> bStructMap,
+			int productionMode ) {
+		if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks) >= 1) {
+			productionMode = 1;
+		}
+		if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, Factory) >= 1) {
+			productionMode = 2;
+		}
+		return productionMode;
 	}
 	
 }
