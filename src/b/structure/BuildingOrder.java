@@ -24,7 +24,7 @@ public class BuildingOrder {
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 15);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 16);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, MachineShop, 20);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, UnitType.Terran_Siege_Tank_Tank_Mode, 22);
+		//addToBuildOrder( buildOrderStruct, buildOrderSupply, UnitType.Terran_Siege_Tank_Tank_Mode, 22);
 		//addToBuildOrder( buildOrderStruct, buildOrderSupply, TechType.Tank_Siege_Mode, 22);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 23);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, CC, 28);
@@ -43,20 +43,4 @@ public class BuildingOrder {
 		buildOrderSupply.add(supply);
 	}
 	
-	public static void initializeTechOrder(List<TechType> techOrderTech,
-			List<Integer> techOrderSupply ) {
-		// default implementation: 1 Fact FE
-		addToTechOrder( techOrderTech, techOrderSupply, TechType.Tank_Siege_Mode, 22);
-
-		// so game doesn't crash when build order is finished
-		addToTechOrder( techOrderTech, techOrderSupply, TechType.None, 200);
-	}
-	 
-	public static void addToTechOrder(List<TechType> techOrderTech,
-			List<Integer> techOrderSupply,
-			TechType tT,
-			Integer supply) {
-		techOrderTech.add(tT);
-		techOrderSupply.add(supply);
-	}
 }

@@ -7,6 +7,7 @@ import com.google.common.collect.Multimap;
 import b.structure.BuildingManager;
 import bwapi.Game;
 import bwapi.Player;
+import bwapi.TechType;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -79,4 +80,31 @@ public class ResourceManager {
 		return reservedMineral;
 	}
 	
+	public static boolean checkIfEnoughResources( ArrayList<Integer> bResources, 
+			UnitType struct ) {
+		// if actual minerals - reserved minerals < mineral price
+		if ( bResources.get(0) - bResources.get(1) < struct.mineralPrice() ) {
+			return false;
+		}
+		// if actual gas - reserved gas < gas price
+		if ( bResources.get(2) - bResources.get(3) < struct.gasPrice() ) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public static boolean checkIfEnoughResourcesTech( ArrayList<Integer> bResources, 
+			TechType tech ) {
+		// if actual minerals - reserved minerals < mineral price
+		if ( bResources.get(0) - bResources.get(1) < tech.mineralPrice() ) {
+			return false;
+		}
+		// if actual gas - reserved gas < gas price
+		if ( bResources.get(2) - bResources.get(3) < tech.gasPrice() ) {
+			return false;
+		}
+		
+		return true;
+	}
 }

@@ -68,6 +68,8 @@ public class BuildingManager {
 			int productionMode, ArrayList<Integer> bResources,
 			List<UnitType> buildOrderStruct,
 			List<Integer> buildOrderSupply,
+			List<TechType> techTreeTech,
+			List<Integer> techTreeSupply,
 			int mineralSetup) {
 		// check if something needs to be built at this supply
 		if ( self.supplyUsed() == buildOrderSupply.get(0)*2 ) {
@@ -79,9 +81,23 @@ public class BuildingManager {
 				//buildOrderStruct.remove(0);
 				//buildOrderSupply.remove(0);
 				buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
-				System.out.println(buildOrderStruct.get(0));
+				//System.out.println(buildOrderStruct.get(0));
 			}
 		}
+		
+		// check if tech needs to be built
+		else if ( self.supplyUsed() == techTreeSupply.get(0)*2 ) {
+			// issue build
+			if ( TechManager.buildTech(game, self,
+					bStructMap, 
+					bResources, 
+					techTreeTech.get(0) ) ) {
+				techTreeTech.remove(0);
+				techTreeSupply.remove(0);
+				return;
+			}
+		}
+		
 		// if not, issue build of ONE unit
 		else {
 			if ( buildOrderSupply.get(0) < 0 ) {
@@ -123,7 +139,7 @@ public class BuildingManager {
 			UnitType struct,
 			int productionMode ) {
 		// if building type is SD
-		if ( struct == SD && checkIfEnoughResources(bResources, struct) ) {
+		if ( struct == SD && ResourceManager.checkIfEnoughResources(bResources, struct) ) {
 			// first SD
 			if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, struct) == 0 ) {
 				TilePosition pos = BuildingPlacement.getBuildPositionSD(game, bArmyMap, bStructMap, bBasePos, mineralSetup);
@@ -139,7 +155,7 @@ public class BuildingManager {
 				return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);				
 			}
 		}
-		if ( struct == Barracks && checkIfEnoughResources(bResources, struct) ) {
+		if ( struct == Barracks && ResourceManager.checkIfEnoughResources(bResources, struct) ) {
 			TilePosition pos = BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup);
 			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks) ) {
 				ResourceManager.addBuildingCost( bResources, struct );
@@ -149,7 +165,7 @@ public class BuildingManager {
 		}
 		
 		// special case: addon
-		if ( struct == UnitType.Terran_Machine_Shop && checkIfEnoughResources(bResources, struct) ) {
+		if ( struct == UnitType.Terran_Machine_Shop && ResourceManager.checkIfEnoughResources(bResources, struct) ) {
 			for ( Integer factoryID : bStructMap.get(UnitType.Terran_Factory ) ) {
 				Unit factory = game.getUnit(factoryID);
 				if ( factory.canBuildAddon() ) {
@@ -159,27 +175,11 @@ public class BuildingManager {
 		}
 		
 		// general case
-		if ( checkIfEnoughResources(bResources, struct) ) {
+		if ( ResourceManager.checkIfEnoughResources(bResources, struct) ) {
 			ResourceManager.addBuildingCost( bResources, struct );
 			return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);
 		}
 		return false;
-	}
-	
-	public static boolean checkIfEnoughResources( ArrayList<Integer> bResources, 
-			UnitType struct ) {
-		// if actual minerals - reserved minerals < mineral price
-		if ( bResources.get(0) - bResources.get(1) < struct.mineralPrice() ) {
-			return false;
-		}
-		// if actual gas - reserved gas < gas price
-		if ( bResources.get(2) - bResources.get(3) < struct.gasPrice() ) {
-			return false;
-		}
-		
-		// check gas
-		
-		return true;
 	}
 	
 	public static void buildUnit( Game game, Player self, 			

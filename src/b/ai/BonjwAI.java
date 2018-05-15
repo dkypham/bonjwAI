@@ -21,6 +21,7 @@ import b.map.ScoutManager;
 import b.structure.BuildingManager;
 import b.structure.BuildingOrder;
 import b.structure.BuildingPlacement;
+import b.structure.TechManager;
 import b.ui.DrawUI;
 import bwapi.Color;
 import bwapi.DefaultBWListener;
@@ -28,6 +29,7 @@ import bwapi.Game;
 import bwapi.Mirror;
 import bwapi.Player;
 import bwapi.Position;
+import bwapi.TechType;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -72,6 +74,8 @@ public class BonjwAI extends DefaultBWListener {
 	private List<UnitType> buildOrderStruct = new ArrayList<UnitType>();
 	private List<Integer> buildOrderSupply = new ArrayList<Integer>();
 	
+	private List<TechType> techTreeTech = new ArrayList<TechType>();
+	private List<Integer> techTreeSupply = new ArrayList<Integer>();
 	
 	// building stuff
 	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
@@ -120,6 +124,7 @@ public class BonjwAI extends DefaultBWListener {
 		System.out.println("Mineral setup: " + mineralSetup);
 		
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
+		TechManager.initializeTechOrder(techTreeTech, techTreeSupply);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
 	}
 
@@ -229,7 +234,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * --buildingProduction()	>	build marines/medics when conditions are met
 		 */
 		//BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
-		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, mineralSetup );
+		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup );
 		productionMode = BuildingManager.updateProductionMode(game, bArmyMap, bArmyMap, productionMode);
 		
 		// Army Manager:
@@ -260,7 +265,7 @@ public class BonjwAI extends DefaultBWListener {
 
 		// Implement without persistent data	
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources, buildOrderStruct, buildOrderSupply, drawStructPos, drawStructLabel, productionMode);
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode);
 	
 		//testing
 		//System.out.println(buildOrderStruct.get(0));

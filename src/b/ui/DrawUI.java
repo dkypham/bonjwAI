@@ -12,6 +12,7 @@ import bwapi.Color;
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.Position;
+import bwapi.TechType;
 import bwapi.Unit;
 import bwapi.UnitType;
 
@@ -22,6 +23,8 @@ public class DrawUI {
 			ArrayList<Integer> bResources,
 			List<UnitType> buildOrderStruct,
 			List<Integer> buildOrderSupply,
+			List<TechType> techTreeTech,
+			List<Integer> techTreeSupply,
 			List<Position> drawStructPos,
 			List<String> drawStructLabel,
 			int productionMode ) {
@@ -36,7 +39,7 @@ public class DrawUI {
 		game.drawTextScreen(10, 90, "eS: " + bResources.get(5) );
 		
 		drawNextBuilding(game, buildOrderStruct, buildOrderSupply);
-		
+		drawNextTech(game, techTreeTech, techTreeSupply);
 		game.drawTextScreen(10, 120, "Number of eBuildings seen: " + eBasePos.size());
 		
 		int offset = 10;
@@ -73,6 +76,12 @@ public class DrawUI {
 			List<Integer> buildOrderSupply) {
 		game.drawTextScreen(10, 100, "Next building: " + buildOrderStruct.get(0) + " at " + 
 			buildOrderSupply.get(0) + " supply.");
+	}
+	
+	public static void drawNextTech(Game game, List<TechType> techTreeTech,
+			List<Integer> techTreeSupply) {
+		game.drawTextScreen(10, 110, "Next tech: " + techTreeTech.get(0) + " at " + 
+				techTreeSupply.get(0) + " supply.");
 	}
 	
 	public static void drawUnitCounts(Game game, Player self, 
