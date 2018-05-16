@@ -20,9 +20,10 @@ public class ScoutManager {
 	public static void updateScoutManager(Game game, Player self,
 			Multimap<UnitType, Integer> bArmyMap, 
 			ArrayList<Position> eStructPos, 
-			ArrayList<BaseLocation> eBasePos) {
+			ArrayList<BaseLocation> eBasePos, 
+			List<Position> scoutQueue) {
 		
-		if ( self.supplyUsed() > 18 ) {
+		if ( self.supplyUsed() > 24 ) {
 			// if no enemies struct history seen
 			if ( eStructPos.size() == 0 ) {
 				// if no scout assigned
@@ -76,6 +77,11 @@ public class ScoutManager {
 		if (baseLocation != null) {
 			scout.move(baseLocation);
 		}
+	}
+
+	public static void initializeScoutQueue(List<Position> scoutQueue) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	/*

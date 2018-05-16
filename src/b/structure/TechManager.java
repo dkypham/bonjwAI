@@ -15,6 +15,9 @@ import bwapi.UnitType;
 
 public class TechManager {
 
+	// TODO: Idea->don't use tech tree. Use one build order struct and map tech to unique
+	// unittypes. For example, map Protoss.Carrier to Siege Mode so that it can be in the 
+	// build order Array.
 	public static void initializeTechOrder(List<TechType> techTreeTech,
 			List<Integer> techTreeSupply ) {
 		// default implementation: 1 Fact FE

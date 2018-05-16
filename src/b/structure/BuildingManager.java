@@ -73,6 +73,7 @@ public class BuildingManager {
 			int mineralSetup) {
 		// check if something needs to be built at this supply
 		if ( self.supplyUsed() == buildOrderSupply.get(0)*2 ) {
+			
 			// issue build
 			if ( buildStruct(game, self, bBasePos, mineralSetup, 
 					bArmyMap, bStructMap, bResources, 
@@ -85,8 +86,20 @@ public class BuildingManager {
 			}
 		}
 		
+		// if set only to >= then multiple SCVs go to build
+		else if ( self.supplyUsed() >= buildOrderSupply.get(0)*2 
+				&& buildOrderSupply.get(0) > 0 ) {
+			// issue build
+			if ( buildStruct(game, self, bBasePos, mineralSetup, 
+					bArmyMap, bStructMap, bResources, 
+					buildOrderStruct.get(0), 
+					productionMode ) ) {
+				buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
+			}
+		}
+		
 		// check if tech needs to be built
-		else if ( self.supplyUsed() == techTreeSupply.get(0)*2 ) {
+		else if ( self.supplyUsed() >= techTreeSupply.get(0)*2 ) {
 			// issue build
 			if ( TechManager.buildTech(game, self,
 					bStructMap, 
@@ -109,8 +122,7 @@ public class BuildingManager {
 				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
 			}
 			else if ( productionMode == 1 ) {
-				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
-					
+				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);	
 			}
 			else if ( productionMode == 2 ) {
 				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
@@ -138,8 +150,13 @@ public class BuildingManager {
 			ArrayList<Integer> bResources,
 			UnitType struct,
 			int productionMode ) {
+		// check if enough resources
+		if ( !ResourceManager.checkIfEnoughResources(bResources, struct) ) {
+			return false;
+		}
+		
 		// if building type is SD
-		if ( struct == SD && ResourceManager.checkIfEnoughResources(bResources, struct) ) {
+		if ( struct == SD ) {
 			// first SD
 			if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, struct) == 0 ) {
 				TilePosition pos = BuildingPlacement.getBuildPositionSD(game, bArmyMap, bStructMap, bBasePos, mineralSetup);
@@ -155,7 +172,7 @@ public class BuildingManager {
 				return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);				
 			}
 		}
-		if ( struct == Barracks && ResourceManager.checkIfEnoughResources(bResources, struct) ) {
+		if ( struct == Barracks ) {
 			TilePosition pos = BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup);
 			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks) ) {
 				ResourceManager.addBuildingCost( bResources, struct );
@@ -165,13 +182,17 @@ public class BuildingManager {
 		}
 		
 		// special case: addon
-		if ( struct == UnitType.Terran_Machine_Shop && ResourceManager.checkIfEnoughResources(bResources, struct) ) {
+		if ( struct == UnitType.Terran_Machine_Shop ) {
 			for ( Integer factoryID : bStructMap.get(UnitType.Terran_Factory ) ) {
 				Unit factory = game.getUnit(factoryID);
 				if ( factory.canBuildAddon() ) {
 					return factory.buildAddon( struct );
 				}
 			}
+		}
+		
+		if ( struct == CC ) {
+			return buildCC( game, self, bArmyMap, bStructMap, bBasePos );
 		}
 		
 		// general case
@@ -203,6 +224,9 @@ public class BuildingManager {
 			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources) ) {
 				return;
 			}
+			if ( buildTanks(game, self, bArmyMap, bStructMap, bResources) ) {
+				return;
+			}
 			if ( buildMarines(game, self, bArmyMap, bStructMap, bResources) ) {
 				return;
 			}
@@ -220,31 +244,14 @@ public class BuildingManager {
 		drawStructPos.add( (BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup)).toPosition());
 		drawStructLabel.add("First Barracks");
 	}
-	
-	// Given an array for order of buildings and array with supplies, issue a build order for that building if
-	// given supply is met
-	public static void issueBuildOrder(Game game, Player self, 
-			Multimap<UnitType, Integer> bArmyMap,
-			Multimap<UnitType, Integer> bStructMap, 
-			List<Position> drawStructPos,
-			List<String> drawStructLabel, 
-			int mineralSetup, 
-			ArrayList<BaseLocation> bBasePos,
-			List<UnitType> buildOrderStruct,
-			List<Integer> buildOrderSupply,
-			ArrayList<Integer> bResources ) {
-		for ( int i = 0; i < buildOrderStruct.size(); i++ ) {
-			// if supply used < supplyTotal 
-			if ( (self.supplyTotal() * 2) < buildOrderSupply.get(i) ) {
-				// production
-				buildingProduction(game,self,bArmyMap,bStructMap,bResources);
-				break;
-			}
-			
-		}
-		
-	}
 
+	public static boolean buildCC( Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
+			Multimap<UnitType, Integer> bStructMap,
+			ArrayList<BaseLocation> bBasePos ) {
+		int numCC = MapUnitID.getStructCount(game, bArmyMap, bStructMap, CC);
+		return WorkerManager.issueBuildAtLocation(game, bArmyMap, bBasePos.get(numCC - 1).getTilePosition(), CC);
+	}
+	
 	// function to build workers
 	public static boolean buildWorkers(Game game, Player self, 
 			Multimap<UnitType, Integer> bArmyMap, 
@@ -277,6 +284,37 @@ public class BuildingManager {
 			if (barracks.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && 
 					marineCount < (16 * MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks) ) ) {
 				barracks.train(UnitType.Terran_Marine);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	// function to build tanks
+	public static boolean buildTanks(Game game, Player self, 
+			Multimap<UnitType, Integer> bArmyMap, 
+			Multimap<UnitType, Integer> bStructMap,
+			ArrayList<Integer> bResources ) {
+		// check if enough resources
+		if ( !ResourceManager.checkIfEnoughResources(bResources, UnitType.Terran_Siege_Tank_Tank_Mode) ) {
+			return false;
+		}
+		
+		// TODO: add supply check
+		if ( SupplyManager.needSupplyCheck(self, bResources.get(5)) ) {
+			return false; // return false if needSupplyCheck returns true
+		}
+
+		// if tank count needs to be restricted
+		//int tankCount = bArmyMap.get(UnitType.Terran_Siege_Tank_Tank_Mode).size();	
+		
+		// build tank from factories
+		for ( Integer factoryID : bStructMap.get(UnitType.Terran_Factory) ) {
+			Unit factory = game.getUnit(factoryID);
+			if ( factory.isTraining() == false 
+					//&& tankCount < (16 * MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks) ) 
+					&& factory.canTrain( UnitType.Terran_Siege_Tank_Tank_Mode ) ) {
+				factory.train(UnitType.Terran_Siege_Tank_Tank_Mode );
 				return true;
 			}
 		}
@@ -328,125 +366,9 @@ public class BuildingManager {
 			}
 		}
 	}
-	/*
+
 	// TODO: Write a function that assigns first 16 SCVs to CC1, next 16 to CC2
 	// using getUnitsInRadius or make func above only build scvs if num SCVs near CC is <16
-
-	// Refinery
-	public static void refineryManager(Game game, Player self,
-			Multimap<UnitType, Integer> bArmyMap,
-			Multimap<UnitType, Integer> bStructMap,
-			ArrayList<Integer> bResources) {
-		// IMPLEMENT build barracks when minerals > 150
-		int numRefinery = MapUnitID.getStructCount(game, bArmyMap, bStructMap, Refinery);
-		int reservedMinerals = bResources.get(1);
-		
-		if ( self.supplyUsed() > 24 && self.minerals() - reservedMinerals > 75
-				&& numRefinery < 1
-				&& SupplyManager.needSupplyCheck(self, bResources.get(5)) == false ) {
-			// build Refinery
-			WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, Refinery);
-			System.out.println("Num refinery" + numRefinery);
-		}
-	}
-	
-	// Academy
-	public static void academyManager(Game game, Player self,
-				Multimap<UnitType, Integer> bArmyMap,
-				Multimap<UnitType, Integer> bStructMap,
-				ArrayList<Integer> bResources) {
-		// IMPLEMENT build barracks when minerals > 150
-		int numBarracks = MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks);
-		int numAcademy = MapUnitID.getStructCount(game, bArmyMap, bStructMap, Academy);
-		int reservedMinerals = bResources.get(1);
-		
-		if ( self.supplyUsed() > 20 && self.minerals() - reservedMinerals > 150
-				&& numAcademy < 1 && numBarracks > 1
-				&& SupplyManager.needSupplyCheck(self, bResources.get(5)) == false ) {
-			// build Academy
-			WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, Academy);
-		}
-	}
-	
-	// Barracks
-	public static void barracksManager(Game game, Player self,
-			Multimap<UnitType, Integer> bArmyMap,
-			Multimap<UnitType, Integer> bStructMap,
-			ArrayList<Integer> bResources,
-			ArrayList<BaseLocation> bBasePos,
-			int mineralSetup) {
-		// IMPLEMENT build barracks when minerals > 150
-		int numBarracks = MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks);
-		int numAcademy = MapUnitID.getStructCount(game, bArmyMap, bStructMap, Academy);
-		int reservedMinerals = bResources.get(1);
-		
-		if ( self.supplyUsed() > 20 && self.minerals() - reservedMinerals > 150
-				&& (numBarracks < 2 || numAcademy == 1) && numBarracks < 4
-				&& SupplyManager.needSupplyCheck(self, bResources.get(5)) == false ) {
-			// build Barracks
-			if ( numBarracks == 0 ) {
-				TilePosition pos = BuildingPlacement.getBuildPositionFirstBarracks(game, bBasePos, mineralSetup);
-				// issue build at TilePosition found
-				WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, Barracks);
-			}
-			else {
-				WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, Barracks);
-			}
-		}
-	}
-	
-	// Factory
-	public static void factoryManager(Game game, Player self,
-			Multimap<UnitType, Integer> bArmyMap,
-			Multimap<UnitType, Integer> bStructMap,
-			ArrayList<Integer> bResources) {
-		// IMPLEMENT build barracks when minerals > 150
-		int numBarracks = MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks);
-		int numFactory = MapUnitID.getStructCount(game, bArmyMap, bStructMap, Factory);
-		int reservedMinerals = bResources.get(1);
-		
-		if ( self.supplyUsed() > 20 && self.minerals() - reservedMinerals > 150 
-				&& self.gas() > 100
-				&& numBarracks >= 4 && numFactory < 2
-				&& SupplyManager.needSupplyCheck(self, bResources.get(5)) == false ) {
-			// build Factory
-			WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, Factory);
-		}
-	}
-	*/
-	// TRAIN UNITS
-	public static void buildingProduction(Game game, Player self, 
-			Multimap<UnitType, Integer> bArmyMap,
-			Multimap<UnitType, Integer> bStructMap,
-			ArrayList<Integer> bResources) {
-		int reservedMinerals = bResources.get(1);
-		for ( Integer structID : bStructMap.values() ) {
-			if ( structID == -1 ) {
-				continue;
-			}
-			
-			Unit struct = game.getUnit(structID);
-			
-			// train medics
-			if ( struct.getType() == Barracks &&
-					MapUnitID.getStructCount(game, bArmyMap, bStructMap, Academy) > 0 &&
-					MapUnitID.getArmyCount(game, bArmyMap, Medic)  < MAX_MEDIC_COUNT &&
-					MapUnitID.getArmyCount(game, bArmyMap, Marine) > 10 &&
-					struct.isTraining() == false && 
-					self.minerals() - reservedMinerals >= 50 &&
-					self.gas() >= 25) {
-				struct.train(UnitType.Terran_Medic);
-			}
-			
-			// train marines
-			if ( struct.getType() == Barracks && 
-					MapUnitID.getArmyCount(game, bArmyMap, Marine) < MAX_MARINE_COUNT && 
-					struct.isTraining() == false && 
-					self.minerals() - reservedMinerals >= 50) {
-				struct.train(UnitType.Terran_Marine);
-			}
-		}
-	}
 	
 	public static boolean isAddOn( UnitType struct ) {
 		if ( struct == UnitType.Terran_Machine_Shop || struct == UnitType.Terran_Comsat_Station
@@ -463,9 +385,11 @@ public class BuildingManager {
 		if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks) >= 1) {
 			productionMode = 1;
 		}
+		// tanks
 		if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, Factory) >= 1) {
 			productionMode = 2;
 		}
+		
 		return productionMode;
 	}
 	

@@ -77,6 +77,8 @@ public class BonjwAI extends DefaultBWListener {
 	private List<TechType> techTreeTech = new ArrayList<TechType>();
 	private List<Integer> techTreeSupply = new ArrayList<Integer>();
 	
+	private List<Position> scoutQueue = new ArrayList<Position>();
+	
 	// building stuff
 	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
 	
@@ -123,6 +125,7 @@ public class BonjwAI extends DefaultBWListener {
 		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, resourceZone, mineralSetup);
 		System.out.println("Mineral setup: " + mineralSetup);
 		
+		ScoutManager.initializeScoutQueue(scoutQueue );
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
 		TechManager.initializeTechOrder(techTreeTech, techTreeSupply);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
@@ -210,7 +213,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * 								enemy struct
 		 * 
 		 */
-		ScoutManager.updateScoutManager(game, self, bArmyMap, eStructPos, eBasePos);
+		ScoutManager.updateScoutManager(game, self, bArmyMap, eStructPos, eBasePos, scoutQueue);
 
 		// Supply Manager:
 		/*
