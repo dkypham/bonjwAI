@@ -125,7 +125,7 @@ public class BonjwAI extends DefaultBWListener {
 		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, resourceZone, mineralSetup);
 		System.out.println("Mineral setup: " + mineralSetup);
 		
-		ScoutManager.initializeScoutQueue(scoutQueue );
+		ScoutManager.initializeScoutQueue(scoutQueue, bBasePos );
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
 		TechManager.initializeTechOrder(techTreeTech, techTreeSupply);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);

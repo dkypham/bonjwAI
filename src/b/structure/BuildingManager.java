@@ -249,7 +249,7 @@ public class BuildingManager {
 			Multimap<UnitType, Integer> bStructMap,
 			ArrayList<BaseLocation> bBasePos ) {
 		int numCC = MapUnitID.getStructCount(game, bArmyMap, bStructMap, CC);
-		return WorkerManager.issueBuildAtLocation(game, bArmyMap, bBasePos.get(numCC - 1).getTilePosition(), CC);
+		return WorkerManager.issueBuildAtLocation(game, bArmyMap, bBasePos.get(numCC).getTilePosition(), CC);
 	}
 	
 	// function to build workers

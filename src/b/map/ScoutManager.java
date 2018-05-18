@@ -14,8 +14,6 @@ import bwapi.UnitType;
 import bwta.BaseLocation;
 
 public class ScoutManager {
-
-	private static int scoutID = 0;
 		
 	public static void updateScoutManager(Game game, Player self,
 			Multimap<UnitType, Integer> bArmyMap, 
@@ -23,51 +21,65 @@ public class ScoutManager {
 			ArrayList<BaseLocation> eBasePos, 
 			List<Position> scoutQueue) {
 		
-		if ( self.supplyUsed() > 24 ) {
-			// if no enemies struct history seen
-			if ( eStructPos.size() == 0 ) {
-				// if no scout assigned
-				if ( scoutID == 0 ) {
-					scoutID = ScoutManager.assignScout(game, bArmyMap, scoutID);
+		// if no scout assigned
+		if ( bArmyMap.get( UnitType.Protoss_Scout ).size() == 0 ) {
+			ScoutManager.assignScout(game, bArmyMap);
+		}
+		
+		Unit scout = getScout( game, bArmyMap );
+		
+		if ( scout != null && self.supplyUsed() > 24 ) {
+			if ( !scout.isAttacking() ) {
+				if ( !scoutQueue.isEmpty() ) {	
+					scout.attack( scoutQueue.get(0) );
+					scoutQueue.remove( 0 );
 				}
-				// if scout assigned, scout
-				if ( scoutID != 0 ) {
-					ScoutManager.scoutForUnknownEnemy(game, scoutID, bArmyMap, eStructPos);
-				}
-			}	
-			/*
-			if ( eStructPos.size() != 0 && eBasePos.size() == 0 ) {
-				eBasePos.add(MapInformation.getClosestStartLocation(eStructPos.get(0)));
-				MapInformation.getTwoNearBases(game, eBasePos);
-				System.out.println("Updated eBasePos!");
+				// if no enemies struct history seen
+				else if ( eStructPos.size() == 0 ) {
+					ScoutManager.scoutForUnknownEnemy(game, bArmyMap, eStructPos);
+				}	
 			}
-			*/
+			
 			MapInformation.updateEnemyBuildingMemory(game, eStructPos);
 		}
 	}
 	
 	// assign a scout
-	public static int assignScout(Game game, Multimap<UnitType, Integer> bArmyMap, int scoutID ) {
+	public static boolean assignScout(Game game, Multimap<UnitType, Integer> bArmyMap ) {
 			for ( Integer scvID : bArmyMap.get(UnitType.Terran_SCV) ) {
 				Unit SCV = game.getUnit(scvID);
 				if ( !SCV.isConstructing() && !SCV.isCarryingMinerals() 
 					&& !SCV.isGatheringGas() ) {
 					// add scout to bArmyMap
 					bArmyMap.put(UnitType.Protoss_Scout, SCV.getID() );
-					return scvID;
+					return true;
 				}
 			}
-			return 0;
+			return false;
+	}
+	
+	public static Unit getScout(Game game, Multimap<UnitType, Integer> bArmyMap ) {
+		Unit scout = null;
+		for ( Integer scoutID : bArmyMap.get(UnitType.Protoss_Scout ) ) {
+			scout = game.getUnit(scoutID);
+		}
+		return scout;
 	}
 	
 	// scout for enemy based on unexplored starting locations
-	public static void scoutForUnknownEnemy(Game game, int scoutID, 
+	public static void scoutForUnknownEnemy(Game game, 
 			Multimap<UnitType, Integer> bArmyMap, 
 			ArrayList<Position> eStructPos) {
-		Unit scout = game.getUnit(scoutID);
-		if ( !scout.isMoving() && eStructPos.size() == 0) {
-			scout.move( MapInformation.getNearestUnexploredStartingLocation(game,
-					scout.getPosition() ) );
+
+		Unit scout = null;
+		for ( Integer scoutID : bArmyMap.get(UnitType.Protoss_Scout ) ) {
+			scout = game.getUnit(scoutID);
+		}
+		
+		if ( scout != null ) {
+			if ( !scout.isMoving() && eStructPos.size() == 0) {
+				scout.move( MapInformation.getNearestUnexploredStartingLocation(game,scout.getPosition() ) );
+			}
 		}
 	}
 	
@@ -79,9 +91,8 @@ public class ScoutManager {
 		}
 	}
 
-	public static void initializeScoutQueue(List<Position> scoutQueue) {
-		// TODO Auto-generated method stub
-		
+	public static void initializeScoutQueue(List<Position> scoutQueue, ArrayList<BaseLocation> bBasePos) {
+		scoutQueue.add(bBasePos.get(1).getPosition() );	
 	}
 	
 	/*

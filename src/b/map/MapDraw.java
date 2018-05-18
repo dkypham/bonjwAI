@@ -12,27 +12,27 @@ import bwta.BaseLocation;
 
 public class MapDraw {
 
-	public static void drawMapInformation(Game game, List<BaseLocation> bBases, 
-			List<BaseLocation> eBases, List<Integer> resourceZone) {
-		drawBBasePos(game, bBases);
-		if (eBases.size() != 0) {
-			MapDraw.drawEBasePos(game, eBases);
+	public static void drawMapInformation(Game game, List<BaseLocation> bBasePos, 
+			List<BaseLocation> eBasePos, List<Integer> resourceZone) {
+		drawBBasePos(game, bBasePos);
+		if (eBasePos.size() != 0) {
+			MapDraw.drawEBasePos(game, eBasePos);
 		}
 		drawResourceZone(game, resourceZone);
 	}
 	
 	public static void drawBBasePos(Game game, 
-			List<BaseLocation> myBases) {
-		game.drawTextMap(myBases.get(0).getX(), myBases.get(0).getY() - 10, "bMain");
-		game.drawTextMap(myBases.get(1).getX(), myBases.get(1).getY() - 10, "bFirstExpo");
-		game.drawTextMap(myBases.get(2).getX(), myBases.get(2).getY() - 10, "bSecondExpo");
+			List<BaseLocation> bBasePos) {
+		game.drawTextMap(bBasePos.get(0).getX(), bBasePos.get(0).getY() - 10, "bMain");
+		game.drawTextMap(bBasePos.get(1).getX(), bBasePos.get(1).getY() - 10, "bFirstExpo");
+		game.drawTextMap(bBasePos.get(2).getX(), bBasePos.get(2).getY() - 10, "bSecondExpo");
 	}
 	
 	public static void drawEBasePos(Game game, 
-			List<BaseLocation> myBases) {
-		game.drawTextMap(myBases.get(0).getX(), myBases.get(0).getY() - 10, "eMain");
-		game.drawTextMap(myBases.get(1).getX(), myBases.get(1).getY() - 10, "eFirstExpo");
-		game.drawTextMap(myBases.get(2).getX(), myBases.get(2).getY() - 10, "eSecondExpo");
+			List<BaseLocation> eBasePos) {
+		game.drawTextMap(eBasePos.get(0).getX(), eBasePos.get(0).getY() - 10, "eMain");
+		game.drawTextMap(eBasePos.get(1).getX(), eBasePos.get(1).getY() - 10, "eFirstExpo");
+		game.drawTextMap(eBasePos.get(2).getX(), eBasePos.get(2).getY() - 10, "eSecondExpo");
 	}
 	
 	public static void drawResourceZone(Game game, List<Integer> resourceZone) {
