@@ -256,6 +256,10 @@ public class MapInformation {
 		}
 	}
 	
+	public static void getNearestChoke( BaseLocation startingBase ) {
+		// find nearst rally point
+	}
+	
 	
 	
 }

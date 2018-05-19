@@ -249,8 +249,8 @@ public class BonjwAI extends DefaultBWListener {
 		 * --updateMarines()	>	marine targeting and micro
 		 * 
 		 */
-		//ArmyManager.updateArmyManager(game, self, bArmyMap, bStructMap, bBasePos, 
-		//		eStructPos);
+		ArmyManager.updateArmyManager(game, self, bArmyMap, bStructMap, bBasePos, 
+				eStructPos);
 		//armyManager.updateMedics(medics);
 		
 		

@@ -48,11 +48,11 @@ public class ArmyManager {
 	}
 	
 	public static void updateMarines(Game game, Player self,
-			Multimap<UnitType, Integer> armyMap,
-			List<BaseLocation> myBases,
+			Multimap<UnitType, Integer> bArmyMap,
+			List<BaseLocation> bBasePos,
 			ArrayList<Position> enemyBuildingMemory,
 			boolean underAttack ) {
-		List<Integer> marineIDMap = (List<Integer>) armyMap.get(marine);
+		List<Integer> marineIDMap = (List<Integer>) bArmyMap.get(marine);
 		for ( Integer marineID : marineIDMap ) {
 			Unit uMarine = game.getUnit(marineID);
 			
@@ -61,7 +61,7 @@ public class ArmyManager {
 				break;
 			}
 			
-			// step back if during attack frame
+			// micro if attacking
 			if (uMarine.isAttacking() ) {
 
 			}
@@ -72,17 +72,9 @@ public class ArmyManager {
 				if ( underAttack == true ) {
 
 				}	
-				// if not under attack, but should attack
-				else if ( marineIDMap.size() > 30 ) {
-					if ( !uMarine.isAttacking() ) {
-
-					}
-				}
 				// if not under attack and should not attack
-				else if ( uMarine.getDistance( myBases.get(1).getPosition()) > dFromPoint
-						&& !uMarine.isAttacking()
-						&& !uMarine.isUnderAttack() ) {
-
+				else {
+					// move to rally
 				}
 			}
 
