@@ -82,6 +82,8 @@ public class BonjwAI extends DefaultBWListener {
 	// building stuff
 	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
 	
+	private List<Position> rallyPoints = new ArrayList<Position>();
+	
 	// testing/temp variables
 	TilePosition firstSDPos = null;
 	
@@ -129,6 +131,7 @@ public class BonjwAI extends DefaultBWListener {
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
 		TechManager.initializeTechOrder(techTreeTech, techTreeSupply);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
+		MapInformation.initializeRallyPoints( rallyPoints, bBasePos.get(0).getTilePosition(), bBasePos.get(1).getTilePosition() );
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -267,7 +270,7 @@ public class BonjwAI extends DefaultBWListener {
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 
 		// Implement without persistent data	
-		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone);		
+		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone, rallyPoints);		
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode);
 	
 		//testing

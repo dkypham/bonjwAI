@@ -8,17 +8,22 @@ import bwapi.Game;
 import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
+import bwta.BWTA;
 import bwta.BaseLocation;
+import bwta.Chokepoint;
 
 public class MapDraw {
 
 	public static void drawMapInformation(Game game, List<BaseLocation> bBasePos, 
-			List<BaseLocation> eBasePos, List<Integer> resourceZone) {
+			List<BaseLocation> eBasePos, List<Integer> resourceZone,
+			List<Position> rallyPoints ) {
 		drawBBasePos(game, bBasePos);
 		if (eBasePos.size() != 0) {
 			MapDraw.drawEBasePos(game, eBasePos);
 		}
 		drawResourceZone(game, resourceZone);
+		//drawAllChokepoints(game);
+		drawRallyPoints( game, rallyPoints );
 	}
 	
 	public static void drawBBasePos(Game game, 
@@ -48,6 +53,18 @@ public class MapDraw {
 	public static Position getBottomRightBuildZonePos( TilePosition tpos, int right, int below ) {
 		TilePosition tempTpos = new TilePosition( tpos.getX() + right, tpos.getY() + below );
 		return tempTpos.toPosition();
+	}
+	
+	public static void drawAllChokepoints( Game game ) {
+		for ( Chokepoint chokepoint : BWTA.getChokepoints() ) {
+			game.drawTextMap( chokepoint.getPoint(), "Chokepoint");
+		}
+	}
+	
+	public static void drawRallyPoints( Game game, List<Position> rallyPoints ) {
+		for ( Position pos : rallyPoints ) {
+			game.drawTextMap( pos, "rallyPoint" );
+		}
 	}
 	
 }

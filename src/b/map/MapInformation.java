@@ -13,6 +13,7 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
+import bwta.Chokepoint;
 
 public class MapInformation {
 	
@@ -256,8 +257,46 @@ public class MapInformation {
 		}
 	}
 	
-	public static void getNearestChoke( BaseLocation startingBase ) {
+	public static Chokepoint getNearestChoke( TilePosition tp ) {
+		int distance = -1;
+		Chokepoint nearestChoke = null;
 		// find nearst rally point
+		for ( Chokepoint chokepoint : BWTA.getChokepoints() ) {
+			if ( BWTA.getGroundDistance( tp, chokepoint.getCenter().toTilePosition() ) < distance || distance == -1 ) {
+				nearestChoke = chokepoint;
+				distance = (int) BWTA.getGroundDistance( tp, chokepoint.getCenter().toTilePosition() );
+			}
+		}
+		if ( nearestChoke != null ) {
+			return nearestChoke;
+		}
+		System.out.println("Null chokepoint found in getNearestChoke");
+		return null;
+	}
+
+	public static Chokepoint getSecondNearestChoke( TilePosition tp, Chokepoint firstChokepoint ) {
+		int distance = -1;
+		Chokepoint nearestChoke = null;
+		// find nearst rally point
+		for ( Chokepoint chokepoint : BWTA.getChokepoints() ) {
+			if ( ((int)BWTA.getGroundDistance( tp, chokepoint.getCenter().toTilePosition() ) < distance || distance == -1)
+					&& chokepoint != firstChokepoint ) {
+				distance = (int) BWTA.getGroundDistance( tp, chokepoint.getCenter().toTilePosition() );
+				nearestChoke = chokepoint;
+			}
+		}
+		if ( nearestChoke != null ) {
+			return nearestChoke;
+		}
+		System.out.println("Null chokepoint found in getSecondNearestChoke");
+		return null;		
+	}
+	
+	public static void initializeRallyPoints(List<Position> rallyPoints, TilePosition startingCC_TP, TilePosition firstExpo_TP ) {
+		// TODO Auto-generated method stub
+		Chokepoint firstChokepoint = getNearestChoke(startingCC_TP);
+		rallyPoints.add( firstChokepoint.getCenter() );
+		rallyPoints.add( getSecondNearestChoke( startingCC_TP, firstChokepoint ).getCenter() );
 	}
 	
 	
