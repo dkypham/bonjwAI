@@ -20,6 +20,7 @@ import bwapi.TechType;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
+import bwta.BWTA;
 import bwta.BaseLocation;
 
 public class BuildingManager {
@@ -393,4 +394,19 @@ public class BuildingManager {
 		return productionMode;
 	}
 	
+	public static Unit getNearestBuildingToUnit( Game game, Multimap<UnitType, Integer> bStructMap, Unit unit, UnitType structType ) {
+		int distance = -1;
+		Unit closestStruct = null;
+		for ( int structID : bStructMap.get(structType) ) {
+			Unit struct = game.getUnit(structID);
+			int structDistance = (int) BWTA.getGroundDistance(unit.getTilePosition(), struct.getTilePosition());
+			if ( (distance == -1) || structDistance < distance ) {
+				distance = structDistance;
+				closestStruct = struct;
+			}
+		}
+		
+		return closestStruct;
+	}
+	 
 }

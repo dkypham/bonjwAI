@@ -8,6 +8,7 @@ import com.google.common.collect.Multimap;
 
 import b.ai.BonjwAI;
 import b.idmap.MapUnitID;
+import b.structure.BuildingManager;
 import b.structure.BuildingPlacement;
 import bwapi.Game;
 import bwapi.Player;
@@ -28,7 +29,7 @@ public class WorkerManager {
 	public static void updateWorkerManager(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap) {
 		WorkerManager.makeIdleWorkersMine(game, bArmyMap);
-		if ( WorkerManager.getGasMinerCount(game, bArmyMap) < MAX_SCV_GAS_MINERS ) { // for one bas
+		if ( WorkerManager.getGasMinerCount(game, bArmyMap, bStructMap) < MAX_SCV_GAS_MINERS ) { // for one bas
 			WorkerManager.makeWorkersMineGas(game, self, bArmyMap, bStructMap);
 		}
 	}
@@ -150,7 +151,8 @@ public class WorkerManager {
 		return mineralMinerCount;
 	}
 
-	public static int getGasMinerCount(Game game, Multimap<UnitType, Integer> armyMap) {
+	public static int getGasMinerCount(Game game, Multimap<UnitType, Integer> bArmyMap,
+			Multimap<UnitType,Integer> bStructMap ) {
 		/*
 		int gasMinerCount = 0;
 		List<Integer> arraySCV = (List<Integer>) armyMap.get(UnitType.Terran_SCV);
@@ -163,7 +165,15 @@ public class WorkerManager {
 		}	
 		return gasMinerCount;
 		*/
-		return armyMap.get(GasMiner).size();
+		for ( Integer gasMinerID : bArmyMap.get(GasMiner) ) {
+			Unit SCV = game.getUnit(gasMinerID);
+			if ( !SCV.isGatheringGas() ) {
+				// make SCV mine nearest Refinery
+				SCV.gather(BuildingManager.getNearestBuildingToUnit(game, bStructMap, SCV, UnitType.Terran_Refinery)); // gather nearest gas
+			}
+		}
+		
+		return bArmyMap.get(GasMiner).size();
 	}
 	
 	public static boolean checkIfRefineryExists(Player self) {
@@ -198,8 +208,8 @@ public class WorkerManager {
 	}
 	*/
 	public static void makeWorkersMineGas(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
-			 Multimap<UnitType, Integer> structMap) {
-		int gasMinerCount = getGasMinerCount(game, bArmyMap);
+			 Multimap<UnitType, Integer> bStructMap) {
+		int gasMinerCount = getGasMinerCount(game, bArmyMap, bStructMap);
 		if ( gasMinerCount < MAX_SCV_GAS_MINERS && checkIfRefineryExists(self) ) {
 			List<Integer> arraySCV = (List<Integer>) bArmyMap.get(UnitType.Terran_SCV);
 			for ( Integer SCVID : arraySCV ) {
@@ -209,7 +219,7 @@ public class WorkerManager {
 					Unit scv = game.getUnit(SCVID);		
 					if ( !scv.isConstructing() && !scv.isCarryingMinerals() 
 							&& !scv.isGatheringGas()) {
-						List<Integer> arrayRefinery = (List<Integer>) structMap.get(UnitType.Terran_Refinery);
+						List<Integer> arrayRefinery = (List<Integer>) bStructMap.get(UnitType.Terran_Refinery);
 						Unit refinery = game.getUnit(arrayRefinery.get(0));
 						if ( scv.canGather(refinery) ) {
 							scv.gather(refinery);
