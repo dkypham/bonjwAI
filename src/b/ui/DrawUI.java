@@ -28,9 +28,14 @@ public class DrawUI {
 			List<Position> drawStructPos,
 			List<String> drawStructLabel,
 			int productionMode ) {
+		
+		// Column 1
+		
+		// Row 1+2: Name + APM
 		game.drawTextScreen(10, 10, "Playing as " + "bonjwAI" + " - " + self.getRace());
 		game.drawTextScreen(10, 20, "APM: " + game.getAPM() );
 		
+		// Row 3-8: bResources 
 		game.drawTextScreen(10, 40, "aM: " + bResources.get(0) );
 		game.drawTextScreen(10, 50, "rM: " + bResources.get(1) );
 		game.drawTextScreen(10, 60, "aG: " + bResources.get(2) );
@@ -38,24 +43,34 @@ public class DrawUI {
 		game.drawTextScreen(10, 80, "aS: " + bResources.get(4) );
 		game.drawTextScreen(10, 90, "eS: " + bResources.get(5) );
 		
+		// Row 9-10: buildOrderStruct + buildOrderSupply
 		drawNextBuilding(game, buildOrderStruct, buildOrderSupply);
 		drawNextTech(game, techTreeTech, techTreeSupply);
-		game.drawTextScreen(10, 120, "Number of eBuildings seen: " + eBasePos.size());
 		
+		// Row 12:
+		game.drawTextScreen(10, 130, "Number of eBuildings seen: " + eBasePos.size());
+		
+		// Row 13-16: Gas Miner IDs 
 		int offset = 10;
 		for( int ID : bArmyMap.get(UnitType.Powerup_Terran_Gas_Tank_Type_1) ) {
-			game.drawTextScreen(10, 120 + offset, "Gas Miner: " + Integer.toString(ID) );
+			game.drawTextScreen(10, 140 + offset, "Gas Miner: " + Integer.toString(ID) );
 			offset += 10;
 		}		
 		
-		game.drawTextScreen(10,  160, "Production Mode: " + productionMode );
+		//game.drawTextScreen(10,  160, "Production Mode: " + productionMode );
 		
+		// Column 2: Unit counts
 		drawUnitCounts(game, self, bArmyMap);
+		
+		// Column 3: Building counts
 		drawUnitIDs(game, bArmyMap, bStructMap);
 		
+		
+		// In game: draw unit vectors
 		drawInfo(game, self, bArmyMap, bStructMap);
-	
+		// In game: draw build order zones
 		drawBuildingPlan(game, drawStructPos, drawStructLabel);
+		
 		drawUnitID(game, bArmyMap );
 	}
 	
