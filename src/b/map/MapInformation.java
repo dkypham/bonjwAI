@@ -295,7 +295,7 @@ public class MapInformation {
 	public static void initializeRallyPoints(List<Position> rallyPoints, TilePosition startingCC_TP, TilePosition firstExpo_TP ) {
 		// TODO Auto-generated method stub
 		Chokepoint firstChokepoint = getNearestChoke(startingCC_TP);
-		rallyPoints.add( firstChokepoint.getCenter() );
+		rallyPoints.add( new Position( firstChokepoint.getCenter().getX(), firstChokepoint.getCenter().getY() - 40 ) );
 		rallyPoints.add( getSecondNearestChoke( startingCC_TP, firstChokepoint ).getCenter() );
 	}
 	

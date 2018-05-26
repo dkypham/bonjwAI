@@ -13,6 +13,7 @@ import bwapi.Player;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
+import bwta.BWTA;
 import bwta.BaseLocation;
 
 public class ArmyManager {
@@ -35,46 +36,53 @@ public class ArmyManager {
 	
 	public static int MEDIC_MIN_DISTANCE = 10;
 	
-	
-	
 	// whole army handler
 	public static void updateArmyManager(Game game, Player self,
-			Multimap<UnitType, Integer> armyMap, 
-			Multimap<UnitType, Integer> structMap,
-			List<BaseLocation> myBases, 
-			ArrayList<Position> enemyBuildingMemory ) {
-		boolean underAttack = BonjwAIGame.updateUnderAttack(game, armyMap, structMap);
-		updateMarines(game, self, armyMap, myBases, enemyBuildingMemory, underAttack);
+			Multimap<UnitType, Integer> bArmymMap, 
+			Multimap<UnitType, Integer> bStructMap,
+			List<BaseLocation> bBasePos, 
+			ArrayList<Position> enemyBuildingMemory,
+			List<Position> rallyPoints ) {
+		int rallyPointMode = updateRallyPoint(bStructMap);
+		
+		boolean underAttack = BonjwAIGame.updateUnderAttack(game, bArmymMap, bStructMap);
+		updateMarines(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
+				rallyPoints);
 	}
 	
+	private static int updateRallyPoint( Multimap<UnitType, Integer> bStructMap ) {
+		// 0 means go to first rally point
+		// 1 means go to second rally point...
+		
+		if ( bStructMap.get(UnitType.Terran_Command_Center ).size() == 2 ) {
+			return 1; // 2nd rally point
+		}
+		
+		return 0;
+	}
+
 	public static void updateMarines(Game game, Player self,
 			Multimap<UnitType, Integer> bArmyMap,
 			List<BaseLocation> bBasePos,
 			ArrayList<Position> enemyBuildingMemory,
-			boolean underAttack ) {
+			boolean underAttack, int rallyPointMode, List<Position> rallyPoints ) {
+		
 		List<Integer> marineIDMap = (List<Integer>) bArmyMap.get(marine);
+
 		for ( Integer marineID : marineIDMap ) {
 			Unit uMarine = game.getUnit(marineID);
-			
-			// if marine has command issued, break
-			if ( !uMarine.isIdle() ) {
-				break;
-			}
-			
-			// micro if attacking
-			if (uMarine.isAttacking() ) {
 
-			}
-			
-			// if idle, then issue commands
-			if ( uMarine.isIdle() ) {
-				// if under attack
-				if ( underAttack == true ) {
-
-				}	
-				// if not under attack and should not attack
-				else {
-					// move to rally
+			// if not under attack, go to rally point
+			if ( underAttack == false ) {
+				if ( rallyPointMode == 0 ) {
+					if ( BWTA.getGroundDistance( uMarine.getTilePosition() , rallyPoints.get(0).toTilePosition() ) > 50) {
+						uMarine.attack( rallyPoints.get(0) );
+					}
+				}
+				else if ( rallyPointMode == 1 ) {
+					if ( BWTA.getGroundDistance( uMarine.getTilePosition() , rallyPoints.get(1).toTilePosition() ) > 50) {
+						uMarine.attack( rallyPoints.get(1) );
+					}
 				}
 			}
 

@@ -253,7 +253,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * 
 		 */
 		ArmyManager.updateArmyManager(game, self, bArmyMap, bStructMap, bBasePos, 
-				eStructPos);
+				eStructPos, rallyPoints);
 		//armyManager.updateMedics(medics);
 		
 		

@@ -35,7 +35,7 @@ public class ScoutManager {
 					scoutQueue.remove( 0 );
 				}
 				// if no enemies struct history seen
-				else if ( eStructPos.size() == 0 ) {
+				else if ( eStructPos.size() == 0 && !scout.isAttacking() ) {
 					ScoutManager.scoutForUnknownEnemy(game, bArmyMap, eStructPos);
 				}	
 			}
