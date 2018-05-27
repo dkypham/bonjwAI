@@ -79,6 +79,8 @@ public class BonjwAI extends DefaultBWListener {
 	
 	private List<Position> scoutQueue = new ArrayList<Position>();
 	
+	private List<Chokepoint> chokepointList = new ArrayList<Chokepoint>();
+	
 	// building stuff
 	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
 	
@@ -132,6 +134,9 @@ public class BonjwAI extends DefaultBWListener {
 		TechManager.initializeTechOrder(techTreeTech, techTreeSupply);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
 		MapInformation.initializeRallyPoints( rallyPoints, bBasePos.get(0).getTilePosition(), bBasePos.get(1).getTilePosition() );
+	
+		// testing
+		MapInformation.initializeChokepointList(chokepointList, bBasePos.get(0).getTilePosition());
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -274,6 +279,7 @@ public class BonjwAI extends DefaultBWListener {
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode);
 	
 		//testing
+		MapDraw.drawChokePointRegion(game, chokepointList );
 		//System.out.println(buildOrderStruct.get(0));
 		//System.out.println(buildOrderSupply.get(0));
 

@@ -67,4 +67,12 @@ public class MapDraw {
 		}
 	}
 	
+	public static void drawChokePointRegion ( Game game, List<Chokepoint> chokepointList ) {
+		for ( Chokepoint choke : chokepointList ) {
+			Position leftSide = choke.getSides().first;
+			Position rightSide = choke.getSides().second;
+			game.drawBoxMap( new Position( leftSide.getX() - 60, leftSide.getY() - 60 ),
+					new Position( rightSide.getX() + 60, rightSide.getY() + 60 ), Color.Green );
+		}
+	}
 }

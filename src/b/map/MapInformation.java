@@ -299,6 +299,18 @@ public class MapInformation {
 		rallyPoints.add( getSecondNearestChoke( startingCC_TP, firstChokepoint ).getCenter() );
 	}
 	
+	public static boolean checkIfInRegion( Position pos, Position topLeft, Position bottomRight ) {
+		int posX = pos.getX();
+		int posY = pos.getY();
+		
+		return ( posX > topLeft.getX() && posX < bottomRight.getX() && posY > topLeft.getY() && posY < bottomRight.getY() );
+	}
 	
+	public static void initializeChokepointList( List<Chokepoint> chokepointList, TilePosition startingCC_TP ) {
+		Chokepoint firstChokepoint = getNearestChoke(startingCC_TP);
+		chokepointList.add(firstChokepoint);
+		chokepointList.add( getSecondNearestChoke( startingCC_TP, firstChokepoint ) );
+		
+	}
 	
 }
