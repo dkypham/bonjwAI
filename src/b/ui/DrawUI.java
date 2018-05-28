@@ -8,6 +8,7 @@ import com.google.common.collect.Multimap;
 import b.ai.BonjwAIGame;
 import b.idmap.MapUnitID;
 import b.map.MapDraw;
+import b.map.MapInformation;
 import bwapi.Color;
 import bwapi.Game;
 import bwapi.Player;
@@ -15,11 +16,13 @@ import bwapi.Position;
 import bwapi.TechType;
 import bwapi.Unit;
 import bwapi.UnitType;
+import bwta.BaseLocation;
 
 public class DrawUI {
 
 	public static void updateUI(Game game, Player self, Multimap<UnitType, Integer> bArmyMap, 
 			Multimap<UnitType, Integer> bStructMap, ArrayList<Position> eBasePos,
+			ArrayList<BaseLocation> bBasePos,
 			ArrayList<Integer> bResources,
 			List<UnitType> buildOrderStruct,
 			List<Integer> buildOrderSupply,
@@ -36,12 +39,15 @@ public class DrawUI {
 		game.drawTextScreen(10, 20, "APM: " + game.getAPM() );
 		
 		// Row 3-8: bResources 
-		game.drawTextScreen(10, 40, "aM: " + bResources.get(0) );
-		game.drawTextScreen(10, 50, "rM: " + bResources.get(1) );
-		game.drawTextScreen(10, 60, "aG: " + bResources.get(2) );
-		game.drawTextScreen(10, 70, "rG: " + bResources.get(3) );
-		game.drawTextScreen(10, 80, "aS: " + bResources.get(4) );
-		game.drawTextScreen(10, 90, "eS: " + bResources.get(5) );
+		//game.drawTextScreen(10, 40, "aM: " + bResources.get(0) );
+		//game.drawTextScreen(10, 50, "rM: " + bResources.get(1) );
+		//game.drawTextScreen(10, 60, "aG: " + bResources.get(2) );
+		//game.drawTextScreen(10, 70, "rG: " + bResources.get(3) );
+		//game.drawTextScreen(10, 80, "aS: " + bResources.get(4) );
+		//game.drawTextScreen(10, 90, "eS: " + bResources.get(5) );
+		
+		// Rows 3-8 now for testing info
+		//game.drawTextScreen( 10,  40, "Is first expo explored?: " + MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) );
 		
 		// Row 9-10: buildOrderStruct + buildOrderSupply
 		drawNextBuilding(game, buildOrderStruct, buildOrderSupply);

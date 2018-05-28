@@ -7,8 +7,10 @@ import com.google.common.collect.Multimap;
 
 import b.ai.BonjwAI;
 import b.ai.BonjwAIGame;
+import b.map.MapInformation;
 import b.structure.BuildingPlacement;
 import bwapi.Game;
+import bwapi.Pair;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.Unit;
@@ -42,7 +44,7 @@ public class ArmyManager {
 			Multimap<UnitType, Integer> bStructMap,
 			List<BaseLocation> bBasePos, 
 			ArrayList<Position> enemyBuildingMemory,
-			List<Position> rallyPoints ) {
+			List<Pair<Position, Position>> rallyPoints ) {
 		int rallyPointMode = updateRallyPoint(bStructMap);
 		
 		boolean underAttack = BonjwAIGame.updateUnderAttack(game, bArmymMap, bStructMap);
@@ -65,7 +67,7 @@ public class ArmyManager {
 			Multimap<UnitType, Integer> bArmyMap,
 			List<BaseLocation> bBasePos,
 			ArrayList<Position> enemyBuildingMemory,
-			boolean underAttack, int rallyPointMode, List<Position> rallyPoints ) {
+			boolean underAttack, int rallyPointMode, List<Pair<Position, Position>> rallyPoints ) {
 		
 		List<Integer> marineIDMap = (List<Integer>) bArmyMap.get(marine);
 
@@ -75,13 +77,15 @@ public class ArmyManager {
 			// if not under attack, go to rally point
 			if ( underAttack == false ) {
 				if ( rallyPointMode == 0 ) {
-					if ( BWTA.getGroundDistance( uMarine.getTilePosition() , rallyPoints.get(0).toTilePosition() ) > 50) {
-						uMarine.attack( rallyPoints.get(0) );
+					Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(0));
+					if ( !MapInformation.checkIfInRegion2( uMarine.getPosition() , rallyPoints.get(0) )) {
+						uMarine.attack( rallyPoint );
 					}
 				}
 				else if ( rallyPointMode == 1 ) {
-					if ( BWTA.getGroundDistance( uMarine.getTilePosition() , rallyPoints.get(1).toTilePosition() ) > 50) {
-						uMarine.attack( rallyPoints.get(1) );
+					Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(1));
+					if ( !MapInformation.checkIfInRegion2( uMarine.getPosition() , rallyPoints.get(1) )) {
+						uMarine.attack( rallyPoint );
 					}
 				}
 			}

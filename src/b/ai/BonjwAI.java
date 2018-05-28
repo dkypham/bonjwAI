@@ -27,6 +27,7 @@ import bwapi.Color;
 import bwapi.DefaultBWListener;
 import bwapi.Game;
 import bwapi.Mirror;
+import bwapi.Pair;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.TechType;
@@ -84,7 +85,7 @@ public class BonjwAI extends DefaultBWListener {
 	// building stuff
 	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
 	
-	private List<Position> rallyPoints = new ArrayList<Position>();
+	private List< Pair<Position,Position> > rallyPoints = new ArrayList< Pair<Position,Position> >();
 	
 	// testing/temp variables
 	TilePosition firstSDPos = null;
@@ -137,6 +138,7 @@ public class BonjwAI extends DefaultBWListener {
 	
 		// testing
 		MapInformation.initializeChokepointList(chokepointList, bBasePos.get(0).getTilePosition());
+
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -221,7 +223,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * 								enemy struct
 		 * 
 		 */
-		ScoutManager.updateScoutManager(game, self, bArmyMap, eStructPos, eBasePos, scoutQueue);
+		ScoutManager.updateScoutManager(game, self, bArmyMap, eStructPos, eBasePos, bBasePos, scoutQueue);
 
 		// Supply Manager:
 		/*
@@ -276,12 +278,14 @@ public class BonjwAI extends DefaultBWListener {
 
 		// Implement without persistent data	
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone, rallyPoints);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode);
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode);
 	
 		//testing
 		MapDraw.drawChokePointRegion(game, chokepointList );
 		//System.out.println(buildOrderStruct.get(0));
 		//System.out.println(buildOrderSupply.get(0));
+		
+		//game.drawTextMap( , arg1);
 
 	}
 

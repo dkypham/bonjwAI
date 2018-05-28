@@ -19,6 +19,7 @@ public class ScoutManager {
 			Multimap<UnitType, Integer> bArmyMap, 
 			ArrayList<Position> eStructPos, 
 			ArrayList<BaseLocation> eBasePos, 
+			ArrayList<BaseLocation> bBasePos,
 			List<Position> scoutQueue) {
 		
 		// if no scout assigned
@@ -32,7 +33,6 @@ public class ScoutManager {
 			if ( !scout.isAttacking() ) {
 				if ( !scoutQueue.isEmpty() ) {	
 					scout.attack( scoutQueue.get(0) );
-					scoutQueue.remove( 0 );
 				}
 				// if no enemies struct history seen
 				else if ( eStructPos.size() == 0 && !scout.isAttacking() ) {
@@ -41,6 +41,15 @@ public class ScoutManager {
 			}
 			
 			MapInformation.updateEnemyBuildingMemory(game, eStructPos);
+		}
+		
+		// update scout queue
+		if ( game.getFrameCount() % 100 == 0 ) {
+			if ( self.supplyTotal() > 24 && scoutQueue.size() == 1 ) {
+				if ( MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
+					scoutQueue.remove( 0 );	
+				}
+			}
 		}
 	}
 	

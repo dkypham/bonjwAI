@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.Multimap;
 
 import bwapi.Game;
+import bwapi.Pair;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.TilePosition;
@@ -292,14 +293,23 @@ public class MapInformation {
 		return null;		
 	}
 	
-	public static void initializeRallyPoints(List<Position> rallyPoints, TilePosition startingCC_TP, TilePosition firstExpo_TP ) {
+	public static void initializeRallyPoints(List<Pair<Position, Position>> rallyPoints, TilePosition startingCC_TP, TilePosition firstExpo_TP ) {
 		// TODO Auto-generated method stub
 		Chokepoint firstChokepoint = getNearestChoke(startingCC_TP);
-		rallyPoints.add( new Position( firstChokepoint.getCenter().getX(), firstChokepoint.getCenter().getY() - 40 ) );
-		rallyPoints.add( getSecondNearestChoke( startingCC_TP, firstChokepoint ).getCenter() );
+		rallyPoints.add( firstChokepoint.getSides() );
+		rallyPoints.add( getSecondNearestChoke( startingCC_TP, firstChokepoint ).getSides() );
 	}
 	
 	public static boolean checkIfInRegion( Position pos, Position topLeft, Position bottomRight ) {
+		int posX = pos.getX();
+		int posY = pos.getY();
+		
+		return ( posX > topLeft.getX() && posX < bottomRight.getX() && posY > topLeft.getY() && posY < bottomRight.getY() );
+	}
+	
+	public static boolean checkIfInRegion2( Position pos, Pair<Position,Position> pair ) {
+		Position topLeft = pair.first;
+		Position bottomRight = pair.second;
 		int posX = pos.getX();
 		int posY = pos.getY();
 		
@@ -312,5 +322,23 @@ public class MapInformation {
 		chokepointList.add( getSecondNearestChoke( startingCC_TP, firstChokepoint ) );
 		
 	}
+	
+	public static Position retCenterOfPair( Pair<Position,Position> pair ) {
+		return new Position ( ((pair.first.getX() + pair.second.getX()) / 2) , ((pair.first.getY() + pair.second.getY()) / 2)  );
+	}
+	
+	// if there exists a mineral patch within a certain distance from base, then it is considered scouted
+	// distance of 300 found by testing startlocation distances
+	public static boolean checkIfExpoIsExplored( Game game, BaseLocation base ) {
+		for (Unit minerals : game.getMinerals()) {
+			if (minerals.isVisible() ) {
+				if ( BWTA.getGroundDistance( base.getTilePosition() , minerals.getTilePosition()) < 300.0 ) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	
 }

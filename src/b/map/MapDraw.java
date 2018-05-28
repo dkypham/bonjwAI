@@ -5,6 +5,7 @@ import java.util.Map;
 
 import bwapi.Color;
 import bwapi.Game;
+import bwapi.Pair;
 import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
@@ -16,7 +17,7 @@ public class MapDraw {
 
 	public static void drawMapInformation(Game game, List<BaseLocation> bBasePos, 
 			List<BaseLocation> eBasePos, List<Integer> resourceZone,
-			List<Position> rallyPoints ) {
+			List<Pair<Position, Position>> rallyPoints ) {
 		drawBBasePos(game, bBasePos);
 		if (eBasePos.size() != 0) {
 			MapDraw.drawEBasePos(game, eBasePos);
@@ -61,9 +62,9 @@ public class MapDraw {
 		}
 	}
 	
-	public static void drawRallyPoints( Game game, List<Position> rallyPoints ) {
-		for ( Position pos : rallyPoints ) {
-			game.drawTextMap( pos, "rallyPoint" );
+	public static void drawRallyPoints( Game game, List<Pair<Position, Position>> rallyPoints ) {
+		for ( Pair<Position,Position> pair : rallyPoints ) {
+			game.drawTextMap( MapInformation.retCenterOfPair(pair), "rallyPoint" );
 		}
 	}
 	
