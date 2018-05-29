@@ -64,6 +64,7 @@ public class MapDraw {
 	
 	public static void drawRallyPoints( Game game, List<Pair<Position, Position>> rallyPoints ) {
 		for ( Pair<Position,Position> pair : rallyPoints ) {
+			game.drawBoxMap( pair.first, pair.second, Color.Green );
 			game.drawTextMap( MapInformation.retCenterOfPair(pair), "rallyPoint" );
 		}
 	}

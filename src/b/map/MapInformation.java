@@ -296,7 +296,12 @@ public class MapInformation {
 	public static void initializeRallyPoints(List<Pair<Position, Position>> rallyPoints, TilePosition startingCC_TP, TilePosition firstExpo_TP ) {
 		// TODO Auto-generated method stub
 		Chokepoint firstChokepoint = getNearestChoke(startingCC_TP);
-		rallyPoints.add( firstChokepoint.getSides() );
+		
+		Position leftSide = firstChokepoint.getSides().first;
+		Position rightSide = firstChokepoint.getSides().second;
+		
+		rallyPoints.add( new Pair<Position, Position>( new Position( leftSide.getX() - 60, leftSide.getY() - 60 ), 
+				new Position( rightSide.getX() + 60, rightSide.getY() + 60 )) );
 		rallyPoints.add( getSecondNearestChoke( startingCC_TP, firstChokepoint ).getSides() );
 	}
 	

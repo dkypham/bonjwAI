@@ -281,7 +281,8 @@ public class BonjwAI extends DefaultBWListener {
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode);
 	
 		//testing
-		MapDraw.drawChokePointRegion(game, chokepointList );
+		//MapDraw.drawChokePointRegion(game, chokepointList );
+		MapDraw.drawRallyPoints(game, rallyPoints);
 		//System.out.println(buildOrderStruct.get(0));
 		//System.out.println(buildOrderSupply.get(0));
 		
