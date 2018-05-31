@@ -30,7 +30,8 @@ public class DrawUI {
 			List<Integer> techTreeSupply,
 			List<Position> drawStructPos,
 			List<String> drawStructLabel,
-			int productionMode ) {
+			int productionMode, 
+			int[] timeBuildIssued ) {
 		
 		// Column 1
 		
@@ -48,6 +49,9 @@ public class DrawUI {
 		
 		// Rows 3-8 now for testing info
 		//game.drawTextScreen( 10,  40, "Is first expo explored?: " + MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) );
+		game.drawTextScreen( 10,  40, "current game time: " + game.elapsedTime() );
+		game.drawTextScreen( 10,  50, "timeBuildIssued: " + timeBuildIssued[0] );
+		
 		
 		// Row 9-10: buildOrderStruct + buildOrderSupply
 		drawNextBuilding(game, buildOrderStruct, buildOrderSupply);

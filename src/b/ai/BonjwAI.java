@@ -82,7 +82,7 @@ public class BonjwAI extends DefaultBWListener {
 	
 	private List<Chokepoint> chokepointList = new ArrayList<Chokepoint>();
 	
-	int timeBuildIssued = 0;
+	int[] timeBuildIssued = {0};
 	
 	// building stuff
 	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
@@ -280,7 +280,7 @@ public class BonjwAI extends DefaultBWListener {
 
 		// Implement without persistent data	
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone, rallyPoints);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode);
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued );
 	
 		//testing
 		//MapDraw.drawChokePointRegion(game, chokepointList );

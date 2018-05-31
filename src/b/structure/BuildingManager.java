@@ -72,7 +72,7 @@ public class BuildingManager {
 			List<TechType> techTreeTech,
 			List<Integer> techTreeSupply,
 			int mineralSetup,
-			int timeBuildIssued ) {
+			int[] timeBuildIssued ) {
 		// check if something needs to be built at this supply
 		if ( self.supplyUsed() == buildOrderSupply.get(0)*2 ) {
 			
@@ -83,7 +83,7 @@ public class BuildingManager {
 					productionMode ) ) {
 				buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
 				//System.out.println(buildOrderStruct.get(0));
-				timeBuildIssued = game.elapsedTime();
+				timeBuildIssued[0] = game.elapsedTime();
 			}
 		}
 		
@@ -96,7 +96,7 @@ public class BuildingManager {
 					buildOrderStruct.get(0), 
 					productionMode ) ) {
 				buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
-				timeBuildIssued = game.elapsedTime();
+				timeBuildIssued[0] = game.elapsedTime();
 			}
 		}
 		
@@ -121,7 +121,7 @@ public class BuildingManager {
 				// check if time since set negative is > 20 seconds, then make
 				// it positive. Usually if this is the case, the SCV
 				// did not actually build
-				if ( game.elapsedTime() - timeBuildIssued > 20 ) {
+				if ( game.elapsedTime() - timeBuildIssued[0] > 20 ) {
 					buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
 				}
 				return;
