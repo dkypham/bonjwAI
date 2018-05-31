@@ -77,8 +77,8 @@ public class ArmyManager {
 			// if not under attack, go to rally point
 			if ( underAttack == false ) {
 				if ( rallyPointMode == 0 ) {
-					Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(0));
-					if ( !MapInformation.checkIfInRegion2( uMarine.getPosition() , rallyPoints.get(0) )) {
+					Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(1));
+					if ( !MapInformation.checkIfInRegion2( uMarine.getPosition() , rallyPoints.get(1) )) {
 						uMarine.attack( rallyPoint );
 					}
 				}

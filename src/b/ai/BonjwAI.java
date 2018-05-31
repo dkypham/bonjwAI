@@ -82,6 +82,8 @@ public class BonjwAI extends DefaultBWListener {
 	
 	private List<Chokepoint> chokepointList = new ArrayList<Chokepoint>();
 	
+	int timeBuildIssued = 0;
+	
 	// building stuff
 	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
 	
@@ -247,7 +249,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * --buildingProduction()	>	build marines/medics when conditions are met
 		 */
 		//BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
-		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup );
+		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup, timeBuildIssued );
 		productionMode = BuildingManager.updateProductionMode(game, bArmyMap, bArmyMap, productionMode);
 		
 		// Army Manager:

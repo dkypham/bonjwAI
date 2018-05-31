@@ -302,7 +302,13 @@ public class MapInformation {
 		
 		rallyPoints.add( new Pair<Position, Position>( new Position( leftSide.getX() - 60, leftSide.getY() - 60 ), 
 				new Position( rightSide.getX() + 60, rightSide.getY() + 60 )) );
-		rallyPoints.add( getSecondNearestChoke( startingCC_TP, firstChokepoint ).getSides() );
+		
+		Chokepoint secondChokepoint = getSecondNearestChoke( startingCC_TP, firstChokepoint );
+		leftSide = secondChokepoint.getSides().first;
+		rightSide = secondChokepoint.getSides().second;
+		
+		rallyPoints.add( new Pair<Position, Position>( new Position( leftSide.getX() - 60, leftSide.getY() - 60 ), 
+				new Position( rightSide.getX() + 60, rightSide.getY() + 60 )) );
 	}
 	
 	public static boolean checkIfInRegion( Position pos, Position topLeft, Position bottomRight ) {

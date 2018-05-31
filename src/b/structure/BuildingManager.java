@@ -71,7 +71,8 @@ public class BuildingManager {
 			List<Integer> buildOrderSupply,
 			List<TechType> techTreeTech,
 			List<Integer> techTreeSupply,
-			int mineralSetup) {
+			int mineralSetup,
+			int timeBuildIssued ) {
 		// check if something needs to be built at this supply
 		if ( self.supplyUsed() == buildOrderSupply.get(0)*2 ) {
 			
@@ -80,10 +81,9 @@ public class BuildingManager {
 					bArmyMap, bStructMap, bResources, 
 					buildOrderStruct.get(0), 
 					productionMode ) ) {
-				//buildOrderStruct.remove(0);
-				//buildOrderSupply.remove(0);
 				buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
 				//System.out.println(buildOrderStruct.get(0));
+				timeBuildIssued = game.elapsedTime();
 			}
 		}
 		
@@ -96,6 +96,7 @@ public class BuildingManager {
 					buildOrderStruct.get(0), 
 					productionMode ) ) {
 				buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
+				timeBuildIssued = game.elapsedTime();
 			}
 		}
 		
@@ -116,6 +117,13 @@ public class BuildingManager {
 		else {
 			if ( buildOrderSupply.get(0) < 0 ) {
 				// do not build unit if building is queued
+				
+				// check if time since set negative is > 20 seconds, then make
+				// it positive. Usually if this is the case, the SCV
+				// did not actually build
+				if ( game.elapsedTime() - timeBuildIssued > 20 ) {
+					buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
+				}
 				return;
 			}
 			// issue build
@@ -150,7 +158,8 @@ public class BuildingManager {
 			Multimap<UnitType, Integer> bStructMap,
 			ArrayList<Integer> bResources,
 			UnitType struct,
-			int productionMode ) {
+			int productionMode
+			) {
 		// check if enough resources
 		if ( !ResourceManager.checkIfEnoughResources(bResources, struct) ) {
 			return false;
@@ -202,6 +211,10 @@ public class BuildingManager {
 			return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);
 		}
 		return false;
+	}
+	
+	public static int updateBuildStructTime( Game game ) {
+		return game.elapsedTime();
 	}
 	
 	public static void buildUnit( Game game, Player self, 			
