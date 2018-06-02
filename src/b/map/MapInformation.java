@@ -16,7 +16,11 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
 
+// NOTE: 1 TILE IS 32x32
+
 public class MapInformation {
+	
+	
 	
 	// On initialization: 
 	// populate resourceZone
@@ -300,8 +304,10 @@ public class MapInformation {
 		Position leftSide = firstChokepoint.getSides().first;
 		Position rightSide = firstChokepoint.getSides().second;
 		
-		rallyPoints.add( new Pair<Position, Position>( new Position( leftSide.getX() - 60, leftSide.getY() - 60 ), 
-				new Position( rightSide.getX() + 60, rightSide.getY() + 60 )) );
+		Position underCC_TL = new Position ( startingCC_TP.toPosition().getX() + 0 , startingCC_TP.toPosition().getY() + 128 );
+		Position underCC_BR = new Position ( startingCC_TP.toPosition().getX() + 128, startingCC_TP.toPosition().getY() + 192 );
+		
+		rallyPoints.add( new Pair<Position, Position>( underCC_TL , underCC_BR ) );
 		
 		Chokepoint secondChokepoint = getSecondNearestChoke( startingCC_TP, firstChokepoint );
 		leftSide = secondChokepoint.getSides().first;
