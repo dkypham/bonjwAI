@@ -27,10 +27,8 @@ public class MapInformation {
 	// find mineral setup
 	public static int initMapInfo(Game game, Multimap<UnitType, Integer> bStructMap,
 			ArrayList<BaseLocation> bBasePos,
-			List<Integer> resourceZone, 
 			int mineralSetup ) {
 		findNearBasePos(game, bBasePos);
-		initResourceZone(game, resourceZone, bBasePos);
 		return findMineralSetup(game, bBasePos, mineralSetup);
 	}
 	
@@ -123,8 +121,9 @@ public class MapInformation {
 		return -2;
 	}
 	
-	public static void initResourceZone(Game game, List<Integer> resourceZone,
+	public static Pair<Position,Position> initResourceZone(Game game,
 			List<BaseLocation> bBasePos) {
+		// least x, most x, least y, most y
 		int lx = -1, mx = -1, ly = -1, my = -1;
 		
 		// iterate over mineral fields and gas geysers
@@ -160,13 +159,62 @@ public class MapInformation {
 		if ( startingCC_Y > my) {
 		}		
 
-		// left, top, right, bottom
-		resourceZone.add(lx);
-		resourceZone.add(ly);
-		resourceZone.add(mx);
-		resourceZone.add(my);
+		return new Pair<Position,Position>( new Position( lx - 64, ly - 64) , new Position ( mx + 64, my + 64) );
 	}
 
+	public static Pair<Position,Position> initResourceZone2(Game game,
+			BaseLocation base) {
+		List<Unit> resources = new ArrayList<Unit>();
+		for ( Unit potMineral : game.getMinerals() ) {
+			if ( game.isExplored(potMineral.getTilePosition()) ) {
+				if ( BWTA.getGroundDistance( potMineral.getInitialTilePosition(), base.getTilePosition()) < 300 ) {
+					resources.add(potMineral);
+				}
+			}
+		}
+		for ( Unit potGas : game.getGeysers() ) {
+			if ( game.isExplored(potGas.getTilePosition()) ) {
+				if ( BWTA.getGroundDistance( potGas.getInitialTilePosition(), base.getTilePosition()) < 300 ) {
+					resources.add(potGas);
+				}
+			}
+		}		
+		// least x, most x, least y, most y
+		int lx = -1, mx = -1, ly = -1, my = -1;
+		
+		// iterate over mineral fields and gas geysers
+		for ( Unit baseResource : resources ) {
+			if ( baseResource.getX() < lx || lx == -1 ) {
+				lx = baseResource.getX();
+			}
+			if ( baseResource.getX() > mx || mx == -1 ) {
+				mx = baseResource.getX();
+			}
+			if ( baseResource.getY() < ly || ly == -1 ) {
+				ly = baseResource.getY();
+			}
+			if ( baseResource.getY() > my || my == -1 ) {
+				my = baseResource.getY();
+			}
+		}
+
+		int startingCC_X = base.getX();
+		int startingCC_Y = base.getY();
+		if ( startingCC_X < lx) {
+			lx = startingCC_X;
+		}
+		if ( startingCC_X > mx) {
+			mx = startingCC_X;
+		}
+		if ( startingCC_Y < ly) {
+			ly = startingCC_Y;
+		}
+		if ( startingCC_Y > my) {
+		}		
+
+		return new Pair<Position,Position>( new Position( lx - 64, ly - 64) , new Position ( mx + 64, my + 64) );
+	}
+	
 	
 	// bonjwAI baselocations
 	private static List<Position> getStartingLocations(Game game) {

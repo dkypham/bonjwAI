@@ -103,9 +103,7 @@ public class BuildingManager {
 		// check if tech needs to be built
 		else if ( self.supplyUsed() >= techTreeSupply.get(0)*2 ) {
 			// issue build
-			if ( TechManager.buildTech(game, self,
-					bStructMap, 
-					bResources, 
+			if ( TechManager.buildTech(game, self, bStructMap, bResources, 
 					techTreeTech.get(0) ) ) {
 				techTreeTech.remove(0);
 				techTreeSupply.remove(0);
@@ -137,16 +135,6 @@ public class BuildingManager {
 				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
 				
 			}
-			/*
-			else if ( productionMode == 2 ) {
-				if ( !self.hasResearched(TechType.Tank_Siege_Mode) ) {
-					Unit machineShop = MapUnitID.getStruct(game, bStructMap, UnitType.Terran_Machine_Shop);
-					if ( machineShop != null ) {
-						machineShop.research( TechType.Tank_Siege_Mode);
-					}
-				}
-			}
-			*/
 			
 		}
 	}

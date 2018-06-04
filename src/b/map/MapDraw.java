@@ -16,7 +16,7 @@ import bwta.Chokepoint;
 public class MapDraw {
 
 	public static void drawMapInformation(Game game, List<BaseLocation> bBasePos, 
-			List<BaseLocation> eBasePos, List<Integer> resourceZone,
+			List<BaseLocation> eBasePos, Pair<Position,Position> resourceZone,
 			List<Pair<Position, Position>> rallyPoints ) {
 		drawBBasePos(game, bBasePos);
 		if (eBasePos.size() != 0) {
@@ -41,9 +41,8 @@ public class MapDraw {
 		game.drawTextMap(eBasePos.get(2).getX(), eBasePos.get(2).getY() - 10, "eSecondExpo");
 	}
 	
-	public static void drawResourceZone(Game game, List<Integer> resourceZone) {
-		game.drawBoxMap( resourceZone.get(0), resourceZone.get(1), resourceZone.get(2),
-				resourceZone.get(3), Color.Green );
+	public static void drawResourceZone(Game game, Pair<Position,Position> resourceZone) {
+		game.drawBoxMap( resourceZone.first, resourceZone.second, Color.Green );
 	}
 	
 	public static void drawBuildingAreas(Game game, List<BaseLocation> myBases) {

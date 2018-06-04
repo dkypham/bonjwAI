@@ -66,8 +66,7 @@ public class BonjwAI extends DefaultBWListener {
 	private int mineralSetup = -1;
 	
 	// resourceZone - coordinates for resources
-	private List<Integer> resourceZone = new ArrayList<Integer>();
-	//private List<Integer> buildZone = new ArrayList<Integer>();
+	private Pair<Position,Position> resourceZone = new Pair<Position,Position>();
 	
 	private List<Position> drawStructPos = new ArrayList<Position>();
 	private List<String> drawStructLabel = new ArrayList<String>();
@@ -129,8 +128,9 @@ public class BonjwAI extends DefaultBWListener {
 		 * -initResourceZone: find nobuild zone
 		 * -findMineralSetup: find position of minerals relative to startingCC
 		 */
-		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, resourceZone, mineralSetup);
+		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, mineralSetup);
 		System.out.println("Mineral setup: " + mineralSetup);
+		resourceZone = MapInformation.initResourceZone2(game, bBasePos.get(0) );
 		
 		ScoutManager.initializeScoutQueue(scoutQueue, bBasePos );
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);

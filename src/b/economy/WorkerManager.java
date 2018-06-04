@@ -232,5 +232,13 @@ public class WorkerManager {
 		}
 	}
 	
-	
+	public static int getNumWorkersInBase( Game game, Player self, Multimap<UnitType, Integer> bArmyMap ) {
+		List<Integer> arraySCV = (List<Integer>) bArmyMap.get(UnitType.Terran_SCV);
+		for ( Integer SCVID : arraySCV ) {
+			
+			
+		}
+		
+		return 1;
+	}
 }
