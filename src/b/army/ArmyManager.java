@@ -82,14 +82,14 @@ public class ArmyManager {
 					// rallypoint 0
 					if ( rallyPointMode == 0 ) {
 						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(0));
-						if ( !MapInformation.checkIfInRegion2( uMarine.getPosition() , rallyPoints.get(0) )) {
+						if ( !MapInformation.checkIfInRegion( uMarine.getPosition() , rallyPoints.get(0) )) {
 							uMarine.move( rallyPoint );
 						}
 					}
 					// rallypoiny 1
 					else if ( rallyPointMode == 1 ) {
 						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(1));
-						if ( !MapInformation.checkIfInRegion2( uMarine.getPosition() , rallyPoints.get(1) )) {
+						if ( !MapInformation.checkIfInRegion( uMarine.getPosition() , rallyPoints.get(1) )) {
 							uMarine.move( rallyPoint );
 						}
 					}

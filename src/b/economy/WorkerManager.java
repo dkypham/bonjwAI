@@ -1,5 +1,6 @@
 package b.economy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,10 +9,13 @@ import com.google.common.collect.Multimap;
 
 import b.ai.BonjwAI;
 import b.idmap.MapUnitID;
+import b.map.MapInformation;
 import b.structure.BuildingManager;
 import b.structure.BuildingPlacement;
 import bwapi.Game;
+import bwapi.Pair;
 import bwapi.Player;
+import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -232,13 +236,28 @@ public class WorkerManager {
 		}
 	}
 	
-	public static int getNumWorkersInBase( Game game, Player self, Multimap<UnitType, Integer> bArmyMap ) {
+	public static Pair<int,int> getNumWorkersInBase( Game game, Player self, Pair<Position,Position> miningRegion,
+			Multimap<UnitType, Integer> bArmyMap ) {
+		List<Integer> arrayValidSCV = new ArrayList<Integer>();
 		List<Integer> arraySCV = (List<Integer>) bArmyMap.get(UnitType.Terran_SCV);
 		for ( Integer SCVID : arraySCV ) {
-			
+			if ( MapInformation.checkIfInRegion( game.getUnit(SCVID).getPosition() , miningRegion  ) ) {
+				arrayValidSCV.add( SCVID );
+			}
 			
 		}
+		int numMineralMiners = 0;
+		int numGasMiners = 0;
+		for ( Integer validSCVID : arrayValidSCV ) {
+			Unit SCV = game.getUnit(validSCVID);
+			if ( SCV.isGatheringMinerals() ) {
+				numMineralMiners++;
+			}
+			if ( SCV.isGatheringGas() ) {
+				numGasMiners++;
+			}
+		}
 		
-		return 1;
+		return new Pair<int,int> (numMineralMiners, numGasMiners);
 	}
 }

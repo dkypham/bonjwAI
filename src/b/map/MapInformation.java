@@ -365,14 +365,14 @@ public class MapInformation {
 				new Position( rightSide.getX() + 60, rightSide.getY() + 60 )) );
 	}
 	
-	public static boolean checkIfInRegion( Position pos, Position topLeft, Position bottomRight ) {
+	public static boolean checkIfInRegion2( Position pos, Position topLeft, Position bottomRight ) {
 		int posX = pos.getX();
 		int posY = pos.getY();
 		
 		return ( posX > topLeft.getX() && posX < bottomRight.getX() && posY > topLeft.getY() && posY < bottomRight.getY() );
 	}
 	
-	public static boolean checkIfInRegion2( Position pos, Pair<Position,Position> pair ) {
+	public static boolean checkIfInRegion( Position pos, Pair<Position,Position> pair ) {
 		Position topLeft = pair.first;
 		Position bottomRight = pair.second;
 		int posX = pos.getX();
