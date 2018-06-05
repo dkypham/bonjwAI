@@ -236,7 +236,7 @@ public class WorkerManager {
 		}
 	}
 	
-	public static Pair<int,int> getNumWorkersInBase( Game game, Player self, Pair<Position,Position> miningRegion,
+	public static Pair<Integer,Integer> getNumWorkersInBase( Game game, Player self, Pair<Position,Position> miningRegion,
 			Multimap<UnitType, Integer> bArmyMap ) {
 		List<Integer> arrayValidSCV = new ArrayList<Integer>();
 		List<Integer> arraySCV = (List<Integer>) bArmyMap.get(UnitType.Terran_SCV);
@@ -257,7 +257,6 @@ public class WorkerManager {
 				numGasMiners++;
 			}
 		}
-		
-		return new Pair<int,int> (numMineralMiners, numGasMiners);
+		return new Pair<Integer,Integer>(numMineralMiners, numGasMiners);
 	}
 }

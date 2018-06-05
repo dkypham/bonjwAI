@@ -66,7 +66,7 @@ public class BonjwAI extends DefaultBWListener {
 	private int mineralSetup = -1;
 	
 	// resourceZone - coordinates for resources
-	private Pair<Position,Position> resourceZone = new Pair<Position,Position>();
+	private Pair<Position,Position> mainBaseResourceZone = new Pair<Position,Position>();
 	
 	private List<Position> drawStructPos = new ArrayList<Position>();
 	private List<String> drawStructLabel = new ArrayList<String>();
@@ -130,7 +130,7 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, mineralSetup);
 		System.out.println("Mineral setup: " + mineralSetup);
-		resourceZone = MapInformation.initResourceZone2(game, bBasePos.get(0) );
+		mainBaseResourceZone = MapInformation.initResourceZone2(game, bBasePos.get(0) );
 		
 		ScoutManager.initializeScoutQueue(scoutQueue, bBasePos );
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
@@ -279,17 +279,11 @@ public class BonjwAI extends DefaultBWListener {
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 
 		// Implement without persistent data	
-		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZone, rallyPoints);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued );
+		MapDraw.drawMapInformation(game, bBasePos, eBasePos, mainBaseResourceZone, rallyPoints);		
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued, mainBaseResourceZone );
 	
 		//testing
-		//MapDraw.drawChokePointRegion(game, chokepointList );
-		MapDraw.drawRallyPoints(game, rallyPoints);
-		//System.out.println(buildOrderStruct.get(0));
-		//System.out.println(buildOrderSupply.get(0));
 		
-		//game.drawTextMap( , arg1);
-
 	}
 
 	public void onEnd() {

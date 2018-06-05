@@ -6,11 +6,13 @@ import java.util.List;
 import com.google.common.collect.Multimap;
 
 import b.ai.BonjwAIGame;
+import b.economy.WorkerManager;
 import b.idmap.MapUnitID;
 import b.map.MapDraw;
 import b.map.MapInformation;
 import bwapi.Color;
 import bwapi.Game;
+import bwapi.Pair;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.TechType;
@@ -31,7 +33,8 @@ public class DrawUI {
 			List<Position> drawStructPos,
 			List<String> drawStructLabel,
 			int productionMode, 
-			int[] timeBuildIssued ) {
+			int[] timeBuildIssued,
+			Pair<Position,Position> mainBaseResourceZone ) {
 		
 		// Column 1
 		
@@ -52,6 +55,10 @@ public class DrawUI {
 		game.drawTextScreen( 10,  40, "current game time: " + game.elapsedTime() );
 		game.drawTextScreen( 10,  50, "timeBuildIssued: " + timeBuildIssued[0] );
 		
+		
+		Pair<Integer,Integer> mainBaseWorkersDist = WorkerManager.getNumWorkersInBase(game, self, mainBaseResourceZone, bArmyMap);
+		game.drawTextScreen( 10,  60, "main base mineral miners: " + mainBaseWorkersDist.first);
+		game.drawTextScreen( 10,  70, "main base gas miners: " + mainBaseWorkersDist.second);		
 		
 		// Row 9-10: buildOrderStruct + buildOrderSupply
 		drawNextBuilding(game, buildOrderStruct, buildOrderSupply);
