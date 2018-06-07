@@ -271,6 +271,8 @@ public class BuildingManager {
 			}
 		}
 		return false;
+		
+		
 	}
 	
 	// function to build marines

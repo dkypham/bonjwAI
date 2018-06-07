@@ -66,7 +66,7 @@ public class BonjwAI extends DefaultBWListener {
 	private int mineralSetup = -1;
 	
 	// resourceZone - coordinates for resources
-	private Pair<Position,Position> mainBaseResourceZone = new Pair<Position,Position>();
+	//private Pair<Position,Position> mainBaseResourceZone = new Pair<Position,Position>();
 	
 	private List<Position> drawStructPos = new ArrayList<Position>();
 	private List<String> drawStructLabel = new ArrayList<String>();
@@ -80,6 +80,8 @@ public class BonjwAI extends DefaultBWListener {
 	private List<Position> scoutQueue = new ArrayList<Position>();
 	
 	private List<Chokepoint> chokepointList = new ArrayList<Chokepoint>();
+	
+	private ArrayList<Pair<Position,Position>> resourceZones = new ArrayList<Pair<Position,Position>>();
 	
 	int[] timeBuildIssued = {0};
 	
@@ -130,7 +132,7 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, mineralSetup);
 		System.out.println("Mineral setup: " + mineralSetup);
-		mainBaseResourceZone = MapInformation.initResourceZone2(game, bBasePos.get(0) );
+		resourceZones.add( MapInformation.initResourceZone2(game, bBasePos.get(0) ) );
 		
 		ScoutManager.initializeScoutQueue(scoutQueue, bBasePos );
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
@@ -279,8 +281,8 @@ public class BonjwAI extends DefaultBWListener {
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 
 		// Implement without persistent data	
-		MapDraw.drawMapInformation(game, bBasePos, eBasePos, mainBaseResourceZone, rallyPoints);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued, mainBaseResourceZone );
+		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZones.get(0), rallyPoints);		
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued, resourceZones.get(0) );
 	
 		//testing
 		
