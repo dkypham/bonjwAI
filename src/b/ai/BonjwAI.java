@@ -81,7 +81,7 @@ public class BonjwAI extends DefaultBWListener {
 	
 	private List<Chokepoint> chokepointList = new ArrayList<Chokepoint>();
 	
-	private ArrayList<Pair<Position,Position>> resourceZones = new ArrayList<Pair<Position,Position>>();
+	private List<Pair<Position,Position>> miningRegionsList = new ArrayList<Pair<Position,Position>>();
 	
 	int[] timeBuildIssued = {0};
 	
@@ -132,7 +132,7 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, mineralSetup);
 		System.out.println("Mineral setup: " + mineralSetup);
-		resourceZones.add( MapInformation.initResourceZone2(game, bBasePos.get(0) ) );
+		miningRegionsList.add( MapInformation.initResourceZone2(game, bBasePos.get(0) ) );
 		
 		ScoutManager.initializeScoutQueue(scoutQueue, bBasePos );
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
@@ -251,7 +251,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * --buildingProduction()	>	build marines/medics when conditions are met
 		 */
 		//BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
-		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup, timeBuildIssued );
+		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup, timeBuildIssued, miningRegionsList );
 		productionMode = BuildingManager.updateProductionMode(game, bArmyMap, bArmyMap, productionMode);
 		
 		// Army Manager:
@@ -281,8 +281,8 @@ public class BonjwAI extends DefaultBWListener {
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 
 		// Implement without persistent data	
-		MapDraw.drawMapInformation(game, bBasePos, eBasePos, resourceZones.get(0), rallyPoints);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued, resourceZones.get(0) );
+		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList.get(0), rallyPoints);		
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued, miningRegionsList );
 	
 		//testing
 		

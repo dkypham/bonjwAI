@@ -34,7 +34,7 @@ public class DrawUI {
 			List<String> drawStructLabel,
 			int productionMode, 
 			int[] timeBuildIssued,
-			Pair<Position,Position> mainBaseResourceZone ) {
+			List<Pair<Position, Position>> miningRegionsList ) {
 		
 		// Column 1
 		
@@ -56,7 +56,7 @@ public class DrawUI {
 		game.drawTextScreen( 10,  50, "timeBuildIssued: " + timeBuildIssued[0] );
 		
 		
-		Pair<Integer,Integer> mainBaseWorkersDist = WorkerManager.getNumWorkersInBase(game, self, mainBaseResourceZone, bArmyMap);
+		Pair<Integer,Integer> mainBaseWorkersDist = WorkerManager.getNumWorkersInBase(game, self, miningRegionsList.get(0), bArmyMap);
 		game.drawTextScreen( 10,  60, "main base mineral miners: " + mainBaseWorkersDist.first);
 		game.drawTextScreen( 10,  70, "main base gas miners: " + mainBaseWorkersDist.second);		
 		

@@ -14,6 +14,7 @@ import b.economy.WorkerManager;
 import b.idmap.MapUnitID;
 import bwapi.Color;
 import bwapi.Game;
+import bwapi.Pair;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.TechType;
@@ -72,7 +73,8 @@ public class BuildingManager {
 			List<TechType> techTreeTech,
 			List<Integer> techTreeSupply,
 			int mineralSetup,
-			int[] timeBuildIssued ) {
+			int[] timeBuildIssued,
+			List<Pair<Position,Position>> miningRegionsList ) {
 		// check if something needs to be built at this supply
 		if ( self.supplyUsed() == buildOrderSupply.get(0)*2 ) {
 			
@@ -126,13 +128,13 @@ public class BuildingManager {
 			}
 			// issue build
 			if ( productionMode == 0 ) {
-				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
+				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources, miningRegionsList);
 			}
 			else if ( productionMode == 1 ) {
-				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);	
+				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources, miningRegionsList);	
 			}
 			else if ( productionMode == 2 ) {
-				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources);
+				buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources, miningRegionsList);
 				
 			}
 			
@@ -208,14 +210,15 @@ public class BuildingManager {
 	public static void buildUnit( Game game, Player self, 			
 			Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap,
-			int productionMode, ArrayList<Integer> bResources ) {
+			int productionMode, ArrayList<Integer> bResources,
+			List<Pair<Position,Position>> miningRegionsList ) {
 		if ( productionMode == 0 ) {
-			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources) ) {
+			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources, miningRegionsList) ) {
 				return;
 			}	
 		}
 		if ( productionMode == 1 ) {
-			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources) ) {
+			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources, miningRegionsList) ) {
 				return;
 			}
 			if ( buildMarines(game, self, bArmyMap, bStructMap, bResources) ) {
@@ -223,7 +226,7 @@ public class BuildingManager {
 			}
 		}
 		if ( productionMode == 2 ) {
-			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources) ) {
+			if ( buildWorkers(game, self, bArmyMap, bStructMap, bResources, miningRegionsList) ) {
 				return;
 			}
 			if ( buildTanks(game, self, bArmyMap, bStructMap, bResources) ) {
@@ -258,7 +261,8 @@ public class BuildingManager {
 	public static boolean buildWorkers(Game game, Player self, 
 			Multimap<UnitType, Integer> bArmyMap, 
 			Multimap<UnitType, Integer> bStructMap,
-			ArrayList<Integer> bResources ) {
+			ArrayList<Integer> bResources,
+			List<Pair<Position,Position>> miningRegionsList ) {
 		int SCVcount = bArmyMap.get(UnitType.Terran_SCV).size();
 		boolean needSupply = SupplyManager.needSupplyCheck(self, bResources.get(5));
 		int reservedMinerals = bResources.get(1);	
@@ -272,7 +276,15 @@ public class BuildingManager {
 		}
 		return false;
 		
-		
+		//iterate through each base
+		// assumes CC array is in order of starting base->expo->2nd expo
+		//int baseNum = 0;
+		//for ( Integer CCID : bStructMap.get(UnitType.Terran_Command_Center ) ) {
+		//	int mineralMiners = WorkerManager.getNumWorkersInBase(game, self, miningRegionsList.get(baseNum), bArmyMap).first;
+		//	baseNum++;
+		//}
+		// for each base check number of workers
+		// if less than 20 order than cc to build an scv
 	}
 	
 	// function to build marines
