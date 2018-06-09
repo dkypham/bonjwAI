@@ -20,7 +20,14 @@ import bwta.Chokepoint;
 
 public class MapInformation {
 	
-	
+	public static void updateMapInformation(Game game, List<Pair<Position, Position>> miningRegionsList, 
+			ArrayList<BaseLocation> bBasePos) {
+		
+		if ( miningRegionsList.size() == 1 && MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
+			miningRegionsList.add(MapInformation.initResourceZone2(game, bBasePos.get(0) ) );
+		}
+		
+	}
 	
 	// On initialization: 
 	// populate resourceZone
@@ -404,6 +411,7 @@ public class MapInformation {
 		}
 		return false;
 	}
+
 	
 	
 }

@@ -279,6 +279,8 @@ public class BonjwAI extends DefaultBWListener {
 		 * 								some if low
 		 */
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
+		
+		MapInformation.updateMapInformation(game, miningRegionsList, bBasePos);
 
 		// Implement without persistent data	
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList.get(0), rallyPoints);		
