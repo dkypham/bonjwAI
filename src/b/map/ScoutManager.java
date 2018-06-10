@@ -46,14 +46,14 @@ public class ScoutManager {
 		}
 		
 		// update scout queue
-		if ( game.getFrameCount() % 100 == 0 ) {
+		//if ( game.getFrameCount() % 100 == 0 ) {
 			if ( self.supplyTotal() > 24 && scoutQueue.size() == 1 ) {
 				if ( MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
 					
 					scoutQueue.remove( 0 );	
 				}
 			}
-		}
+		//}
 	}
 	
 	// assign a scout

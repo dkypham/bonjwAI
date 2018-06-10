@@ -403,10 +403,12 @@ public class MapInformation {
 	// if there exists a mineral patch within a certain distance from base, then it is considered scouted
 	// distance of 300 found by testing startlocation distances
 	public static boolean checkIfExpoIsExplored( Game game, BaseLocation base ) {
-		for (Unit minerals : game.getMinerals()) {
-			if (minerals.isVisible() ) {
-				if ( BWTA.getGroundDistance( base.getTilePosition() , minerals.getTilePosition()) < 300.0 ) {
-					return true;
+		if ( game.isExplored(base.getTilePosition()) ) {
+			for (Unit minerals : game.getMinerals()) {
+				if (minerals.isVisible() ) {
+					if ( BWTA.getGroundDistance( base.getTilePosition() , minerals.getTilePosition()) < 300.0 ) {
+						return true;
+					}
 				}
 			}
 		}

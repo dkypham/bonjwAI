@@ -280,8 +280,10 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 		
-		MapInformation.updateMapInformation(game, miningRegionsList, bBasePos);
+		if ( game.getFrameCount() % 100 == 0 ) {
 
+			MapInformation.updateMapInformation(game, miningRegionsList, bBasePos);
+		}
 		// Implement without persistent data	
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList, rallyPoints);		
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued, miningRegionsList );
