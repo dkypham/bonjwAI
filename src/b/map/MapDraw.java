@@ -16,13 +16,13 @@ import bwta.Chokepoint;
 public class MapDraw {
 
 	public static void drawMapInformation(Game game, List<BaseLocation> bBasePos, 
-			List<BaseLocation> eBasePos, Pair<Position,Position> resourceZone,
+			List<BaseLocation> eBasePos, List<Pair<Position,Position>> miningRegionsList,
 			List<Pair<Position, Position>> rallyPoints ) {
 		drawBBasePos(game, bBasePos);
 		if (eBasePos.size() != 0) {
 			MapDraw.drawEBasePos(game, eBasePos);
 		}
-		drawResourceZone(game, resourceZone);
+		drawResourceZone(game, miningRegionsList);
 		//drawAllChokepoints(game);
 		drawRallyPoints( game, rallyPoints );
 	}
@@ -41,8 +41,13 @@ public class MapDraw {
 		game.drawTextMap(eBasePos.get(2).getX(), eBasePos.get(2).getY() - 10, "eSecondExpo");
 	}
 	
-	public static void drawResourceZone(Game game, Pair<Position,Position> resourceZone) {
-		game.drawBoxMap( resourceZone.first, resourceZone.second, Color.Green );
+	public static void drawResourceZone(Game game, List<Pair<Position,Position>> miningRegionsList ) {
+		game.drawBoxMap( miningRegionsList.get(0).first, miningRegionsList.get(0).second, Color.Green );
+		
+		if ( miningRegionsList.size() == 2 ) {
+			game.drawBoxMap( miningRegionsList.get(1).first, miningRegionsList.get(1).second, Color.Green );
+		}
+		
 	}
 	
 	public static void drawBuildingAreas(Game game, List<BaseLocation> myBases) {
