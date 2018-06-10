@@ -45,7 +45,8 @@ public class MapDraw {
 		game.drawBoxMap( miningRegionsList.get(0).first, miningRegionsList.get(0).second, Color.Green );
 		
 		if ( miningRegionsList.size() == 2 ) {
-			game.drawBoxMap( miningRegionsList.get(1).first, miningRegionsList.get(1).second, Color.Green );
+			//System.out.println("Drawing 2nd mining region");
+			game.drawBoxMap( miningRegionsList.get(1).first, miningRegionsList.get(1).second, Color.Blue );
 		}
 		
 	}

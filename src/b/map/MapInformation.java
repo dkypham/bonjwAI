@@ -24,7 +24,8 @@ public class MapInformation {
 			ArrayList<BaseLocation> bBasePos) {
 		
 		if ( miningRegionsList.size() == 1 && MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
-			miningRegionsList.add(MapInformation.initResourceZone2(game, bBasePos.get(0) ) );
+			miningRegionsList.add(MapInformation.initResourceZone2(game, bBasePos.get(1) ) );
+			System.out.println("Added 2nd mining region");
 		}
 		
 	}

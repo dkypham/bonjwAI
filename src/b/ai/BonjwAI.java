@@ -227,7 +227,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * 								enemy struct
 		 * 
 		 */
-		ScoutManager.updateScoutManager(game, self, bArmyMap, eStructPos, eBasePos, bBasePos, scoutQueue);
+		ScoutManager.updateScoutManager(game, self, bArmyMap, eStructPos, eBasePos, bBasePos, scoutQueue, miningRegionsList);
 
 		// Supply Manager:
 		/*

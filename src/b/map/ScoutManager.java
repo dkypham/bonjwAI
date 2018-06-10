@@ -7,6 +7,7 @@ import com.google.common.collect.Multimap;
 
 import b.ai.BonjwAI;
 import bwapi.Game;
+import bwapi.Pair;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.Unit;
@@ -20,7 +21,8 @@ public class ScoutManager {
 			ArrayList<Position> eStructPos, 
 			ArrayList<BaseLocation> eBasePos, 
 			ArrayList<BaseLocation> bBasePos,
-			List<Position> scoutQueue) {
+			List<Position> scoutQueue,
+			List<Pair<Position,Position>> miningRegionsList ) {
 		
 		// if no scout assigned
 		if ( bArmyMap.get( UnitType.Protoss_Scout ).size() == 0 ) {
@@ -47,6 +49,7 @@ public class ScoutManager {
 		if ( game.getFrameCount() % 100 == 0 ) {
 			if ( self.supplyTotal() > 24 && scoutQueue.size() == 1 ) {
 				if ( MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
+					
 					scoutQueue.remove( 0 );	
 				}
 			}
