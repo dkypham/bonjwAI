@@ -32,7 +32,7 @@ public class BuildingOrder {
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 32);
 		
 		// so game doesn't crash when build order is finished
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, UnitType.Special_Terran_Flag_Beacon, 200);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, UnitType.Special_Terran_Flag_Beacon, 500);
 	}
 	
 	public static void addToBuildOrder(List<UnitType> buildOrderStruct,

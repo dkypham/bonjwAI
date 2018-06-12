@@ -113,6 +113,16 @@ public class BuildingManager {
 			}
 		}
 		
+		// check if supply needed, then build supply depot
+		else if ( buildOrderSupply.get(0) == 500 && SupplyManager.needSupplyCheck(self, bResources.get(5)) ) {
+			if ( buildStruct(game, self, bBasePos, mineralSetup, 
+					bArmyMap, bStructMap, bResources, 
+					SD, 
+					productionMode ) ) {
+				return;
+			}
+		}
+		
 		// if not, issue build of ONE unit
 		else {
 			if ( buildOrderSupply.get(0) < 0 ) {
@@ -288,9 +298,9 @@ public class BuildingManager {
 			int mineralMiners = WorkerManager.getNumWorkersInBase(game, self, miningRegionsList.get(baseNum), bArmyMap).first;
 			
 			//System.out.println("CC ID: " + CCID + " has " + mineralMiners + " workers");
-			
+			//System.out.println("need supply: " + needSupply);
 			if ( CCUnit.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && mineralMiners < 20 ) {
-				System.out.println("trying to build scv from CC " + CCID);
+				//System.out.println("trying to build scv from CC " + CCID);
 				CCUnit.train(UnitType.Terran_SCV);		
 				return true;
 			}
