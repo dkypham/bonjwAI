@@ -170,6 +170,21 @@ public class MapInformation {
 		return new Pair<Position,Position>( new Position( lx - 64, ly - 64) , new Position ( mx + 64, my + 64) );
 	}
 
+	public static boolean validBaseExplored( Game game, BaseLocation base ) {
+		int numMinerals = 0;
+		for ( Unit potMineral : game.getMinerals() ) {
+			if ( game.isExplored(potMineral.getTilePosition()) ) {
+				if ( BWTA.getGroundDistance( potMineral.getInitialTilePosition(), base.getTilePosition()) < 300 ) {
+					numMinerals++;
+				}
+			}
+		}	
+		if ( numMinerals > 6 ) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static Pair<Position,Position> initResourceZone2(Game game,
 			BaseLocation base) {
 		List<Unit> resources = new ArrayList<Unit>();
@@ -404,13 +419,16 @@ public class MapInformation {
 	// distance of 300 found by testing startlocation distances
 	public static boolean checkIfExpoIsExplored( Game game, BaseLocation base ) {
 		if ( game.isExplored(base.getTilePosition()) ) {
-			for (Unit minerals : game.getMinerals()) {
-				if (minerals.isVisible() ) {
-					if ( BWTA.getGroundDistance( base.getTilePosition() , minerals.getTilePosition()) < 300.0 ) {
-						return true;
-					}
-				}
+			if ( validBaseExplored( game, base ) ) {
+				return true;
 			}
+			//for (Unit minerals : game.getMinerals()) {
+			//	if (minerals.isVisible() ) {
+			//		if ( BWTA.getGroundDistance( base.getTilePosition() , minerals.getTilePosition()) < 300.0 ) {
+			//			return true;
+			//		}
+			//	}
+			//}
 		}
 		return false;
 	}

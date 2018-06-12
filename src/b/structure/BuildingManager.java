@@ -263,6 +263,7 @@ public class BuildingManager {
 			Multimap<UnitType, Integer> bStructMap,
 			ArrayList<Integer> bResources,
 			List<Pair<Position,Position>> miningRegionsList ) {
+		/*
 		int SCVcount = bArmyMap.get(UnitType.Terran_SCV).size();
 		boolean needSupply = SupplyManager.needSupplyCheck(self, bResources.get(5));
 		int reservedMinerals = bResources.get(1);	
@@ -275,16 +276,28 @@ public class BuildingManager {
 			}
 		}
 		return false;
+		*/
 		
 		//iterate through each base
 		// assumes CC array is in order of starting base->expo->2nd expo
-		//int baseNum = 0;
-		//for ( Integer CCID : bStructMap.get(UnitType.Terran_Command_Center ) ) {
-		//	int mineralMiners = WorkerManager.getNumWorkersInBase(game, self, miningRegionsList.get(baseNum), bArmyMap).first;
-		//	baseNum++;
-		//}
-		// for each base check number of workers
-		// if less than 20 order than cc to build an scv
+		int baseNum = 0;
+		boolean needSupply = SupplyManager.needSupplyCheck(self, bResources.get(5));
+		int reservedMinerals = bResources.get(1);	
+		for ( Integer CCID : bStructMap.get(UnitType.Terran_Command_Center ) ) {
+			Unit CCUnit = game.getUnit(CCID);
+			int mineralMiners = WorkerManager.getNumWorkersInBase(game, self, miningRegionsList.get(baseNum), bArmyMap).first;
+			
+			//System.out.println("CC ID: " + CCID + " has " + mineralMiners + " workers");
+			
+			if ( CCUnit.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && mineralMiners < 20 ) {
+				System.out.println("trying to build scv from CC " + CCID);
+				CCUnit.train(UnitType.Terran_SCV);		
+				return true;
+			}
+			//System.out.println("Number of SCVs in base " + baseNum + ": " + mineralMiners );
+			baseNum++;
+		}
+		return false;
 	}
 	
 	// function to build marines
