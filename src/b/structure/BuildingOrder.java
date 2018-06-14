@@ -17,6 +17,7 @@ public class BuildingOrder {
 	
 	public static void initializeBuildOrder(List<UnitType> buildOrderStruct,
 			List<Integer> buildOrderSupply ) {
+		/*
 		// default implementation: 1 Fact FE
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 8);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, Barracks, 12);
@@ -24,12 +25,23 @@ public class BuildingOrder {
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 15);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 16);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, MachineShop, 20);
-		//addToBuildOrder( buildOrderStruct, buildOrderSupply, UnitType.Terran_Siege_Tank_Tank_Mode, 22);
-		//addToBuildOrder( buildOrderStruct, buildOrderSupply, TechType.Tank_Siege_Mode, 22);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 23);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, CC, 28);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 28);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 32);
+		*/
+		
+		// 1 Rax FE
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 9);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, Barracks, 11);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, CC, 15);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, Refinery, 15);	
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 16);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 21);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 28);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, MachineShop, 30);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 32);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, MachineShop, 39);
 		
 		// so game doesn't crash when build order is finished
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, UnitType.Special_Terran_Flag_Beacon, 500);

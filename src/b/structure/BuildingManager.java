@@ -299,7 +299,8 @@ public class BuildingManager {
 			
 			//System.out.println("CC ID: " + CCID + " has " + mineralMiners + " workers");
 			//System.out.println("need supply: " + needSupply);
-			if ( CCUnit.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && mineralMiners < 20 ) {
+			if ( CCUnit.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && mineralMiners < 20
+					&& CCUnit.canTrain( UnitType.Terran_SCV ) ) {
 				//System.out.println("trying to build scv from CC " + CCID);
 				CCUnit.train(UnitType.Terran_SCV);		
 				return true;
@@ -320,8 +321,10 @@ public class BuildingManager {
 		int reservedMinerals = bResources.get(1);	
 		for ( Integer barracksID : bStructMap.get(UnitType.Terran_Barracks) ) {
 			Unit barracks = game.getUnit(barracksID);
-			if (barracks.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false && 
-					marineCount < (16 * MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks) ) ) {
+			if (barracks.isTraining() == false && (self.minerals()-reservedMinerals) >= 50 && needSupply == false 
+					&& barracks.canTrain( UnitType.Terran_Marine )
+					//&& marineCount < (16 * MapUnitID.getStructCount(game, bArmyMap, bStructMap, Barracks) ) 
+					) {
 				barracks.train(UnitType.Terran_Marine);
 				return true;
 			}

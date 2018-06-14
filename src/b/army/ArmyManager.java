@@ -35,6 +35,7 @@ public class ArmyManager {
 	public static int dFromPoint = 200;
 	public static UnitType marine = UnitType.Terran_Marine;
 	public static UnitType medic = UnitType.Terran_Medic;	
+	public static UnitType tank = UnitType.Terran_Siege_Tank_Tank_Mode;
 	
 	public static int MEDIC_MIN_DISTANCE = 10;
 	
@@ -49,6 +50,8 @@ public class ArmyManager {
 		
 		boolean underAttack = BonjwAIGame.updateUnderAttack(game, bArmymMap, bStructMap);
 		updateMarines(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
+				rallyPoints);
+		updateTanks(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
 				rallyPoints);
 	}
 	
@@ -110,6 +113,47 @@ public class ArmyManager {
 				uMedic.follow(medic.getTarget());
 				System.out.println("assigned targegt for medic");
 			}
+		}
+	}
+	
+	public static void updateTanks(Game game, Player self,
+			Multimap<UnitType, Integer> bArmyMap,
+			List<BaseLocation> bBasePos,
+			ArrayList<Position> enemyBuildingMemory,
+			boolean underAttack, int rallyPointMode, List<Pair<Position, Position>> rallyPoints ) {
+		
+		List<Integer> tankIDmap = (List<Integer>) bArmyMap.get(tank);
+
+		for ( Integer tankID : tankIDmap ) {
+			Unit uTank = game.getUnit(tankID);
+
+			// if not under attack, go to rally point
+			if ( underAttack == false ) {
+				
+				// rally, but do not interrupt current command
+				if ( !uTank.isMoving() ) {
+					// rallypoint 0
+					if ( rallyPointMode == 0 ) {
+						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(0));
+						if ( !MapInformation.checkIfInRegion( uTank.getPosition() , rallyPoints.get(0) )) {
+							uTank.move( rallyPoint );
+						}
+					}
+					// rallypoiny 1
+					else if ( rallyPointMode == 1 ) {
+						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(1));
+						if ( !MapInformation.checkIfInRegion( uTank.getPosition() , rallyPoints.get(1) )) {
+							uTank.move( rallyPoint );
+						}
+						if ( MapInformation.checkIfInRegion( uTank.getPosition() , rallyPoints.get(1) ) && uTank.canSiege() ) {
+							uTank.siege();
+						}
+					}
+				}
+				
+				// 
+			}
+
 		}
 	}
 	

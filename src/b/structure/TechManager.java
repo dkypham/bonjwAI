@@ -20,9 +20,13 @@ public class TechManager {
 	// build order Array.
 	public static void initializeTechOrder(List<TechType> techTreeTech,
 			List<Integer> techTreeSupply ) {
+		/*
 		// default implementation: 1 Fact FE
 		addToTechOrder( techTreeTech, techTreeSupply, TechType.Tank_Siege_Mode, 22);
-
+		*/
+		
+		addToTechOrder( techTreeTech, techTreeSupply, TechType.Tank_Siege_Mode, 31);
+		
 		// so game doesn't crash when build order is finished
 		addToTechOrder( techTreeTech, techTreeSupply, TechType.None, 500);
 	}

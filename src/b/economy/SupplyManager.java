@@ -46,22 +46,30 @@ public class SupplyManager {
 
 		// need supply at 8/10
 		if (self.supplyTotal() <= 20) {
-			if (effectiveSupply - self.supplyUsed() <= 4) {
+			if (effectiveSupply - self.supplyUsed() <= 2) {
 				needSupply = true;
 			} 
 		}
-		if (self.supplyTotal() <= 60) {
-			return false; 
+		else if (self.supplyTotal() <= 60) {
+			if (effectiveSupply - self.supplyUsed() < 4) {
+				needSupply = true;
+			}
 		}
-		// 50-99 supply: need supply at -6
+		// 30 to 50 supply: need supply at -6
 		else if (self.supplyTotal() < 100) {
 			if (effectiveSupply - self.supplyUsed() < 12) {
 				needSupply = true;
 			}
 		}
-		// 100-200 supply: need supply at -8
+		// 50 to 100 supply: need supply at -8
 		else if (self.supplyTotal() < 200) {
 			if (effectiveSupply - self.supplyUsed() < 16) {
+				needSupply = true;
+			}
+		}
+		// 100 to 150 supply: need supply at -8
+		else if (self.supplyTotal() < 200) {
+			if (effectiveSupply - self.supplyUsed() < 20) {
 				needSupply = true;
 			}
 		}	
