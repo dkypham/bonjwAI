@@ -167,7 +167,7 @@ public class MapInformation {
 		if ( startingCC_Y > my) {
 		}		
 
-		return new Pair<Position,Position>( new Position( lx - 64, ly - 64) , new Position ( mx + 64, my + 64) );
+		return new Pair<Position,Position>( new Position( lx - 32, ly - 32) , new Position ( mx + 32, my + 32) );
 	}
 
 	public static boolean validBaseExplored( Game game, BaseLocation base ) {
@@ -235,7 +235,7 @@ public class MapInformation {
 		if ( startingCC_Y > my) {
 		}		
 
-		return new Pair<Position,Position>( new Position( lx - 64, ly - 64) , new Position ( mx + 64, my + 64) );
+		return new Pair<Position,Position>( new Position( lx - 32, ly - 32) , new Position ( mx + 32, my + 32) );
 	}
 	
 	
@@ -384,8 +384,8 @@ public class MapInformation {
 		leftSide = secondChokepoint.getSides().first;
 		rightSide = secondChokepoint.getSides().second;
 		
-		rallyPoints.add( new Pair<Position, Position>( new Position( leftSide.getX() - 60, leftSide.getY() - 60 ), 
-				new Position( rightSide.getX() + 60, rightSide.getY() + 60 )) );
+		rallyPoints.add( new Pair<Position, Position>( new Position( leftSide.getX() - 64, leftSide.getY() - 96 ), 
+				new Position( rightSide.getX() + 64, rightSide.getY() + 96 )) );
 	}
 	
 	public static boolean checkIfInRegion2( Position pos, Position topLeft, Position bottomRight ) {
