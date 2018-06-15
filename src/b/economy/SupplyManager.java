@@ -76,6 +76,7 @@ public class SupplyManager {
 		else {
 			needSupply = false;
 		}
+		
 		return needSupply;
 	}
 }

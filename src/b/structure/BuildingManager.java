@@ -111,6 +111,9 @@ public class BuildingManager {
 				techTreeSupply.remove(0);
 				return;
 			}
+			
+			// need to build tech but did not, so return
+			return;
 		}
 		
 		// check if supply needed, then build supply depot

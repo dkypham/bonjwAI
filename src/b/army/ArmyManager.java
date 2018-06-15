@@ -53,6 +53,8 @@ public class ArmyManager {
 				rallyPoints);
 		updateTanks(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
 				rallyPoints);
+		//updateArmy(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
+		//		rallyPoints);
 	}
 	
 	private static int updateRallyPoint( Multimap<UnitType, Integer> bStructMap ) {
@@ -66,6 +68,45 @@ public class ArmyManager {
 		return 0;
 	}
 
+	public static void updateArmy(Game game, Player self,
+			Multimap<UnitType, Integer> bArmyMap,
+			List<BaseLocation> bBasePos,
+			ArrayList<Position> enemyBuildingMemory,
+			boolean underAttack, int rallyPointMode, List<Pair<Position, Position>> rallyPoints ) {
+		
+		List<Integer> armyList = (List<Integer>) bArmyMap.get(marine);
+		armyList.addAll( bArmyMap.get(tank));
+		
+		for ( Integer armyUnitID : armyList ) {
+			Unit uArmy = game.getUnit(armyUnitID);
+
+			// if not under attack, go to rally point
+			if ( underAttack == false ) {
+				
+				// rally, but do not interrupt current command
+				if ( !uArmy.isMoving() ) {
+					// rallypoint 0
+					if ( rallyPointMode == 0 ) {
+						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(0));
+						if ( !MapInformation.checkIfInRegion( uArmy.getPosition() , rallyPoints.get(0) )) {
+							uArmy.move( rallyPoint );
+						}
+					}
+					// rallypoiny 1
+					else if ( rallyPointMode == 1 ) {
+						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(1));
+						if ( !MapInformation.checkIfInRegion( uArmy.getPosition() , rallyPoints.get(1) )) {
+							uArmy.move( rallyPoint );
+						}
+					}
+				}
+				
+				// 
+			}
+
+		}
+	}
+	
 	public static void updateMarines(Game game, Player self,
 			Multimap<UnitType, Integer> bArmyMap,
 			List<BaseLocation> bBasePos,
@@ -77,29 +118,7 @@ public class ArmyManager {
 		for ( Integer marineID : marineIDMap ) {
 			Unit uMarine = game.getUnit(marineID);
 
-			// if not under attack, go to rally point
-			if ( underAttack == false ) {
-				
-				// rally, but do not interrupt current command
-				if ( !uMarine.isMoving() ) {
-					// rallypoint 0
-					if ( rallyPointMode == 0 ) {
-						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(0));
-						if ( !MapInformation.checkIfInRegion( uMarine.getPosition() , rallyPoints.get(0) )) {
-							uMarine.move( rallyPoint );
-						}
-					}
-					// rallypoiny 1
-					else if ( rallyPointMode == 1 ) {
-						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(1));
-						if ( !MapInformation.checkIfInRegion( uMarine.getPosition() , rallyPoints.get(1) )) {
-							uMarine.move( rallyPoint );
-						}
-					}
-				}
-				
-				// 
-			}
+			// action specifically for marine
 
 		}
 	}
@@ -127,32 +146,7 @@ public class ArmyManager {
 		for ( Integer tankID : tankIDmap ) {
 			Unit uTank = game.getUnit(tankID);
 
-			// if not under attack, go to rally point
-			if ( underAttack == false ) {
-				
-				// rally, but do not interrupt current command
-				if ( !uTank.isMoving() ) {
-					// rallypoint 0
-					if ( rallyPointMode == 0 ) {
-						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(0));
-						if ( !MapInformation.checkIfInRegion( uTank.getPosition() , rallyPoints.get(0) )) {
-							uTank.move( rallyPoint );
-						}
-					}
-					// rallypoiny 1
-					else if ( rallyPointMode == 1 ) {
-						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(1));
-						if ( !MapInformation.checkIfInRegion( uTank.getPosition() , rallyPoints.get(1) )) {
-							uTank.move( rallyPoint );
-						}
-						if ( MapInformation.checkIfInRegion( uTank.getPosition() , rallyPoints.get(1) ) && uTank.canSiege() ) {
-							uTank.siege();
-						}
-					}
-				}
-				
-				// 
-			}
+			// action specifically for tanks
 
 		}
 	}
