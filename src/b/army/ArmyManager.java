@@ -53,8 +53,8 @@ public class ArmyManager {
 				rallyPoints);
 		updateTanks(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
 				rallyPoints);
-		//updateArmy(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
-		//		rallyPoints);
+		updateArmy(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
+				rallyPoints);
 	}
 	
 	private static int updateRallyPoint( Multimap<UnitType, Integer> bStructMap ) {
@@ -79,12 +79,14 @@ public class ArmyManager {
 		
 		for ( Integer armyUnitID : armyList ) {
 			Unit uArmy = game.getUnit(armyUnitID);
-
+			if ( !uArmy.canMove() ) {
+				continue;
+			}
 			// if not under attack, go to rally point
 			if ( underAttack == false ) {
 				
 				// rally, but do not interrupt current command
-				if ( !uArmy.isMoving() ) {
+				if ( !uArmy.isMoving() || !uArmy.isAttacking() ) {
 					// rallypoint 0
 					if ( rallyPointMode == 0 ) {
 						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(0));

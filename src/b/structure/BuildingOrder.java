@@ -34,8 +34,8 @@ public class BuildingOrder {
 		// 1 Rax FE
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 9);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, Barracks, 11);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, CC, 15);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, Refinery, 15);	
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, CC, 16);
+		addToBuildOrder( buildOrderStruct, buildOrderSupply, Refinery, 16);	
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 16);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 21);
 		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 28);

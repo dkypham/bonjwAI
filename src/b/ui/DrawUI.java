@@ -60,6 +60,12 @@ public class DrawUI {
 		game.drawTextScreen( 10,  60, "main base mineral miners: " + mainBaseWorkersDist.first);
 		game.drawTextScreen( 10,  70, "main base gas miners: " + mainBaseWorkersDist.second);		
 		
+		if ( miningRegionsList.size() == 2 ) { 
+			Pair<Integer,Integer> secondBaseWorkersDist = WorkerManager.getNumWorkersInBase(game, self, miningRegionsList.get(1), bArmyMap);
+			game.drawTextScreen( 10,  80, "second base mineral miners: " + secondBaseWorkersDist.first);
+			game.drawTextScreen( 10,  90, "second base gas miners: " + secondBaseWorkersDist.second);	
+		}
+		
 		// Row 9-10: buildOrderStruct + buildOrderSupply
 		drawNextBuilding(game, buildOrderStruct, buildOrderSupply);
 		drawNextTech(game, techTreeTech, techTreeSupply);
