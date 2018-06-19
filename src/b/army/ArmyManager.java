@@ -99,12 +99,24 @@ public class ArmyManager {
 							uArmy.move( rallyPoint );
 						}
 					}
-					// rallypoiny 1
+					// rallypoint 1
 					else if ( rallyPointMode == 1 ) {
 						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(1));
 						if ( !MapInformation.checkIfInRegion( uArmy.getPosition() , rallyPoints.get(1) )) {
 							uArmy.move( rallyPoint );
 						}
+						
+						// if unit is in rallypoint 1
+						if ( MapInformation.checkIfInRegion( uArmy.getPosition() , rallyPoints.get(1) )) {
+							// if unit is a tank
+							if ( uArmy.getType() == UnitType.Terran_Siege_Tank_Tank_Mode ) {
+								// if can siege, then siege
+								if ( uArmy.canSiege() ) {
+									uArmy.siege();
+								}
+							}
+						}
+						
 					}
 				}
 				

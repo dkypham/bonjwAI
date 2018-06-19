@@ -85,6 +85,8 @@ public class BonjwAI extends DefaultBWListener {
 	
 	int[] timeBuildIssued = {0};
 	
+	private List<Pair<TilePosition,TilePosition>> noBuildZones = new ArrayList<Pair<TilePosition,TilePosition>>();
+	
 	// building stuff
 	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
 	
@@ -251,7 +253,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * --buildingProduction()	>	build marines/medics when conditions are met
 		 */
 		//BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
-		if ( game.getFrameCount() % 31 == 0 ) {
+		if ( game.getFrameCount() % 16 == 0 ) {
 			BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup, timeBuildIssued, miningRegionsList );
 		}
 		productionMode = BuildingManager.updateProductionMode(game, bArmyMap, bArmyMap, productionMode);
@@ -284,7 +286,6 @@ public class BonjwAI extends DefaultBWListener {
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 		
 		if ( game.getFrameCount() % 100 == 0 ) {
-
 			MapInformation.updateMapInformation(game, miningRegionsList, bBasePos);
 		}
 		// Implement without persistent data	
@@ -292,6 +293,27 @@ public class BonjwAI extends DefaultBWListener {
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued, miningRegionsList );
 	
 		//testing
+		if ( noBuildZones.size() == 0 ) {
+			TilePosition test11 = new TilePosition(2,2);
+			TilePosition test12 = new TilePosition(4,4);
+			TilePosition test21 = new TilePosition(5,2);
+			TilePosition test22 = new TilePosition(7,4);
+			TilePosition test31 = new TilePosition(2,4);
+			TilePosition test32 = new TilePosition(4,5);
+			TilePosition test41 = new TilePosition(5,4);
+			TilePosition test42 = new TilePosition(7,6);
+			TilePosition test51 = new TilePosition(2,2);
+			TilePosition test52 = new TilePosition(3,4);
+			
+			noBuildZones.add( new Pair<TilePosition, TilePosition>( test11, test12) );
+			noBuildZones.add( new Pair<TilePosition, TilePosition>( test21, test22) );
+			noBuildZones.add( new Pair<TilePosition, TilePosition>( test31, test32) );
+			noBuildZones.add( new Pair<TilePosition, TilePosition>( test41, test42) );
+			noBuildZones.add( new Pair<TilePosition, TilePosition>( test51, test52) );
+		}
+		
+		TilePosition buildTile = new TilePosition(3,3);
+		BuildingPlacement.checkIfInNoBuildZone(game, buildTile, UnitType.Terran_Academy, noBuildZones);
 		
 	}
 

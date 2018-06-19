@@ -9,6 +9,8 @@ import b.ai.BonjwAI;
 import b.economy.WorkerManager;
 import b.idmap.MapUnitID;
 import bwapi.Game;
+import bwapi.Pair;
+import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -247,6 +249,36 @@ public class BuildingPlacement {
 		}
 		
 		return pos;
+	}
+	
+	public static boolean checkIfInNoBuildZone( Game game, TilePosition buildTile, UnitType building, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
+		TilePosition btTL = new TilePosition( buildTile.getX(), buildTile.getY() );
+		TilePosition btBR = new TilePosition( buildTile.getX() + building.tileWidth(), buildTile.getY() + building.tileHeight());
+		
+		System.out.println("Region to check: TL = " + btTL + ", BR = " + btBR);
+		for ( Pair<TilePosition,TilePosition> potZone : noBuildZones ) {	
+			// check if in bounds
+			TilePosition potZoneTL = potZone.first;
+			TilePosition potZoneBR = potZone.second;
+			
+			System.out.print("test region is: TL = " + potZoneTL + ", BR = " + potZoneBR + " is: ");
+			if ( btTL.getX() < potZoneBR.getX() 	// A.X1 < B.X2
+					&& btBR.getX() > potZoneTL.getX()	// A.X2 > B.X1
+					&& btTL.getY() < potZoneBR.getY()	// A.Y1 < B.Y2
+					&& btBR.getY() > potZoneTL.getY() ) {	// A.Y2 > B.Y1
+				System.out.println("NOT VALID");
+			}
+			else {
+				System.out.println("valid");
+			}
+			//System.out.println("buildTile" + buildTile);
+			//System.out.println( topLeft );
+			//System.out.println( topRight );
+			//System.out.println( botLeft );
+			//System.out.println( botRight );
+			
+		}
+		return false;
 	}
 	
 }
