@@ -25,7 +25,7 @@ public class TechManager {
 		addToTechOrder( techTreeTech, techTreeSupply, TechType.Tank_Siege_Mode, 22);
 		*/
 		
-		addToTechOrder( techTreeTech, techTreeSupply, TechType.Tank_Siege_Mode, 31);
+		addToTechOrder( techTreeTech, techTreeSupply, TechType.Tank_Siege_Mode, 41);
 		
 		// so game doesn't crash when build order is finished
 		addToTechOrder( techTreeTech, techTreeSupply, TechType.None, 500);

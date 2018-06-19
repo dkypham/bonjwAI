@@ -74,19 +74,24 @@ public class ArmyManager {
 			ArrayList<Position> enemyBuildingMemory,
 			boolean underAttack, int rallyPointMode, List<Pair<Position, Position>> rallyPoints ) {
 		
-		List<Integer> armyList = (List<Integer>) bArmyMap.get(marine);
+		List<Integer> armyList = new ArrayList<Integer>();
+		armyList.addAll( bArmyMap.get(marine));
 		armyList.addAll( bArmyMap.get(tank));
 		
 		for ( Integer armyUnitID : armyList ) {
 			Unit uArmy = game.getUnit(armyUnitID);
+			
 			if ( !uArmy.canMove() ) {
 				continue;
 			}
 			// if not under attack, go to rally point
 			if ( underAttack == false ) {
 				
+				// if unit is attacking
+				
+				// if unit is not moving
 				// rally, but do not interrupt current command
-				if ( !uArmy.isMoving() || !uArmy.isAttacking() ) {
+				if ( !uArmy.isMoving() ) {
 					// rallypoint 0
 					if ( rallyPointMode == 0 ) {
 						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(0));

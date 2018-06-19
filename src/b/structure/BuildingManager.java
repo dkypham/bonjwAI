@@ -43,26 +43,6 @@ public class BuildingManager {
 	static int MAX_MEDIC_COUNT = 8;
 	
 	// BUILDING MANAGER
-	/*
-	public static void buildingManager( Game game, Player self,
-				Multimap<UnitType, Integer> bArmyMap,
-				Multimap<UnitType, Integer> bStructMap,
-				ArrayList<Integer> bResources, 
-				ArrayList<BaseLocation> bBasePos,
-				int mineralSetup,
-				List<Position> drawStructPos,
-				List<String> drawStructLabel,
-				List<UnitType> buildOrderStruct,
-				List<Integer> buildOrderSupply) {
-		//getBuildingPlan(game,self,bArmyMap, bStructMap, drawStructPos,drawStructLabel,mineralSetup, bBasePos);
-		buildWorkers(game,self,bArmyMap,bStructMap,bResources);
-		//updateSupplyManager(game,self,bArmyMap,bStructMap,bResources, bBasePos, mineralSetup);
-		//refineryManager(game,self,bArmyMap,bStructMap,bResources);
-		//academyManager(game,self,bArmyMap,bStructMap,bResources);
-		//barracksManager(game,self,bArmyMap,bStructMap,bResources, bBasePos, mineralSetup);
-		//factoryManager(game,self,bArmyMap,bStructMap,bResources);
-	}
-	*/
 	public static void buildingManager( Game game, Player self,
 			ArrayList<BaseLocation> bBasePos,
 			Multimap<UnitType, Integer> bArmyMap,
@@ -77,7 +57,6 @@ public class BuildingManager {
 			List<Pair<Position,Position>> miningRegionsList ) {
 		// check if something needs to be built at this supply
 		if ( self.supplyUsed() == buildOrderSupply.get(0)*2 ) {
-			
 			// issue build
 			if ( buildStruct(game, self, bBasePos, mineralSetup, 
 					bArmyMap, bStructMap, bResources, 

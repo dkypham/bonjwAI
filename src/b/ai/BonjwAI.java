@@ -251,7 +251,9 @@ public class BonjwAI extends DefaultBWListener {
 		 * --buildingProduction()	>	build marines/medics when conditions are met
 		 */
 		//BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
-		BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup, timeBuildIssued, miningRegionsList );
+		if ( game.getFrameCount() % 31 == 0 ) {
+			BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup, timeBuildIssued, miningRegionsList );
+		}
 		productionMode = BuildingManager.updateProductionMode(game, bArmyMap, bArmyMap, productionMode);
 		
 		// Army Manager:
@@ -263,8 +265,9 @@ public class BonjwAI extends DefaultBWListener {
 		 * --updateMarines()	>	marine targeting and micro
 		 * 
 		 */
-		ArmyManager.updateArmyManager(game, self, bArmyMap, bStructMap, bBasePos, 
-				eStructPos, rallyPoints);
+		//if ( game.getFrameCount() % 33 == 0 ) {
+			ArmyManager.updateArmyManager(game, self, bArmyMap, bStructMap, bBasePos, eStructPos, rallyPoints);
+		//}
 		//armyManager.updateMedics(medics);
 		
 		
