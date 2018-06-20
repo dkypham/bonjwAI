@@ -169,6 +169,7 @@ public class BonjwAI extends DefaultBWListener {
 			break;
 		case 2:
 			MapUnitID.addStructToIDMap(bStructMap, u, buildOrderStruct, buildOrderSupply);
+			BuildingPlacement.addToNoBuildZone(noBuildZones, u);
 			break;
 		default:
 			break;
@@ -289,31 +290,10 @@ public class BonjwAI extends DefaultBWListener {
 			MapInformation.updateMapInformation(game, miningRegionsList, bBasePos);
 		}
 		// Implement without persistent data	
-		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList, rallyPoints);		
+		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList, rallyPoints, noBuildZones);		
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued, miningRegionsList );
 	
 		//testing
-		if ( noBuildZones.size() == 0 ) {
-			TilePosition test11 = new TilePosition(2,2);
-			TilePosition test12 = new TilePosition(4,4);
-			TilePosition test21 = new TilePosition(5,2);
-			TilePosition test22 = new TilePosition(7,4);
-			TilePosition test31 = new TilePosition(2,4);
-			TilePosition test32 = new TilePosition(4,5);
-			TilePosition test41 = new TilePosition(5,4);
-			TilePosition test42 = new TilePosition(7,6);
-			TilePosition test51 = new TilePosition(2,2);
-			TilePosition test52 = new TilePosition(3,4);
-			
-			noBuildZones.add( new Pair<TilePosition, TilePosition>( test11, test12) );
-			noBuildZones.add( new Pair<TilePosition, TilePosition>( test21, test22) );
-			noBuildZones.add( new Pair<TilePosition, TilePosition>( test31, test32) );
-			noBuildZones.add( new Pair<TilePosition, TilePosition>( test41, test42) );
-			noBuildZones.add( new Pair<TilePosition, TilePosition>( test51, test52) );
-		}
-		
-		TilePosition buildTile = new TilePosition(3,3);
-		BuildingPlacement.checkIfInNoBuildZone(game, buildTile, UnitType.Terran_Academy, noBuildZones);
 		
 	}
 
@@ -322,3 +302,29 @@ public class BonjwAI extends DefaultBWListener {
 	}
 
 }
+
+// old testing stuff
+// noBuildZone / BuildingPlacement.checkIfInNoBuildZone
+	/*
+	if ( noBuildZones.size() == 0 ) {
+	TilePosition test11 = new TilePosition(2,2);
+	TilePosition test12 = new TilePosition(4,4);
+	TilePosition test21 = new TilePosition(5,2);
+	TilePosition test22 = new TilePosition(7,4);
+	TilePosition test31 = new TilePosition(2,4);
+	TilePosition test32 = new TilePosition(4,5);
+	TilePosition test41 = new TilePosition(5,4);
+	TilePosition test42 = new TilePosition(7,6);
+	TilePosition test51 = new TilePosition(2,2);
+	TilePosition test52 = new TilePosition(3,4);
+	
+	noBuildZones.add( new Pair<TilePosition, TilePosition>( test11, test12) );
+	noBuildZones.add( new Pair<TilePosition, TilePosition>( test21, test22) );
+	noBuildZones.add( new Pair<TilePosition, TilePosition>( test31, test32) );
+	noBuildZones.add( new Pair<TilePosition, TilePosition>( test41, test42) );
+	noBuildZones.add( new Pair<TilePosition, TilePosition>( test51, test52) );
+	}
+	
+	TilePosition buildTile = new TilePosition(3,3);
+	BuildingPlacement.checkIfInNoBuildZone(game, buildTile, UnitType.Terran_Academy, noBuildZones);
+	*/

@@ -49,6 +49,7 @@ public class BuildingPlacement {
 			}
 		}
 
+		/*
 		if (buildingType == UnitType.Terran_Factory) {
 			while ((maxDist < stopDist) && (ret == null)) {
 				for (int i = aroundTile.getX() - maxDist; i <= aroundTile.getX() + maxDist; i++) {
@@ -78,7 +79,7 @@ public class BuildingPlacement {
 				game.printf("Unable to find suitable build position for " + buildingType.toString());
 			return ret;
 		}
-
+		 */
 		while ((maxDist < stopDist) && (ret == null)) {
 			for (int i = aroundTile.getX() - maxDist; i <= aroundTile.getX() + maxDist; i++) {
 				for (int j = aroundTile.getY() - maxDist; j <= aroundTile.getY() + maxDist; j++) {
@@ -251,11 +252,12 @@ public class BuildingPlacement {
 		return pos;
 	}
 	
+	// return true if IS overlapping/is in a build zone
 	public static boolean checkIfInNoBuildZone( Game game, TilePosition buildTile, UnitType building, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
 		TilePosition btTL = new TilePosition( buildTile.getX(), buildTile.getY() );
 		TilePosition btBR = new TilePosition( buildTile.getX() + building.tileWidth(), buildTile.getY() + building.tileHeight());
 		
-		System.out.println("Region to check: TL = " + btTL + ", BR = " + btBR);
+		//System.out.println("Region to check: TL = " + btTL + ", BR = " + btBR);
 		for ( Pair<TilePosition,TilePosition> potZone : noBuildZones ) {	
 			// check if in bounds
 			TilePosition potZoneTL = potZone.first;
@@ -266,19 +268,37 @@ public class BuildingPlacement {
 					&& btBR.getX() > potZoneTL.getX()	// A.X2 > B.X1
 					&& btTL.getY() < potZoneBR.getY()	// A.Y1 < B.Y2
 					&& btBR.getY() > potZoneTL.getY() ) {	// A.Y2 > B.Y1
-				System.out.println("NOT VALID");
+				//System.out.println("NOT VALID");
+				return true;
 			}
-			else {
-				System.out.println("valid");
-			}
-			//System.out.println("buildTile" + buildTile);
-			//System.out.println( topLeft );
-			//System.out.println( topRight );
-			//System.out.println( botLeft );
-			//System.out.println( botRight );
+			//else {
+				//System.out.println("valid");
+			//}
 			
 		}
 		return false;
+	}
+	
+	public static void addToNoBuildZone( List<Pair<TilePosition,TilePosition>> noBuildZones, Unit building ) {
+		UnitType uT = building.getType();
+		
+		if ( uT == UnitType.Terran_Comsat_Station || uT == UnitType.Terran_Machine_Shop || uT == UnitType.Terran_Control_Tower ) {
+			return;
+		}
+		
+		if ( uT == UnitType.Terran_Command_Center || uT == UnitType.Terran_Factory ) {
+			addAddOnToNoBuildZone( noBuildZones, building);
+		}
+		
+		TilePosition topLeft = building.getTilePosition();
+		TilePosition botRight = new TilePosition( building.getTilePosition().getX() + (uT.width()/32) + 1,building.getTilePosition().getY() + (uT.height()/32) + 1 );
+		noBuildZones.add( new Pair<TilePosition,TilePosition>( topLeft, botRight ));
+	}
+	
+	public static void addAddOnToNoBuildZone( List<Pair<TilePosition,TilePosition>> noBuildZones, Unit building ) {
+		TilePosition topLeft = new TilePosition( building.getTilePosition().getX() + 4, building.getTilePosition().getY() + 1 );
+		TilePosition botRight = new TilePosition( topLeft.getX() + 2, topLeft.getY() + 2 );
+		noBuildZones.add( new Pair<TilePosition,TilePosition>( topLeft, botRight ));
 	}
 	
 }

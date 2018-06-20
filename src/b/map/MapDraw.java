@@ -17,7 +17,7 @@ public class MapDraw {
 
 	public static void drawMapInformation(Game game, List<BaseLocation> bBasePos, 
 			List<BaseLocation> eBasePos, List<Pair<Position,Position>> miningRegionsList,
-			List<Pair<Position, Position>> rallyPoints ) {
+			List<Pair<Position, Position>> rallyPoints, List<Pair<TilePosition, TilePosition>> noBuildZones ) {
 		drawBBasePos(game, bBasePos);
 		if (eBasePos.size() != 0) {
 			MapDraw.drawEBasePos(game, eBasePos);
@@ -25,8 +25,16 @@ public class MapDraw {
 		drawResourceZone(game, miningRegionsList);
 		//drawAllChokepoints(game);
 		drawRallyPoints( game, rallyPoints );
+		drawNoBuildZones( game, noBuildZones );
 	}
 	
+	private static void drawNoBuildZones(Game game, List<Pair<TilePosition, TilePosition>> noBuildZones) {
+		for ( Pair<TilePosition,TilePosition> buildZone : noBuildZones ) {
+			game.drawBoxMap( buildZone.first.toPosition(), buildZone.second.toPosition(), Color.Red );
+		}
+		
+	}
+
 	public static void drawBBasePos(Game game, 
 			List<BaseLocation> bBasePos) {
 		game.drawTextMap(bBasePos.get(0).getX(), bBasePos.get(0).getY() - 10, "bMain");
@@ -51,10 +59,6 @@ public class MapDraw {
 		
 	}
 	
-	public static void drawBuildingAreas(Game game, List<BaseLocation> myBases) {
-		
-	}
-	
 	// given top left TP, get position of bottom right TP so that we can use game.drawBoxScreen
 	public static Position getBottomRightBuildZonePos( TilePosition tpos, int right, int below ) {
 		TilePosition tempTpos = new TilePosition( tpos.getX() + right, tpos.getY() + below );
@@ -69,7 +73,7 @@ public class MapDraw {
 	
 	public static void drawRallyPoints( Game game, List<Pair<Position, Position>> rallyPoints ) {
 		for ( Pair<Position,Position> pair : rallyPoints ) {
-			game.drawBoxMap( pair.first, pair.second, Color.Red );
+			game.drawBoxMap( pair.first, pair.second, Color.Orange );
 			game.drawTextMap( MapInformation.retCenterOfPair(pair), "rallyPoint" );
 		}
 	}
