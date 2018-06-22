@@ -21,11 +21,12 @@ import bwta.Chokepoint;
 public class MapInformation {
 	
 	public static void updateMapInformation(Game game, List<Pair<Position, Position>> miningRegionsList, 
-			ArrayList<BaseLocation> bBasePos) {
+			ArrayList<BaseLocation> bBasePos, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
 		
 		if ( miningRegionsList.size() == 1 && MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
 			miningRegionsList.add(MapInformation.initResourceZone2(game, bBasePos.get(1) ) );
 			System.out.println("Added 2nd mining region");
+			noBuildZones.add( new Pair<TilePosition, TilePosition>( miningRegionsList.get(1).first.toTilePosition(), miningRegionsList.get(1).second.toTilePosition()));
 		}
 		
 	}
@@ -431,6 +432,15 @@ public class MapInformation {
 			//}
 		}
 		return false;
+	}
+
+	public static void initializeNoBuildZones(List<Pair<TilePosition, TilePosition>> noBuildZones,
+			List<Pair<Position, Position>> rallyPoints, List<Pair<Position, Position>> miningRegionsList) {
+		noBuildZones.add( new Pair<TilePosition, TilePosition>( miningRegionsList.get(0).first.toTilePosition(), miningRegionsList.get(0).second.toTilePosition()));
+		
+		for ( Pair<Position,Position> rallyPoint : rallyPoints ) {
+			noBuildZones.add( new Pair<TilePosition, TilePosition>( rallyPoint.first.toTilePosition(), rallyPoint.second.toTilePosition()));
+		}
 	}
 
 	

@@ -141,7 +141,7 @@ public class BonjwAI extends DefaultBWListener {
 		TechManager.initializeTechOrder(techTreeTech, techTreeSupply);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
 		MapInformation.initializeRallyPoints( rallyPoints, bBasePos.get(0).getTilePosition(), bBasePos.get(1).getTilePosition() );
-	
+		MapInformation.initializeNoBuildZones( noBuildZones, rallyPoints, miningRegionsList );
 		// testing
 		MapInformation.initializeChokepointList(chokepointList, bBasePos.get(0).getTilePosition());
 
@@ -287,7 +287,7 @@ public class BonjwAI extends DefaultBWListener {
 		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
 		
 		if ( game.getFrameCount() % 100 == 0 ) {
-			MapInformation.updateMapInformation(game, miningRegionsList, bBasePos);
+			MapInformation.updateMapInformation(game, miningRegionsList, bBasePos, noBuildZones);
 		}
 		// Implement without persistent data	
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList, rallyPoints, noBuildZones);		

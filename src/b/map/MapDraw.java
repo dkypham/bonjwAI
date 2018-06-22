@@ -22,7 +22,7 @@ public class MapDraw {
 		if (eBasePos.size() != 0) {
 			MapDraw.drawEBasePos(game, eBasePos);
 		}
-		drawResourceZone(game, miningRegionsList);
+		//drawResourceZone(game, miningRegionsList);
 		//drawAllChokepoints(game);
 		drawRallyPoints( game, rallyPoints );
 		drawNoBuildZones( game, noBuildZones );
