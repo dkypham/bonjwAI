@@ -255,7 +255,7 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		//BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
 		if ( game.getFrameCount() % 16 == 0 ) {
-			BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup, timeBuildIssued, miningRegionsList );
+			BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup, timeBuildIssued, miningRegionsList, noBuildZones );
 		}
 		productionMode = BuildingManager.updateProductionMode(game, bArmyMap, bArmyMap, productionMode);
 		

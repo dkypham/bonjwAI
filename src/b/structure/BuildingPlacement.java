@@ -34,7 +34,8 @@ public class BuildingPlacement {
 	}
 		
 	// NAIVE BUILDING PLACEMENT IMPLEMENTATION
-	public static TilePosition getBuildTile(Game game, Unit builder, UnitType buildingType, TilePosition aroundTile) {
+	public static TilePosition getBuildTile(Game game, Unit builder, UnitType buildingType, TilePosition aroundTile,
+			List<Pair<TilePosition,TilePosition>> noBuildZones ) {
 		TilePosition ret = null;
 		int maxDist = 3;
 		int stopDist = 40;
@@ -49,14 +50,14 @@ public class BuildingPlacement {
 			}
 		}
 
-		/*
-		if (buildingType == UnitType.Terran_Factory) {
+		// if building type is a factory, make sure right two spaces are open
+		if (buildingType == UnitType.Terran_Factory || buildingType == UnitType.Terran_Command_Center || buildingType == UnitType.Terran_Starport) {
 			while ((maxDist < stopDist) && (ret == null)) {
 				for (int i = aroundTile.getX() - maxDist; i <= aroundTile.getX() + maxDist; i++) {
 					for (int j = aroundTile.getY() - maxDist; j <= aroundTile.getY() + maxDist; j++) {
+						// if you can build here and two to the right (if there is space for the add on)
 						if (game.canBuildHere(new TilePosition(i, j), buildingType, builder, false)
-								&& game.canBuildHere(new TilePosition(i+2, j), buildingType, builder, false) 
-								&& game.canBuildHere(new TilePosition(i-2, j), buildingType, builder, false) ) {
+								&& game.canBuildHere(new TilePosition(i+2, j), buildingType, builder, false) ) {
 							// units that are blocking the tile
 							boolean unitsInWay = false;
 							for (Unit u : game.getAllUnits()) {
@@ -67,7 +68,9 @@ public class BuildingPlacement {
 									unitsInWay = true;
 							}
 							if (!unitsInWay) {
-								return new TilePosition(i, j);
+								if ( !isInNoBuildZone( game, new TilePosition(i,j), buildingType, noBuildZones ) ) {
+									return new TilePosition(i, j);
+								}
 							}
 						}
 					}
@@ -79,12 +82,16 @@ public class BuildingPlacement {
 				game.printf("Unable to find suitable build position for " + buildingType.toString());
 			return ret;
 		}
-		 */
+		 
+		// if building doesn't require addon
+		// maxDist = (iterative) how far we are searching, stopDist = (set) max dist we will searched
+		// ret = return tilePosition
 		while ((maxDist < stopDist) && (ret == null)) {
+			// search around the tile in the argument
 			for (int i = aroundTile.getX() - maxDist; i <= aroundTile.getX() + maxDist; i++) {
 				for (int j = aroundTile.getY() - maxDist; j <= aroundTile.getY() + maxDist; j++) {
-					if (game.canBuildHere(new TilePosition(i, j), buildingType, builder, false)
-							&& game.canBuildHere(new TilePosition(i-2, j), buildingType, builder, false) ) {
+					// if you can build here
+					if (game.canBuildHere(new TilePosition(i, j), buildingType, builder, false) ) {
 						// units that are blocking the tile
 						boolean unitsInWay = false;
 						for (Unit u : game.getAllUnits()) {
@@ -95,24 +102,15 @@ public class BuildingPlacement {
 								unitsInWay = true;
 						}
 						if (!unitsInWay) {
-							return new TilePosition(i, j);
-						}
-						// creep for Zerg
-						if (buildingType.requiresCreep()) {
-							boolean creepMissing = false;
-							for (int k = i; k <= i + buildingType.tileWidth(); k++) {
-								for (int l = j; l <= j + buildingType.tileHeight(); l++) {
-									if (!game.hasCreep(k, l))
-										creepMissing = true;
-									break;
-								}
+							// final check, if in any of the noBuildZones
+							if ( !isInNoBuildZone( game, new TilePosition(i,j), buildingType, noBuildZones ) ) {
+								return new TilePosition(i, j);
 							}
-							if (creepMissing)
-								continue;
 						}
 					}
 				}
 			}
+			// iterate maxDist
 			maxDist += 2;
 		}
 
@@ -128,7 +126,8 @@ public class BuildingPlacement {
 	
 	public static TilePosition getBuildPositionSD(Game game, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap,
-			ArrayList<BaseLocation> bBasePos, int mineralSetup) {
+			ArrayList<BaseLocation> bBasePos, int mineralSetup,
+			List<Pair<TilePosition,TilePosition>> noBuildZones ) {
 		// if num SD == 0
 		// getBuildPositionFirstSD
 		if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, SD) == 0 ) {
@@ -139,7 +138,7 @@ public class BuildingPlacement {
 		
 		Unit SCV = 	game.getUnit(WorkerManager.getFreeSCVID(game,bArmyMap));
 		
-		return getBuildTile(game, SCV, SD, bBasePos.get(0).getTilePosition() );
+		return getBuildTile(game, SCV, SD, bBasePos.get(0).getTilePosition(), noBuildZones );
 	}
 	
 	// Building implementation for 1st supply depot
@@ -253,7 +252,7 @@ public class BuildingPlacement {
 	}
 	
 	// return true if IS overlapping/is in a build zone
-	public static boolean checkIfInNoBuildZone( Game game, TilePosition buildTile, UnitType building, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
+	public static boolean isInNoBuildZone( Game game, TilePosition buildTile, UnitType building, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
 		TilePosition btTL = new TilePosition( buildTile.getX(), buildTile.getY() );
 		TilePosition btBR = new TilePosition( buildTile.getX() + building.tileWidth(), buildTile.getY() + building.tileHeight());
 		
@@ -263,7 +262,7 @@ public class BuildingPlacement {
 			TilePosition potZoneTL = potZone.first;
 			TilePosition potZoneBR = potZone.second;
 			
-			System.out.print("test region is: TL = " + potZoneTL + ", BR = " + potZoneBR + " is: ");
+			//System.out.print("test region is: TL = " + potZoneTL + ", BR = " + potZoneBR + " is: ");
 			if ( btTL.getX() < potZoneBR.getX() 	// A.X1 < B.X2
 					&& btBR.getX() > potZoneTL.getX()	// A.X2 > B.X1
 					&& btTL.getY() < potZoneBR.getY()	// A.Y1 < B.Y2

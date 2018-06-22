@@ -54,14 +54,16 @@ public class BuildingManager {
 			List<Integer> techTreeSupply,
 			int mineralSetup,
 			int[] timeBuildIssued,
-			List<Pair<Position,Position>> miningRegionsList ) {
+			List<Pair<Position,Position>> miningRegionsList,
+			List<Pair<TilePosition,TilePosition>> noBuildZones) {
 		// check if something needs to be built at this supply
 		if ( self.supplyUsed() == buildOrderSupply.get(0)*2 ) {
 			// issue build
 			if ( buildStruct(game, self, bBasePos, mineralSetup, 
 					bArmyMap, bStructMap, bResources, 
 					buildOrderStruct.get(0), 
-					productionMode ) ) {
+					productionMode,
+					noBuildZones) ) {
 				buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
 				//System.out.println(buildOrderStruct.get(0));
 				timeBuildIssued[0] = game.elapsedTime();
@@ -75,7 +77,8 @@ public class BuildingManager {
 			if ( buildStruct(game, self, bBasePos, mineralSetup, 
 					bArmyMap, bStructMap, bResources, 
 					buildOrderStruct.get(0), 
-					productionMode ) ) {
+					productionMode,
+					noBuildZones) ) {
 				buildOrderSupply.set(0, buildOrderSupply.get(0)*-1);
 				timeBuildIssued[0] = game.elapsedTime();
 			}
@@ -100,7 +103,8 @@ public class BuildingManager {
 			if ( buildStruct(game, self, bBasePos, mineralSetup, 
 					bArmyMap, bStructMap, bResources, 
 					SD, 
-					productionMode ) ) {
+					productionMode,
+					noBuildZones) ) {
 				return;
 			}
 		}
@@ -140,7 +144,8 @@ public class BuildingManager {
 			Multimap<UnitType, Integer> bStructMap,
 			ArrayList<Integer> bResources,
 			UnitType struct,
-			int productionMode
+			int productionMode,
+			List<Pair<TilePosition,TilePosition>> noBuildZones
 			) {
 		// check if enough resources
 		if ( !ResourceManager.checkIfEnoughResources(bResources, struct) ) {
@@ -151,7 +156,7 @@ public class BuildingManager {
 		if ( struct == SD ) {
 			// first SD
 			if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, struct) == 0 ) {
-				TilePosition pos = BuildingPlacement.getBuildPositionSD(game, bArmyMap, bStructMap, bBasePos, mineralSetup);
+				TilePosition pos = BuildingPlacement.getBuildPositionSD(game, bArmyMap, bStructMap, bBasePos, mineralSetup, noBuildZones);
 				if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, pos, SD) ) {
 					// update bResources
 					ResourceManager.addBuildingCost( bResources, struct );
@@ -159,9 +164,9 @@ public class BuildingManager {
 				}
 			}
 			else {
-				System.out.println("trying to build 2nd depot");
+				//System.out.println("trying to build 2nd depot");
 				ResourceManager.addBuildingCost( bResources, struct );
-				return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);				
+				return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct, noBuildZones);				
 			}
 		}
 		if ( struct == Barracks ) {
@@ -190,7 +195,7 @@ public class BuildingManager {
 		// general case
 		if ( ResourceManager.checkIfEnoughResources(bResources, struct) ) {
 			ResourceManager.addBuildingCost( bResources, struct );
-			return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct);
+			return WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, struct, noBuildZones);
 		}
 		return false;
 	}
@@ -371,7 +376,8 @@ public class BuildingManager {
 			Multimap<UnitType, Integer> bStructMap,
 			ArrayList<Integer> bResources,
 			ArrayList<BaseLocation> bBasePos,
-			int mineralSetup ) {
+			int mineralSetup,
+			List<Pair<TilePosition,TilePosition>> noBuildZones) {
 		// get number of supply depots
 		int numSupply = MapUnitID.getStructCount(game, bArmyMap, bStructMap, SD);
 
@@ -386,7 +392,7 @@ public class BuildingManager {
 			}
 			else {
 				// default build alg
-				WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, SD);
+				WorkerManager.issueBuild(game, self, bArmyMap, bStructMap, SD, noBuildZones);
 			}
 		}
 	}

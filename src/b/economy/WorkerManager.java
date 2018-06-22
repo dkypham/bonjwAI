@@ -99,7 +99,8 @@ public class WorkerManager {
 	public static boolean issueBuild(Game game, Player self, 
 			Multimap<UnitType, Integer> bArmyMap,
 			Multimap<UnitType, Integer> bStructMap,
-			UnitType struct) {
+			UnitType struct,
+			List<Pair<TilePosition,TilePosition>> noBuildZones) {
 		//if ( bStructMap.containsEntry(building,-1) ) {
 		//	//System.out.println("" + building + "is already being built");
 		//	return;
@@ -108,7 +109,7 @@ public class WorkerManager {
 		Unit SCV = 	game.getUnit(getFreeSCVID(game,bArmyMap));
 		SCV.stop();
 		TilePosition buildTile = BuildingPlacement.getBuildTile(game, SCV, struct,
-				self.getStartLocation());
+				self.getStartLocation(), noBuildZones);
 		if (buildTile != null) {
 			if ( SCV.build(struct, buildTile) ) {
 				//bStructMap.put(building, -1);
