@@ -140,10 +140,7 @@ public class BonjwAI extends DefaultBWListener {
 		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
 		TechManager.initializeTechOrder(techTreeTech, techTreeSupply);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
-		MapInformation.initializeRallyPoints( rallyPoints, bBasePos.get(0).getTilePosition(), bBasePos.get(1).getTilePosition() );
-		MapInformation.initializeNoBuildZones( noBuildZones, rallyPoints, miningRegionsList );
-		// testing
-		MapInformation.initializeChokepointList(chokepointList, bBasePos.get(0).getTilePosition());
+		MapInformation.initializeMapInformation( noBuildZones, rallyPoints, miningRegionsList, chokepointList, bBasePos );
 
 	}
 

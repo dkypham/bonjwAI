@@ -20,6 +20,8 @@ import bwta.Chokepoint;
 
 public class MapInformation {
 	
+
+	
 	public static void updateMapInformation(Game game, List<Pair<Position, Position>> miningRegionsList, 
 			ArrayList<BaseLocation> bBasePos, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
 		
@@ -441,6 +443,16 @@ public class MapInformation {
 		for ( Pair<Position,Position> rallyPoint : rallyPoints ) {
 			noBuildZones.add( new Pair<TilePosition, TilePosition>( rallyPoint.first.toTilePosition(), rallyPoint.second.toTilePosition()));
 		}
+	}
+
+	public static void initializeMapInformation(List<Pair<TilePosition, TilePosition>> noBuildZones,
+			List<Pair<Position, Position>> rallyPoints, List<Pair<Position, Position>> miningRegionsList,
+			List<Chokepoint> chokepointList, ArrayList<BaseLocation> bBasePos ) {
+		// TODO Auto-generated method stub
+		initializeRallyPoints( rallyPoints, bBasePos.get(0).getTilePosition(), bBasePos.get(1).getTilePosition() );
+		initializeNoBuildZones( noBuildZones, rallyPoints, miningRegionsList );
+		// testing
+		initializeChokepointList(chokepointList, bBasePos.get(0).getTilePosition());
 	}
 
 	
