@@ -425,13 +425,6 @@ public class MapInformation {
 			if ( validBaseExplored( game, base ) ) {
 				return true;
 			}
-			//for (Unit minerals : game.getMinerals()) {
-			//	if (minerals.isVisible() ) {
-			//		if ( BWTA.getGroundDistance( base.getTilePosition() , minerals.getTilePosition()) < 300.0 ) {
-			//			return true;
-			//		}
-			//	}
-			//}
 		}
 		return false;
 	}

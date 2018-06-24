@@ -41,22 +41,30 @@ public class ArmyManager {
 	
 	// whole army handler
 	public static void updateArmyManager(Game game, Player self,
-			Multimap<UnitType, Integer> bArmymMap, 
+			Multimap<UnitType, Integer> bArmyMap, 
 			Multimap<UnitType, Integer> bStructMap,
 			List<BaseLocation> bBasePos, 
 			ArrayList<Position> enemyBuildingMemory,
 			List<Pair<Position, Position>> rallyPoints ) {
 		int rallyPointMode = updateRallyPoint(bStructMap);
 		
-		boolean underAttack = BonjwAIGame.updateUnderAttack(game, bArmymMap, bStructMap);
-		updateMarines(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
-				rallyPoints);
-		updateTanks(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
-				rallyPoints);
-		updateArmy(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
-				rallyPoints);
+		boolean underAttack = BonjwAIGame.updateUnderAttack(game, bArmyMap, bStructMap);
+		//updateMarines(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
+		//		rallyPoints);
+		//updateTanks(game, self, bArmymMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
+		//		rallyPoints);
+		boolean shouldAttack = updateShouldAttack(bArmyMap);
+		updateArmy(game, self, bArmyMap, bBasePos, enemyBuildingMemory, underAttack, rallyPointMode, 
+				rallyPoints, shouldAttack);
 	}
 	
+	private static boolean updateShouldAttack(Multimap<UnitType, Integer> bArmyMap) {
+		if ( bArmyMap.get(marine).size() > 10 && bArmyMap.get(tank).size() > 10 ) {
+			return true;
+		}
+		return false;
+	}
+
 	private static int updateRallyPoint( Multimap<UnitType, Integer> bStructMap ) {
 		// 0 means go to first rally point
 		// 1 means go to second rally point...
@@ -72,7 +80,8 @@ public class ArmyManager {
 			Multimap<UnitType, Integer> bArmyMap,
 			List<BaseLocation> bBasePos,
 			ArrayList<Position> enemyBuildingMemory,
-			boolean underAttack, int rallyPointMode, List<Pair<Position, Position>> rallyPoints ) {
+			boolean underAttack, int rallyPointMode, List<Pair<Position, Position>> rallyPoints,
+			boolean shouldAttack ) {
 		
 		List<Integer> armyList = new ArrayList<Integer>();
 		armyList.addAll( bArmyMap.get(marine));
@@ -88,10 +97,16 @@ public class ArmyManager {
 			if ( underAttack == false ) {
 				
 				// if unit is attacking
+				if ( shouldAttack == true ) {
+					if ( !enemyBuildingMemory.isEmpty() ) {
+						uArmy.attack( enemyBuildingMemory.get(0) );
+					}
+				}
+				
 				
 				// if unit is not moving
 				// rally, but do not interrupt current command
-				if ( !uArmy.isMoving() ) {
+				else if ( !uArmy.isMoving() ) {
 					// rallypoint 0
 					if ( rallyPointMode == 0 ) {
 						Position rallyPoint = MapInformation.retCenterOfPair(rallyPoints.get(0));
