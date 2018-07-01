@@ -88,11 +88,11 @@ public class DrawUI {
 		// Column 3: Building counts
 		drawUnitIDs(game, bArmyMap, bStructMap);
 		
-		
+		// TO DO: MOVE TO MapDraw.java
 		// In game: draw unit vectors
-		drawInfo(game, self, bArmyMap, bStructMap);
+		//drawInfo(game, self, bArmyMap, bStructMap);
 		// In game: draw build order zones
-		drawBuildingPlan(game, drawStructPos, drawStructLabel);
+		//drawBuildingPlan(game, drawStructPos, drawStructLabel);
 		
 		drawUnitID(game, bArmyMap );
 	}

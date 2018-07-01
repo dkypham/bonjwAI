@@ -20,17 +20,13 @@ import bwta.Chokepoint;
 
 public class MapInformation {
 	
-
-	
 	public static void updateMapInformation(Game game, List<Pair<Position, Position>> miningRegionsList, 
-			ArrayList<BaseLocation> bBasePos, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
-		
+			ArrayList<BaseLocation> bBasePos, List<Pair<TilePosition,TilePosition>> noBuildZones ) {	
 		if ( miningRegionsList.size() == 1 && MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
 			miningRegionsList.add(MapInformation.initResourceZone2(game, bBasePos.get(1) ) );
 			System.out.println("Added 2nd mining region");
 			noBuildZones.add( new Pair<TilePosition, TilePosition>( miningRegionsList.get(1).first.toTilePosition(), miningRegionsList.get(1).second.toTilePosition()));
 		}
-		
 	}
 	
 	// On initialization: 
