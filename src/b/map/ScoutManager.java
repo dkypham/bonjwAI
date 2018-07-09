@@ -5,80 +5,92 @@ import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-import b.ai.BonjwAI;
+import b.economy.WorkerManager;
 import bwapi.Game;
-import bwapi.Pair;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BaseLocation;
 
+/**
+ * Scout Manager, on each call
+ * 
+ * Assign a scout (SCV) if there is no scout.
+ * 
+ * Check if supply > 12, scout is not attacking, bot is not under attack,
+ * and there are no enemy buildings seen. If so, then scout.
+ * 
+ */
 public class ScoutManager {
 		
+	static String scoutRole = "Scout";
+	
 	public static void updateScoutManager(Game game, Player self,
 			Multimap<UnitType, Integer> bArmyMap, 
+			Multimap<String, Integer> bSpecialRoles, 
 			ArrayList<Position> eStructPos, 
-			ArrayList<BaseLocation> eBasePos, 
-			ArrayList<BaseLocation> bBasePos,
-			List<Position> scoutQueue,
-			List<Pair<Position,Position>> miningRegionsList ) {
+			ArrayList<BaseLocation> bBasePos, // then remove this
+			List<Position> scoutQueue ) {
 		
-		// if no scout assigned
-		if ( bArmyMap.get( UnitType.Protoss_Scout ).size() == 0 ) {
-			ScoutManager.assignScout(game, bArmyMap);
+		// assign a scout if there is no scout
+		if ( bSpecialRoles.get( scoutRole ).size() == 0 ) {
+			WorkerManager.assignScoutSCV(bSpecialRoles, bArmyMap);
 		}
+		Unit scout = getScout( game, bSpecialRoles );
 		
-		Unit scout = getScout( game, bArmyMap );
-		
+		// Check if valid scout and supply > 12
 		if ( scout != null && self.supplyUsed() > 24 ) {
+			// TODO: check if under attack
 			if ( !scout.isAttacking() ) {
+				// if scoutQueue is NOT empty
 				if ( !scoutQueue.isEmpty() ) {	
+					// TODO: update scouting move behavior
 					scout.attack( scoutQueue.get(0) );
 				}
-				// if no enemies struct history seen
-				else if ( eStructPos.size() == 0 && !scout.isAttacking() ) {
+				// if scoutQueue is empty
+				else if ( eStructPos.size() == 0 ) {
+					// TODO: update scouting move behavior
 					ScoutManager.scoutForUnknownEnemy(game, bArmyMap, eStructPos);
 				}	
 			}
-			
 			MapInformation.updateEnemyBuildingMemory(game, eStructPos);
 		}
-		
+
 		// update scout queue
-		//if ( game.getFrameCount() % 100 == 0 ) {
-			if ( self.supplyTotal() > 24 && scoutQueue.size() == 1 ) {
-				if ( MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
-					
-					scoutQueue.remove( 0 );	
-				}
+		if ( self.supplyUsed() > 24 && scoutQueue.size() == 1 ) {
+
+			// if value in scoutQueue is seen, remove it
+			// TODO: check if value 0 of scoutQueue is seen, then remove it
+			if ( MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
+				scoutQueue.remove( 0 );	
 			}
-		//}
+		}
+
 	}
 	
-	// assign a scout
-	public static boolean assignScout(Game game, Multimap<UnitType, Integer> bArmyMap ) {
-			for ( Integer scvID : bArmyMap.get(UnitType.Terran_SCV) ) {
-				Unit SCV = game.getUnit(scvID);
-				if ( !SCV.isConstructing() && !SCV.isCarryingMinerals() 
-					&& !SCV.isGatheringGas() ) {
-					// add scout to bArmyMap
-					bArmyMap.put(UnitType.Protoss_Scout, SCV.getID() );
-					return true;
-				}
-			}
-			return false;
-	}
-	
-	public static Unit getScout(Game game, Multimap<UnitType, Integer> bArmyMap ) {
+	/**
+	 * get scout unit from army multimap
+	 * 
+	 * @param game
+	 * @param bArmyMap - bot's army multimap
+	 * @return
+	 */
+	public static Unit getScout(Game game, Multimap<String, Integer> bRolesMap ) {
 		Unit scout = null;
-		for ( Integer scoutID : bArmyMap.get(UnitType.Protoss_Scout ) ) {
+		for ( Integer scoutID : bRolesMap.get( scoutRole ) ) {
 			scout = game.getUnit(scoutID);
 		}
 		return scout;
 	}
 	
-	// scout for enemy based on unexplored starting locations
+	/**
+	 * scout for enemy based on unexplored starting locations
+	 * 
+	 * @param game
+	 * @param bArmyMap
+	 * @param eStructPos
+	 */
 	public static void scoutForUnknownEnemy(Game game, 
 			Multimap<UnitType, Integer> bArmyMap, 
 			ArrayList<Position> eStructPos) {
@@ -95,7 +107,11 @@ public class ScoutManager {
 		}
 	}
 	
-	// scout to next baselocation
+	/**
+	 * scout to next baselocation
+	 * @param game
+	 * @param scout
+	 */
 	public static void scoutForNextBase(Game game, Unit scout) {
 		Position baseLocation = MapInformation.getNearestUnexploredStartingLocation(game, scout.getPosition());
 		if (baseLocation != null) {
@@ -103,20 +119,17 @@ public class ScoutManager {
 		}
 	}
 
+	/**
+	 * initialize scoutQueue
+	 * 
+	 * Currently the only value is bonjwAI's first expo.
+	 * TODO: update to scout specific spots on specific maps/matchups
+	 * 
+	 * @param scoutQueue
+	 * @param bBasePos
+	 */
 	public static void initializeScoutQueue(List<Position> scoutQueue, ArrayList<BaseLocation> bBasePos) {
 		scoutQueue.add(bBasePos.get(1).getPosition() );	
 	}
-	
-	/*
-	public static Position updateEnemyPosition(Game game, Position enemyPosition) {
-		for ( Unit u : game.enemy().getUnits() ) {
-			if ( u != null && u.isVisible() ) {
-				enemyPosition = u.getPosition();
-				break;
-			}
-		}
-		return enemyPosition;
-	}
-	*/
 	
 }

@@ -1,20 +1,8 @@
 package b.ai;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
-import b.economy.SupplyManager;
-import b.idmap.MapUnitID;
-import bwapi.Game;
 import bwapi.Player;
 import bwapi.Unit;
-import bwapi.UnitType;
+
 
 public class BonjwAIGame {
 	
@@ -35,21 +23,6 @@ public class BonjwAIGame {
 		}
 	}
 	
-	public static boolean updateUnderAttack(Game game,
-			Multimap<UnitType, Integer> armyMap,
-			Multimap<UnitType, Integer> structMap) {
-		for (Integer uID : armyMap.values() )  {
-			if ( game.getUnit(uID).isUnderAttack() ) {
-				return true;
-			}
-		}
-		for (Integer uID : structMap.values() )  {
-			if ( game.getUnit(uID).isUnderAttack() ) {
-				return true;
-			}
-		}
-		return false;
-	}
 	
 
 	

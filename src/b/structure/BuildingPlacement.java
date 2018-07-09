@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-import b.ai.BonjwAI;
+//import b.ai.BonjwAI;
 import b.economy.WorkerManager;
 import b.idmap.MapUnitID;
+import b.math.MapMath;
 import bwapi.Game;
 import bwapi.Pair;
-import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -22,17 +22,6 @@ public class BuildingPlacement {
 	static UnitType CC = UnitType.Terran_Command_Center;
 	static UnitType Barracks = UnitType.Terran_Barracks;
 	
-	private static BuildingPlacement buildingPlacement = new BuildingPlacement();
-	private Game game;
-	
-	private BuildingPlacement() {
-		game = BonjwAI.mirror.getGame();
-	}
-	
-	public static BuildingPlacement getInstance() {
-		return buildingPlacement;
-	}
-		
 	// NAIVE BUILDING PLACEMENT IMPLEMENTATION
 	public static TilePosition getBuildTile(Game game, Unit builder, UnitType buildingType, TilePosition aroundTile,
 			List<Pair<TilePosition,TilePosition>> noBuildZones ) {
@@ -118,138 +107,29 @@ public class BuildingPlacement {
 			game.printf("Unable to find suitable build position for " + buildingType.toString());
 		return ret;
 	}
-	// END OF BUILDING IMPLEMENTATION
+	// END OF NAIVE BUILDING IMPLEMENTATION
 	
 	public static TilePosition getBuildTileNew(Game game, Unit builder, UnitType buildingType) {
 		return builder.getTilePosition();
 	}
 	
 	public static TilePosition getBuildPositionSD(Game game, Multimap<UnitType, Integer> bArmyMap,
+			Multimap<String, Integer> bRolesMap,
 			Multimap<UnitType, Integer> bStructMap,
 			ArrayList<BaseLocation> bBasePos, int mineralSetup,
 			List<Pair<TilePosition,TilePosition>> noBuildZones ) {
-		// if num SD == 0
+
 		// getBuildPositionFirstSD
 		if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, SD) == 0 ) {
-			return getBuildPositionFirstSD(game, bBasePos, mineralSetup);	
+			return MapMath.findPosFirstSD(game, bBasePos.get(0), mineralSetup);	
 		}
 		// else
 		// naive build
 		
-		Unit SCV = 	game.getUnit(WorkerManager.getFreeSCVID(game,bArmyMap));
+		Unit SCV = 	game.getUnit(WorkerManager.getFreeSCVID(game,bArmyMap, bRolesMap));
 		
 		return getBuildTile(game, SCV, SD, bBasePos.get(0).getTilePosition(), noBuildZones );
-	}
-	
-	// Building implementation for 1st supply depot
-	public static TilePosition getBuildPositionFirstSD(Game game, //Unit builder, 
-			ArrayList<BaseLocation> bBasePos,
-			int mineralSetup ) {
-		// relative to startingCC location
-		int startingCC_X = bBasePos.get(0).getTilePosition().getX();
-		int startingCC_Y = bBasePos.get(0).getTilePosition().getY();
-		
-		// default pos
-		TilePosition pos = bBasePos.get(0).getTilePosition();
-		
-		// minerals above CC
-		if ( mineralSetup == 12 ) { 
-			pos = new TilePosition( startingCC_X, startingCC_Y + 3);
-			pos = game.getBuildLocation(UnitType.Terran_Supply_Depot,pos, 1);		
-			if ( !game.canBuildHere(pos, UnitType.Terran_Supply_Depot)) {
-				System.out.println("Cannot build first supply depot here");
-				//System.out.println( pos.getX() + " " + pos.getY() );
-			}
-		}	
-		// minerals right of CC
-		if ( mineralSetup == 3 ) { 
-			pos = new TilePosition( startingCC_X - 3, startingCC_Y + 1);
-			pos = game.getBuildLocation(UnitType.Terran_Supply_Depot,pos, 1);		
-			if ( !game.canBuildHere(pos, UnitType.Terran_Supply_Depot)) {
-				System.out.println("Cannot build first supply depot here");
-				System.out.println( pos.getX() + " " + pos.getY() );
-			}
-			//System.out.println("BuildingPlacement: SD position at" + pos);
-		}		
-		// minerals bottom of CC
-		if ( mineralSetup == 6 ) { 
-			pos = new TilePosition( startingCC_X, startingCC_Y - 3);
-			pos = game.getBuildLocation(UnitType.Terran_Supply_Depot,pos, 1);		
-			if ( !game.canBuildHere(pos, UnitType.Terran_Supply_Depot)) {
-				System.out.println("Cannot build first supply depot here");
-				System.out.println( pos.getX() + " " + pos.getY() );
-			}
-		}	
-		// minerals left of CC
-		if ( mineralSetup == 9 ) { 
-			pos = new TilePosition( startingCC_X + 4, startingCC_Y - 1);
-			pos = game.getBuildLocation(UnitType.Terran_Supply_Depot,pos, 1);		
-			if ( !game.canBuildHere(pos, UnitType.Terran_Supply_Depot)) {
-				System.out.println("Cannot build first supply depot here");
-				System.out.println( pos.getX() + " " + pos.getY() );
-			}
-			//System.out.println("BuildingPlacement: SD position at" + pos);
-		}
-		
-		if ( pos == null ) {
-			System.out.println("Null value with first supply depot position");
-		}
-		
-		return pos;
-	}
-	
-	// Building implementation for 1st supply depot
-	public static TilePosition getBuildPositionFirstBarracks(Game game, //Unit builder, 
-			ArrayList<BaseLocation> bBasePos,
-			int mineralSetup ) {
-		// relative to startingCC location
-		int startingCC_X = bBasePos.get(0).getTilePosition().getX();
-		int startingCC_Y = bBasePos.get(0).getTilePosition().getY();
-		
-		// default pos
-		TilePosition pos = bBasePos.get(0).getTilePosition();
-		
-		// minerals above CC
-		if ( mineralSetup == 12 ) { 
-			pos = new TilePosition( startingCC_X, startingCC_Y + 3);
-			pos = game.getBuildLocation(UnitType.Terran_Barracks,pos, 1);		
-			if ( !game.canBuildHere(pos, UnitType.Terran_Barracks)) {
-				System.out.println("Cannot build first barracks here");
-				System.out.println( pos.getX() + " " + pos.getY() );
-			}
-		}	
-		// minerals right of CC
-		if ( mineralSetup == 3 ) { 
-			pos = new TilePosition( startingCC_X - 4, startingCC_Y + 3);
-			pos = game.getBuildLocation(UnitType.Terran_Barracks,pos, 1);		
-			if ( !game.canBuildHere(pos, UnitType.Terran_Barracks)) {
-				System.out.println("Cannot build first barracks here");
-				System.out.println( pos.getX() + " " + pos.getY() );
-			}
-			//System.out.println("BuildingPlacement: barracks position at" + pos);
-		}		
-		// minerals bottom of CC
-		if ( mineralSetup == 6 ) { 
-			pos = new TilePosition( startingCC_X, startingCC_Y - 3);
-			pos = game.getBuildLocation(UnitType.Terran_Barracks,pos, 1);		
-			if ( !game.canBuildHere(pos, UnitType.Terran_Barracks)) {
-				System.out.println("Cannot build first barracks here");
-				System.out.println( pos.getX() + " " + pos.getY() );
-			}
-		}	
-		// minerals left of CC
-		if ( mineralSetup == 9 ) { 
-			pos = new TilePosition( startingCC_X + 7, startingCC_Y - 1);
-			pos = game.getBuildLocation(UnitType.Terran_Barracks,pos, 1);		
-			if ( !game.canBuildHere(pos, UnitType.Terran_Barracks)) {
-				System.out.println("Cannot build first barracks here");
-				System.out.println( pos.getX() + " " + pos.getY() );
-			}
-			//System.out.println("BuildingPlacement: barracks position at" + pos);
-		}
-		
-		return pos;
-	}
+	}	
 	
 	// return true if IS overlapping/is in a build zone
 	public static boolean isInNoBuildZone( Game game, TilePosition buildTile, UnitType building, List<Pair<TilePosition,TilePosition>> noBuildZones ) {

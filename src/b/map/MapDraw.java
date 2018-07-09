@@ -1,14 +1,12 @@
 package b.map;
 
 import java.util.List;
-import java.util.Map;
 
 import bwapi.Color;
 import bwapi.Game;
 import bwapi.Pair;
 import bwapi.Position;
 import bwapi.TilePosition;
-import bwapi.Unit;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;

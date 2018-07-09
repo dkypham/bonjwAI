@@ -1,9 +1,8 @@
 package b.structure;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import bwapi.TechType;
+import bwapi.Pair;
 import bwapi.UnitType;
 
 public class BuildingOrder {
@@ -15,44 +14,47 @@ public class BuildingOrder {
 	static UnitType MachineShop = UnitType.Terran_Machine_Shop;
 	static UnitType CC = UnitType.Terran_Command_Center;
 	
-	public static void initializeBuildOrder(List<UnitType> buildOrderStruct,
-			List<Integer> buildOrderSupply ) {
-		/*
-		// default implementation: 1 Fact FE
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 8);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, Barracks, 12);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, Refinery, 12);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 15);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 16);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, MachineShop, 20);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 23);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, CC, 28);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 28);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 32);
-		*/
-		
-		// 1 Rax FE
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 9);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, Barracks, 11);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, CC, 16);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, Refinery, 16);	
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 16);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 21);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, SD, 28);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, MachineShop, 30);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, Factory, 32);
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, MachineShop, 39);
+	public static void initializeBuildOrder( List<Pair<UnitType,Integer>> buildOrderStruct ) {
+
+		// default: 1 Face FE
+		initOneFactFE( buildOrderStruct );
 		
 		// so game doesn't crash when build order is finished
-		addToBuildOrder( buildOrderStruct, buildOrderSupply, UnitType.Special_Terran_Flag_Beacon, 500);
+		addToBuildOrder( buildOrderStruct, UnitType.Special_Terran_Flag_Beacon, 500);
 	}
 	
-	public static void addToBuildOrder(List<UnitType> buildOrderStruct,
-			List<Integer> buildOrderSupply,
-			UnitType uT,
-			Integer supply) {
-		buildOrderStruct.add(uT);
-		buildOrderSupply.add(supply);
+	public static void addToBuildOrder( List<Pair<UnitType,Integer>> buildOrderStruct, 
+			UnitType uT, Integer supply) {
+		buildOrderStruct.add( new Pair<UnitType,Integer>(uT,supply) );
 	}
+	
+	// DEFAULT BUILD ORDERS HERE
+	
+	public static void initOneFactFE( List<Pair<UnitType,Integer>> buildOrderStruct ) {
+		addToBuildOrder( buildOrderStruct, SD			, 9);
+		addToBuildOrder( buildOrderStruct, Barracks		, 12);
+		addToBuildOrder( buildOrderStruct, Refinery		, 12);
+		addToBuildOrder( buildOrderStruct, SD			, 15);
+		addToBuildOrder( buildOrderStruct, Factory		, 16); // take two scvs off gas
+		addToBuildOrder( buildOrderStruct, MachineShop	, 20); // put two scvs back on gas
+		addToBuildOrder( buildOrderStruct, SD			, 23);
+		addToBuildOrder( buildOrderStruct, CC			, 28);
+		addToBuildOrder( buildOrderStruct, SD			, 28);
+		addToBuildOrder( buildOrderStruct, Factory		, 32);
+	}
+	
+	public static void initOneRaxFE( List<Pair<UnitType,Integer>> buildOrderStruct ) {
+		addToBuildOrder( buildOrderStruct, SD			, 9);
+		addToBuildOrder( buildOrderStruct, Barracks		, 11);
+		addToBuildOrder( buildOrderStruct, CC			, 16);
+		addToBuildOrder( buildOrderStruct, Refinery		, 16);	
+		addToBuildOrder( buildOrderStruct, SD			, 16);
+		addToBuildOrder( buildOrderStruct, Factory		, 21);
+		addToBuildOrder( buildOrderStruct, SD			, 28);
+		addToBuildOrder( buildOrderStruct, MachineShop	, 30);
+		addToBuildOrder( buildOrderStruct, Factory		, 32);
+		addToBuildOrder( buildOrderStruct, MachineShop	, 39);
+	}
+
 	
 }

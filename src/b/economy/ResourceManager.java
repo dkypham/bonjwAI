@@ -11,18 +11,47 @@ import bwapi.TechType;
 import bwapi.Unit;
 import bwapi.UnitType;
 
+/**
+ * Resource Manager, on each call
+ * 
+ * Updates bot's resource information: minerals, gas, and supply. Also accounts for planned resource state 
+ * (minerals/gas after queued buildings are built, supply after queued supply depots are built)
+ * 
+ * bResources array:
+ * 
+ * [0] - actual minerals: actual minerals bot has
+ * 
+ * [1] - reserved minerals: amount of minerals bot is queued to spend
+ * 
+ * [2] - actual gas: actual gas bot has
+ * 
+ * [3] - reserved gas: amount of gas bot is queued to spend
+ * 
+ * [4] - actual supply: actual supply bot has
+ * 
+ * [5] - effective supply: amount of supply bot is queued to have
+ * 
+ */
 public class ResourceManager {
 
 	static int T_SUPPLY_VALUE = 16;
 	static UnitType T_SD = UnitType.Terran_Supply_Depot;
 	static UnitType T_SCV = UnitType.Terran_SCV;
 	
-	public static void updateResources(Game game, Player self, ArrayList<Integer> bResources,
+	/*
+	 * Update the bResources array, by first clearing old values, and then
+	 * calculating new values (necessary to update reserved resources)
+	 */
+	public static void updateResources(Game game, Player self, ArrayList<Integer> bResources, 
 			Multimap<UnitType, Integer> bArmyMap) {
 		clearBResources(bResources);
 		updateBResources(game, self, bResources, bArmyMap);
 	}
 	
+	/**
+	 * Clear all values in bResources array
+	 * @param bResources - arrayList containing resource values
+	 */
 	public static void clearBResources(ArrayList<Integer> bResources) {
 		if ( bResources.size() != 0 ) {
 			bResources.clear();
@@ -32,11 +61,15 @@ public class ResourceManager {
 		}
 	}
 	
+	/**
+	 * Update all values in bResources array
+	 * @param game
+	 * @param self
+	 * @param bResources - arrayList containing resource values
+	 * @param bArmyMap - MultiMap containing unitType/unitIDs for all army units
+	 */
 	public static void updateBResources(Game game, Player self, ArrayList<Integer> bResources,
-			Multimap<UnitType, Integer> bArmyMap) {
-		// zero all elements
-		clearBResources(bResources);
-		
+			Multimap<UnitType, Integer> bArmyMap) {		
 		// update bResources(0): actual minerals
 		bResources.set(0, self.minerals());
 					
@@ -57,45 +90,50 @@ public class ResourceManager {
 		bResources.set(4, self.supplyTotal());
 
 		// update bResources(5): effective supply
+		// calculate based on planned 
 		int numSupplyBeingBuilt = BuildingManager.getNumPlannedStruct(game, bArmyMap, T_SD) 
 				+ BuildingManager.getNumConstructingStruct(game, bArmyMap, T_SD);
 		bResources.set(5, bResources.get(4) + (T_SUPPLY_VALUE * numSupplyBeingBuilt) );
 	
 	}
 	
-	public static void addBuildingCost( ArrayList<Integer> bResources, UnitType struct ) {
-		bResources.set( 1 , bResources.get(1) + struct.mineralPrice() );
-		bResources.set( 3 , bResources.get(3) + struct.gasPrice() );
-	}
-
-	public static int getReservedMinerals(Game game, Multimap<UnitType, Integer> armyMap) {
-		int reservedMineral = 0;
-		
-		for ( Integer SCVID : armyMap.get(T_SCV ) ) {
-			Unit SCV = game.getUnit(SCVID);
-			if ( SCV.isConstructing() && SCV.canAttack() ) {
-				reservedMineral += SCV.getBuildType().mineralPrice();
-			}
-		}
-		return reservedMineral;
+	/**
+	 * Calculate queued resources, passes in structType and adds to values in
+	 * bResources
+	 * @param bResources - arrayList containing resource values
+	 * @param structType - type of structure to be built
+	 */
+	public static void addBuildingCost( ArrayList<Integer> bResources, UnitType structType ) {
+		bResources.set( 1 , bResources.get(1) + structType.mineralPrice() );
+		bResources.set( 3 , bResources.get(3) + structType.gasPrice() );
 	}
 	
-	public static boolean checkIfEnoughResources( ArrayList<Integer> bResources, 
-			UnitType struct ) {
+	/**
+	 * Determine if bot has enough resources to build structType
+	 * @param bResources - arrayList containing resource values
+	 * @param structType - type of struct to be built
+	 * @return - true if there are enough resources to build building (accounting for
+	 * queued resource expenditures)
+	 */
+	public static boolean checkIfEnoughResources( ArrayList<Integer> bResources, UnitType structType ) {
 		// if actual minerals - reserved minerals < mineral price
-		if ( bResources.get(0) - bResources.get(1) < struct.mineralPrice() ) {
+		if ( bResources.get(0) - bResources.get(1) < structType.mineralPrice() ) {
 			return false;
 		}
 		// if actual gas - reserved gas < gas price
-		if ( bResources.get(2) - bResources.get(3) < struct.gasPrice() ) {
+		if ( bResources.get(2) - bResources.get(3) < structType.gasPrice() ) {
 			return false;
 		}
-		
 		return true;
 	}
 	
-	public static boolean checkIfEnoughResourcesTech( ArrayList<Integer> bResources, 
-			TechType tech ) {
+	/**
+	 * Determine if bot has enough resources to build techType
+	 * @param bResources - arrayList containing resource values
+	 * @param tech - type of tech to be built
+	 * @return
+	 */
+	public static boolean checkIfEnoughResourcesTech( ArrayList<Integer> bResources, TechType tech ) {
 		// if actual minerals - reserved minerals < mineral price
 		if ( bResources.get(0) - bResources.get(1) < tech.mineralPrice() ) {
 			return false;
@@ -104,7 +142,6 @@ public class ResourceManager {
 		if ( bResources.get(2) - bResources.get(3) < tech.gasPrice() ) {
 			return false;
 		}
-		
 		return true;
 	}
 	

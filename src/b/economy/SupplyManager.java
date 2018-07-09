@@ -1,16 +1,10 @@
 package b.economy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import b.idmap.MapUnitID;
 import bwapi.Game;
 import bwapi.Player;
-import bwapi.Unit;
 import bwapi.UnitType;
 
 public class SupplyManager {

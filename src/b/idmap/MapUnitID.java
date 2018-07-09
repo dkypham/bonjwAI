@@ -1,43 +1,46 @@
 package b.idmap;
 
 import java.util.List;
-import java.util.Map;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 
 import b.economy.WorkerManager;
 import bwapi.Game;
+import bwapi.Pair;
 import bwapi.Unit;
 import bwapi.UnitType;
 
 public class MapUnitID {
 
+	static String uT_ScoutSCV = "Scout";
+	static String uT_DefendSCV = "Defender";
+	static String uT_RepairSCV ="Repairer";
+	
 	// This function adds a <Unit,Integer> value into unitIDMap
-	public static void addToIDMap(Multimap<UnitType, Integer> unitIDMap, 
-			Unit unit) {
+	public static void addToIDMap(Multimap<UnitType, Integer> unitIDMap, Unit unit) {
 		unitIDMap.put(unit.getType(), Integer.valueOf(unit.getID()));
 
 	}
 	
 	// This function adds a <Unit,Integer> value into unitIDMap
-	public static void addToIDMapSpecial(Multimap<UnitType, Integer> unitIDMap, 
-			Unit unit, UnitType specialUnitType) {
+	public static void addToIDMapSpecial(Multimap<UnitType, Integer> unitIDMap, Unit unit, 
+			UnitType specialUnitType) {
 		unitIDMap.put(specialUnitType, Integer.valueOf(unit.getID()));
 
 	}
 	
 	// This function adds a <Unit,Integer> value into unitIDMap
 	public static void addStructToIDMap(Multimap<UnitType, Integer> unitIDMap, 
-			Unit unit, List<UnitType> buildOrderStruct, List<Integer> buildOrderSupply) {
+			Unit unit, List<Pair<UnitType,Integer>> buildOrderStruct ) {
 		if ( unitIDMap.containsEntry(unit, -1) ) {
 			unitIDMap.remove(unit, -1);
 		}
 		unitIDMap.put(unit.getType(), Integer.valueOf(unit.getID()));
 		
 		// remove from buildOrder list
-		if ( unit.getType() == buildOrderStruct.get(0) ) {
+		if ( unit.getType() == buildOrderStruct.get(0).first ) {
 			buildOrderStruct.remove(0);
-			buildOrderSupply.remove(0);
 		}
 
 	}
@@ -47,12 +50,21 @@ public class MapUnitID {
 			Multimap<UnitType, Integer> unitIDMap, Unit unit) {
 		unitIDMap.remove(unit.getType(), Integer.valueOf(unit.getID()));
 		
-		// handle case if unit that dies was scout
-		if ( WorkerManager.checkIfScoutSCV(unit.getID(), unitIDMap) ) {
-			unitIDMap.remove( UnitType.Protoss_Scout, Integer.valueOf(unit.getID()));	
-		}
 	}
 
+	public static void removeRoleSCV( Multimap<String, Integer> bRolesMap, Unit SCV ) {
+		//System.out.println("SCV with ID: " + SCV.getID() + " destroyed");
+		if ( bRolesMap.containsEntry(uT_ScoutSCV, SCV.getID() )) {
+			bRolesMap.remove( uT_ScoutSCV, SCV.getID() );
+		}
+		if ( bRolesMap.containsEntry(uT_DefendSCV, SCV.getID() )) {
+			bRolesMap.remove( uT_DefendSCV, SCV.getID() );	
+		}
+		if ( bRolesMap.containsEntry(uT_RepairSCV, SCV.getID() )) {
+			bRolesMap.remove( uT_RepairSCV, SCV.getID() );		
+		}
+	}
+	
 	// This function takes an int unitID and returns a unit associated with that ID
 	public static Unit getUnit( Game game, int unitID) {
 		return game.getUnit(unitID);
@@ -86,6 +98,18 @@ public class MapUnitID {
 			}
 		}
 		return null;
+	}
+	
+	public static Unit getFirstUnitFromUnitMap( Game game, Multimap<UnitType, Integer> map, UnitType uT ) {
+		return game.getUnit( Iterables.get( (map.get(uT)), 0) );
+	}
+	
+	public static Unit getFirstUnitFromRolesMap( Game game, Multimap<String, Integer> map, String role ) {
+		return game.getUnit( Iterables.get( (map.get(role)), 0) );
+	}
+	
+	public static boolean isInjured( Unit u ) {
+		return u.getHitPoints() != u.getInitialHitPoints();
 	}
 	
 }

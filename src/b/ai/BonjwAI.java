@@ -1,18 +1,13 @@
 package b.ai;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import b.army.ArmyManager;
-import b.army.Medic;
 import b.economy.ResourceManager;
-import b.economy.SupplyManager;
 import b.economy.WorkerManager;
 import b.idmap.MapUnitID;
 import b.map.MapDraw;
@@ -23,7 +18,6 @@ import b.structure.BuildingOrder;
 import b.structure.BuildingPlacement;
 import b.structure.TechManager;
 import b.ui.DrawUI;
-import bwapi.Color;
 import bwapi.DefaultBWListener;
 import bwapi.Game;
 import bwapi.Mirror;
@@ -38,6 +32,11 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
 
+/**
+ * BonjwAI: Starcraft BroodWar bot using BWAPI 4.1.2
+ * @author Duc Pham
+ *
+ */
 public class BonjwAI extends DefaultBWListener {
 
 	public static Mirror mirror = new Mirror();
@@ -45,46 +44,32 @@ public class BonjwAI extends DefaultBWListener {
 	private Player self;
 	
 	/* Managers section */
-	public static BuildingPlacement bpInstance;
-	public static ArmyManager armyManager;
 	
 	/* Persistent data section */
-	// bArmyMap - IDs of all of our army units grouped by UnitType
-	private Multimap<UnitType, Integer> bArmyMap = ArrayListMultimap.create();
-	// bStructMap - IDs all of our buildings grouped by UnitType
-	private Multimap<UnitType, Integer> bStructMap = ArrayListMultimap.create();
-	// eStructPos - positions of enemy buildings seen
-	private ArrayList<Position> eStructPos = new ArrayList<Position>();
-	// bBasePos - list of BaseLocations for bonjwAI to build bases
-	private ArrayList<BaseLocation> bBasePos = new ArrayList<BaseLocation>();
-	// eBasePos - list of BaseLocations enemy is predicted to build at
-	private ArrayList<BaseLocation> eBasePos = new ArrayList<BaseLocation>();
-	// bResources - list of bonjwAI's resources defined in ResourceManager
-	private ArrayList<Integer> bResources = new ArrayList<Integer>();
+	private Multimap<UnitType, Integer> bArmyMap = ArrayListMultimap.create();	// b.ai army units
+	private Multimap<String, Integer> bRolesMap = ArrayListMultimap.create();	// b.ai units w/ roles
+	private Multimap<UnitType, Integer> bStructMap = ArrayListMultimap.create();// b.ai structs
+
+	private ArrayList<Position> eStructPos = new ArrayList<Position>();			// enemy structs
+	private ArrayList<BaseLocation> bBasePos = new ArrayList<BaseLocation>();	// b.ai baselocations
+	private ArrayList<BaseLocation> eBasePos = new ArrayList<BaseLocation>();	// enemy baselocations
+
+	private ArrayList<Integer> bResources = new ArrayList<Integer>();			// b.ai lists
 
 	// mineralSetup - tells us the configuration of the minerals relative to CC
 	private int mineralSetup = -1;
 	
-	// resourceZone - coordinates for resources
-	//private Pair<Position,Position> mainBaseResourceZone = new Pair<Position,Position>();
+	private List<Pair<UnitType,Integer>> buildOrderStruct = new ArrayList<Pair<UnitType,Integer>>();
+	private List<Pair<TechType,Integer>> buildOrderTech = new ArrayList<Pair<TechType,Integer>>();
 	
 	private List<Position> drawStructPos = new ArrayList<Position>();
 	private List<String> drawStructLabel = new ArrayList<String>();
-	
-	private List<UnitType> buildOrderStruct = new ArrayList<UnitType>();
-	private List<Integer> buildOrderSupply = new ArrayList<Integer>();
-	
-	private List<TechType> techTreeTech = new ArrayList<TechType>();
-	private List<Integer> techTreeSupply = new ArrayList<Integer>();
-	
+
 	private List<Position> scoutQueue = new ArrayList<Position>();
-	
 	private List<Chokepoint> chokepointList = new ArrayList<Chokepoint>();
-	
 	private List<Pair<Position,Position>> miningRegionsList = new ArrayList<Pair<Position,Position>>();
-	
 	int[] timeBuildIssued = {0};
-	
+	//boolean[] underAttack = {false};
 	private List<Pair<TilePosition,TilePosition>> noBuildZones = new ArrayList<Pair<TilePosition,TilePosition>>();
 	
 	// building stuff
@@ -120,36 +105,23 @@ public class BonjwAI extends DefaultBWListener {
 		/* Enable game speed */
 		game.setLocalSpeed(15);
 		
-		/* Define manager instances here */
-		bpInstance = BuildingPlacement.getInstance();
-		armyManager = ArmyManager.getInstance();
-		
-		/* On start functions */
-		
-		/*
-		 * initMapInfo:
-		 * -findNearBasePos: populate first 3 indices of bBasePos
-		 * -initResourceZone: find nobuild zone
-		 * -findMineralSetup: find position of minerals relative to startingCC
-		 */
 		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, mineralSetup);
 		System.out.println("Mineral setup: " + mineralSetup);
-		miningRegionsList.add( MapInformation.initResourceZone2(game, bBasePos.get(0) ) );
+		miningRegionsList.add( MapInformation.initResourceZone2(game, bBasePos.get(0) ) );	
 		
 		ScoutManager.initializeScoutQueue(scoutQueue, bBasePos );
-		BuildingOrder.initializeBuildOrder(buildOrderStruct, buildOrderSupply);
-		TechManager.initializeTechOrder(techTreeTech, techTreeSupply);
+		BuildingOrder.initializeBuildOrder( buildOrderStruct );
+		TechManager.initializeTechOrder( buildOrderTech);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
 		MapInformation.initializeMapInformation( noBuildZones, rallyPoints, miningRegionsList, chokepointList, bBasePos );
-
+		
 	}
 
 	public void onUnitMorph(Unit u) {
 		if ( u.getType() == UnitType.Terran_Refinery ) {
 			MapUnitID.addToIDMap(bStructMap, u);
-			if ( buildOrderStruct.get(0) == UnitType.Terran_Refinery ) {
+			if ( buildOrderStruct.get(0).first == UnitType.Terran_Refinery ) {
 				buildOrderStruct.remove(0);
-				buildOrderSupply.remove(0);
 			}
 		}
 		if ( u.getType() == UnitType.Resource_Vespene_Geyser ) {
@@ -161,11 +133,11 @@ public class BonjwAI extends DefaultBWListener {
 	// when a unit is starting to be built
 	public void onUnitCreate(Unit u) {
 		switch (BonjwAIGame.switchFlags(self, u)) {
-		case 1:
+		case 1:	// unit
 			MapUnitID.addToIDMap(bArmyMap, u);
 			break;
-		case 2:
-			MapUnitID.addStructToIDMap(bStructMap, u, buildOrderStruct, buildOrderSupply);
+		case 2: // structure
+			MapUnitID.addStructToIDMap(bStructMap, u, buildOrderStruct);
 			BuildingPlacement.addToNoBuildZone(noBuildZones, u);
 			break;
 		default:
@@ -175,10 +147,13 @@ public class BonjwAI extends DefaultBWListener {
 
 	public void onUnitDestroy(Unit u) {
 		switch (BonjwAIGame.switchFlags(self, u)) {
-		case 1:
+		case 1: // unit
 			MapUnitID.removeFromIDMap(bArmyMap, u);
+			if (u.getType() == UnitType.Terran_SCV) {	// remove from special roles map as well
+				MapUnitID.removeRoleSCV(bRolesMap, u);
+			}
 			break;
-		case 2:
+		case 2: // structure
 			MapUnitID.removeFromIDMap(bStructMap, u);
 			break;
 		default:
@@ -188,109 +163,62 @@ public class BonjwAI extends DefaultBWListener {
 
 	@Override
 	public void onFrame() {	
+
+		// check if SCV roles have been assigned yet
+		// can't put this in OnStart() b/c bArmyMap isn't init yet
+		if ( !WorkerManager.checkIfAllSCVRolesAssigned(bRolesMap) ) { // assigns if false
+			WorkerManager.fillSCVRoles(bRolesMap, bArmyMap);
+		}
 		
-		// b.economy driver
-		
-		// Resource Manager:
-		/*
-		 * Variables:
-		 * --bResources	>	array holding self resource values
-		 * 		0	>	actual minerals
-		 * 		1	>	actual gas
-		 * 		2	>	reserved minerals (queued for construction)
-		 * 		3	>	reserved gas (queued for construction)	
-		 * 		4	>	actual supply
-		 * 		5	>	reserved supply (queued for construction)
-		 * 
-		 * Iterative functions:
-		 * --clearBResources():	clear array of all values (reset)
-		 * --updateBRresources(): calculate each index value
-		 * --getReservedMinerals():	calculated reserved minerals
-		 * 
+		/**
+		 * Resource Manager, updates resources: minerals, gas, and supply.
 		 */
 		ResourceManager.updateResources(game, self, bResources, bArmyMap);
 		
-		// Scout Manager:
-		/*
-		 * Variables:
-		 * --eStructPos	>	array holding position of enemy structures
-		 * 		contains any buildings seen, no specific ordering
-		 * 
-		 * --eBasePos	>	array holding base/expansion positions of enemy
-		 * 		0	>	enemy main base
-		 * 		1 	>	enemy first expo
-		 * 		2	> 	enemy second expo
-		 * 		..	>	..
-		 * 
-		 * Iterative functions:
-		 * --scoutForUnknownEnemy	> 	if eStructPos is empty, then scout for an 
-		 * 								enemy struct
-		 * 
+		/**
+		 * Scout Manager, updates scouting behavior
 		 */
-		ScoutManager.updateScoutManager(game, self, bArmyMap, eStructPos, eBasePos, bBasePos, scoutQueue, miningRegionsList);
+		ScoutManager.updateScoutManager(game, self, bArmyMap, bRolesMap, eStructPos, bBasePos, scoutQueue);
 
-		// Supply Manager:
-		/*
-		 * Variables:
-		 * --
-		 * 
-		 * Iterative functions:
-		 * --needSupplyCheck()	>	step function determining if supply needs to 
-		 * 							be built
+		/**
+		 * Building Manager, updates building behavior
 		 */
-		//SupplyManager.updateSupplyManager(game, self, bArmyMap, bStructMap ,
-		//		bResources);
-
-		// Building Manager:
-		/*
-		 * Variables:
-		 * --
-		 * 
-		 * Iterative functions:
-		 * --buildWorkers()	>	build workers based on number of command centers
-		 * --buildingProduction()	>	build marines/medics when conditions are met
-		 */
-		//BuildingManager.buildingManager(game, self, bArmyMap, bStructMap, bResources, bBasePos, mineralSetup, drawStructPos, drawStructLabel, buildOrderStruct, buildOrderSupply);
 		if ( game.getFrameCount() % 16 == 0 ) {
-			BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bStructMap, productionMode, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, mineralSetup, timeBuildIssued, miningRegionsList, noBuildZones );
+			BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bRolesMap, bStructMap, 
+					productionMode, bResources, buildOrderStruct, buildOrderTech, mineralSetup, 
+					timeBuildIssued, miningRegionsList, noBuildZones );
 		}
+
+		/**
+		 * Update productionMode
+		 */
 		productionMode = BuildingManager.updateProductionMode(game, bArmyMap, bArmyMap, productionMode);
 		
-		// Army Manager:
-		/*
-		 * Variables:
-		 * --underAttack	>	flag that checks if any unit is under attack
-		 * 
-		 * Iterative functions:
-		 * --updateMarines()	>	marine targeting and micro
-		 * 
+		/**
+		 * Army Manager, updates army
 		 */
-		//if ( game.getFrameCount() % 33 == 0 ) {
-			ArmyManager.updateArmyManager(game, self, bArmyMap, bStructMap, bBasePos, eStructPos, rallyPoints);
-		//}
-		//armyManager.updateMedics(medics);
-		
-		
-		// Worker Manager:
-		/*
-		 * Variables:
-		 * -- 
-		 * 
-		 * Iterative functions:
-		 * --makeIdleWorkersMine()	>	make idle SCVS mine minerals
-		 * --makeWorkersMineGas()	> 	count number of gas miners, then assign 
-		 * 								some if low
+		ArmyManager.updateArmyManager(game, self, bArmyMap, bRolesMap, bStructMap, bBasePos, eStructPos, rallyPoints);
+
+		/**
+		 * Worker Manager, updates workers
 		 */
-		WorkerManager.updateWorkerManager(game, self, bArmyMap, bStructMap);
+		WorkerManager.updateWorkerManager(game, self, bArmyMap, bRolesMap, bStructMap);
 		
+		/**
+		 * Map Information, updates known map information
+		 */
 		if ( game.getFrameCount() % 100 == 0 ) {
 			MapInformation.updateMapInformation(game, miningRegionsList, bBasePos, noBuildZones);
 		}
-		// Implement without persistent data	
+		
+		// Implement without persistent data
+		/**
+		 * Drawing
+		 */
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList, rallyPoints, noBuildZones);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, buildOrderSupply, techTreeTech, techTreeSupply, drawStructPos, drawStructLabel, productionMode, timeBuildIssued, miningRegionsList );
-	
-		//testing
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, 
+				buildOrderTech, drawStructPos, drawStructLabel, productionMode, 
+				timeBuildIssued, miningRegionsList );
 		
 	}
 
@@ -299,29 +227,3 @@ public class BonjwAI extends DefaultBWListener {
 	}
 
 }
-
-// old testing stuff
-// noBuildZone / BuildingPlacement.checkIfInNoBuildZone
-	/*
-	if ( noBuildZones.size() == 0 ) {
-	TilePosition test11 = new TilePosition(2,2);
-	TilePosition test12 = new TilePosition(4,4);
-	TilePosition test21 = new TilePosition(5,2);
-	TilePosition test22 = new TilePosition(7,4);
-	TilePosition test31 = new TilePosition(2,4);
-	TilePosition test32 = new TilePosition(4,5);
-	TilePosition test41 = new TilePosition(5,4);
-	TilePosition test42 = new TilePosition(7,6);
-	TilePosition test51 = new TilePosition(2,2);
-	TilePosition test52 = new TilePosition(3,4);
-	
-	noBuildZones.add( new Pair<TilePosition, TilePosition>( test11, test12) );
-	noBuildZones.add( new Pair<TilePosition, TilePosition>( test21, test22) );
-	noBuildZones.add( new Pair<TilePosition, TilePosition>( test31, test32) );
-	noBuildZones.add( new Pair<TilePosition, TilePosition>( test41, test42) );
-	noBuildZones.add( new Pair<TilePosition, TilePosition>( test51, test52) );
-	}
-	
-	TilePosition buildTile = new TilePosition(3,3);
-	BuildingPlacement.checkIfInNoBuildZone(game, buildTile, UnitType.Terran_Academy, noBuildZones);
-	*/

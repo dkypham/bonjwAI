@@ -5,11 +5,9 @@ import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-import b.ai.BonjwAIGame;
 import b.economy.WorkerManager;
 import b.idmap.MapUnitID;
 import b.map.MapDraw;
-import b.map.MapInformation;
 import bwapi.Color;
 import bwapi.Game;
 import bwapi.Pair;
@@ -26,10 +24,8 @@ public class DrawUI {
 			Multimap<UnitType, Integer> bStructMap, ArrayList<Position> eBasePos,
 			ArrayList<BaseLocation> bBasePos,
 			ArrayList<Integer> bResources,
-			List<UnitType> buildOrderStruct,
-			List<Integer> buildOrderSupply,
-			List<TechType> techTreeTech,
-			List<Integer> techTreeSupply,
+			List<Pair<UnitType,Integer>> buildOrderStruct,
+			List<Pair<TechType,Integer>> buildOrderTech,
 			List<Position> drawStructPos,
 			List<String> drawStructLabel,
 			int productionMode, 
@@ -67,8 +63,8 @@ public class DrawUI {
 		}
 		
 		// Row 9-10: buildOrderStruct + buildOrderSupply
-		drawNextBuilding(game, buildOrderStruct, buildOrderSupply);
-		drawNextTech(game, techTreeTech, techTreeSupply);
+		drawNextBuilding(game, buildOrderStruct);
+		drawNextTech(game, buildOrderTech);
 		
 		// Row 12:
 		game.drawTextScreen(10, 130, "Number of eBuildings seen: " + eBasePos.size());
@@ -110,16 +106,14 @@ public class DrawUI {
 		game.drawTextMap(drawStructPos.get(1), drawStructLabel.get(1));
 	}
 	
-	public static void drawNextBuilding(Game game, List<UnitType> buildOrderStruct,
-			List<Integer> buildOrderSupply) {
-		game.drawTextScreen(10, 100, "Next building: " + buildOrderStruct.get(0) + " at " + 
-			buildOrderSupply.get(0) + " supply.");
+	public static void drawNextBuilding(Game game, List<Pair<UnitType,Integer>> buildOrderStruct ) {
+		game.drawTextScreen(10, 100, "Next building: " + buildOrderStruct.get(0).first + " at " + 
+				buildOrderStruct.get(0).second + " supply.");
 	}
 	
-	public static void drawNextTech(Game game, List<TechType> techTreeTech,
-			List<Integer> techTreeSupply) {
-		game.drawTextScreen(10, 110, "Next tech: " + techTreeTech.get(0) + " at " + 
-				techTreeSupply.get(0) + " supply.");
+	public static void drawNextTech(Game game, List<Pair<TechType,Integer>> buildOrderTech ) {
+		game.drawTextScreen(10, 110, "Next tech: " + buildOrderTech.get(0).first + " at " + 
+				buildOrderTech.get(0).second + " supply.");
 	}
 	
 	public static void drawUnitCounts(Game game, Player self, 

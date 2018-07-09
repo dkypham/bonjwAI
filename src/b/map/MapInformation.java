@@ -168,21 +168,6 @@ public class MapInformation {
 
 		return new Pair<Position,Position>( new Position( lx - 32, ly - 32) , new Position ( mx + 32, my + 32) );
 	}
-
-	public static boolean validBaseExplored( Game game, BaseLocation base ) {
-		int numMinerals = 0;
-		for ( Unit potMineral : game.getMinerals() ) {
-			if ( game.isExplored(potMineral.getTilePosition()) ) {
-				if ( BWTA.getGroundDistance( potMineral.getInitialTilePosition(), base.getTilePosition()) < 300 ) {
-					numMinerals++;
-				}
-			}
-		}	
-		if ( numMinerals > 6 ) {
-			return true;
-		}
-		return false;
-	}
 	
 	public static Pair<Position,Position> initResourceZone2(Game game,
 			BaseLocation base) {
@@ -417,10 +402,26 @@ public class MapInformation {
 	// if there exists a mineral patch within a certain distance from base, then it is considered scouted
 	// distance of 300 found by testing startlocation distances
 	public static boolean checkIfExpoIsExplored( Game game, BaseLocation base ) {
+		//System.out.println("flag 2");
 		if ( game.isExplored(base.getTilePosition()) ) {
 			if ( validBaseExplored( game, base ) ) {
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	public static boolean validBaseExplored( Game game, BaseLocation base ) {
+		int numMinerals = 0;
+		for ( Unit potMineral : game.getMinerals() ) {
+			if ( game.isExplored(potMineral.getTilePosition()) ) {
+				if ( BWTA.getGroundDistance( potMineral.getInitialTilePosition(), base.getTilePosition()) < 300 ) {
+					numMinerals++;
+				}
+			}
+		}	
+		if ( numMinerals > 6 ) {
+			return true;
 		}
 		return false;
 	}
@@ -444,6 +445,13 @@ public class MapInformation {
 		initializeChokepointList(chokepointList, bBasePos.get(0).getTilePosition());
 	}
 
-	
+	public static boolean isWorker( Unit u ) {
+		if ( u.getType() == UnitType.Terran_SCV
+				|| u.getType() == UnitType.Zerg_Drone
+				|| u.getType() == UnitType.Protoss_Probe ) {
+			return true;
+		}
+		return false;
+	}
 	
 }
