@@ -1,4 +1,4 @@
-package b.economy;
+package economy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,6 @@ import java.util.List;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 
-import b.idmap.MapUnitID;
-import b.map.MapInformation;
-import b.structure.BuildingManager;
-import b.structure.BuildingPlacement;
 import bwapi.Game;
 import bwapi.Pair;
 import bwapi.Player;
@@ -17,6 +13,10 @@ import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
+import idmap.MapUnitID;
+import map.MapInformation;
+import structure.BuildingManager;
+import structure.BuildingPlacement;
 
 public class WorkerManager {
 

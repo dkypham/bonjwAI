@@ -1,6 +1,6 @@
 package main;
 
-import b.ai.BonjwAI;
+import ai.BonjwAI;
 
 public class Main {
 

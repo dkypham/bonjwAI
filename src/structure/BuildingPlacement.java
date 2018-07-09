@@ -1,20 +1,19 @@
-package b.structure;
+package structure;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-//import b.ai.BonjwAI;
-import b.economy.WorkerManager;
-import b.idmap.MapUnitID;
-import b.math.MapMath;
 import bwapi.Game;
 import bwapi.Pair;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BaseLocation;
+import economy.WorkerManager;
+import idmap.MapUnitID;
+import math.MapMath;
 
 public class BuildingPlacement {
 	

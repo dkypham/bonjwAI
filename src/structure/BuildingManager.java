@@ -1,15 +1,10 @@
-package b.structure;
+package structure;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-import b.economy.ResourceManager;
-import b.economy.SupplyManager;
-import b.economy.WorkerManager;
-import b.idmap.MapUnitID;
-import b.math.MapMath;
 import bwapi.Game;
 import bwapi.Pair;
 import bwapi.Player;
@@ -20,6 +15,11 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
+import economy.ResourceManager;
+import economy.SupplyManager;
+import economy.WorkerManager;
+import idmap.MapUnitID;
+import math.MapMath;
 
 /**
  * Building Manager, on each call
@@ -44,21 +44,46 @@ public class BuildingManager {
 	static UnitType Marine = UnitType.Terran_Marine;
 	static UnitType Medic = UnitType.Terran_Medic;
 	
-	// BUILDING MANAGER
-	public static void buildingManager( Game game, Player self,
-			ArrayList<BaseLocation> bBasePos,
+	/**
+	 * Check if building needs to be built by checking buildOrderStruct and comparing supply.
+	 * 
+	 * 
+	 * 
+	 * @param game
+	 * @param self
+	 * @param bBasePos
+	 * @param bArmyMap
+	 * @param bRolesMap
+	 * @param bStructMap
+	 * @param productionMode
+	 * @param bResources
+	 * @param buildOrderStruct
+	 * @param buildOrderTech
+	 * @param mineralSetup
+	 * @param timeBuildIssued
+	 * @param miningRegionsList
+	 * @param noBuildZones
+	 */
+	public static void buildingManagerWithBuildOrder( Game game, Player self,
 			Multimap<UnitType, Integer> bArmyMap,
 			Multimap<String, Integer> bRolesMap,
 			Multimap<UnitType, Integer> bStructMap,
 			int productionMode, ArrayList<Integer> bResources,
+			
+			List<Pair<TilePosition,TilePosition>> noBuildZones,
+			//List<Pair<Position,Position>> miningRegionsList,
+			
+			ArrayList<BaseLocation> bBasePos,
 			List<Pair<UnitType,Integer>> buildOrderStruct,
 			List<Pair<TechType,Integer>> buildOrderTech,
+			
 			int mineralSetup,
 			int[] timeBuildIssued,
-			List<Pair<Position,Position>> miningRegionsList,
-			List<Pair<TilePosition,TilePosition>> noBuildZones) {
+			
+			List<Pair<Position,Position>> miningRegionsList) {
+		
 		// check if something needs to be built at this supply
-		if ( self.supplyUsed() == buildOrderStruct.get(0).second*2 ) {
+		if ( ResourceManager.getSupplyUsed(bResources) == buildOrderStruct.get(0).second*2 ) {
 			// issue build
 			if ( buildStruct(game, self, bBasePos, mineralSetup, 
 					bArmyMap, bRolesMap, bStructMap, bResources, 

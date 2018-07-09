@@ -1,13 +1,10 @@
-package b.ui;
+package ui;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-import b.economy.WorkerManager;
-import b.idmap.MapUnitID;
-import b.map.MapDraw;
 import bwapi.Color;
 import bwapi.Game;
 import bwapi.Pair;
@@ -17,6 +14,9 @@ import bwapi.TechType;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BaseLocation;
+import economy.WorkerManager;
+import idmap.MapUnitID;
+import map.MapDraw;
 
 public class DrawUI {
 

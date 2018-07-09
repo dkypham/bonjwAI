@@ -1,15 +1,15 @@
-package b.economy;
+package economy;
 
 import java.util.ArrayList;
 
 import com.google.common.collect.Multimap;
 
-import b.structure.BuildingManager;
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.TechType;
 import bwapi.Unit;
 import bwapi.UnitType;
+import structure.BuildingManager;
 
 /**
  * Resource Manager, on each call
@@ -31,6 +31,7 @@ import bwapi.UnitType;
  * 
  * [5] - effective supply: amount of supply bot is queued to have
  * 
+ * [6] - supply used: amount of supply bot is currently using
  */
 public class ResourceManager {
 
@@ -56,7 +57,7 @@ public class ResourceManager {
 		if ( bResources.size() != 0 ) {
 			bResources.clear();
 		}
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 7; i++) {
 			bResources.add(0);			
 		}
 	}
@@ -94,6 +95,9 @@ public class ResourceManager {
 		int numSupplyBeingBuilt = BuildingManager.getNumPlannedStruct(game, bArmyMap, T_SD) 
 				+ BuildingManager.getNumConstructingStruct(game, bArmyMap, T_SD);
 		bResources.set(5, bResources.get(4) + (T_SUPPLY_VALUE * numSupplyBeingBuilt) );
+		
+		// update bResources(6): supply used
+		bResources.set(6, self.supplyUsed() );
 	
 	}
 	
@@ -143,6 +147,34 @@ public class ResourceManager {
 			return false;
 		}
 		return true;
+	}
+	
+	public static int getActualMinerals( ArrayList<Integer> bResources ) {
+		return bResources.get(0);
+	}
+	
+	public static int getEffectiveMinerals( ArrayList<Integer> bResources ) {
+		return bResources.get(1);
+	}
+	
+	public static int getActualGas( ArrayList<Integer> bResources ) {
+		return bResources.get(2);
+	}
+	
+	public static int getEffectiveGas( ArrayList<Integer> bResources ) {
+		return bResources.get(3);
+	}
+	
+	public static int getActualSupply( ArrayList<Integer> bResources ) {
+		return bResources.get(4);
+	}
+	
+	public static int getEffectiveSupply( ArrayList<Integer> bResources ) {
+		return bResources.get(5);
+	}
+	
+	public static int getSupplyUsed( ArrayList<Integer> bResources ) {
+		return bResources.get(6);
 	}
 	
 }

@@ -1,4 +1,4 @@
-package b.ai;
+package ai;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,18 +6,7 @@ import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import b.army.ArmyManager;
-import b.economy.ResourceManager;
-import b.economy.WorkerManager;
-import b.idmap.MapUnitID;
-import b.map.MapDraw;
-import b.map.MapInformation;
-import b.map.ScoutManager;
-import b.structure.BuildingManager;
-import b.structure.BuildingOrder;
-import b.structure.BuildingPlacement;
-import b.structure.TechManager;
-import b.ui.DrawUI;
+import army.ArmyManager;
 import bwapi.DefaultBWListener;
 import bwapi.Game;
 import bwapi.Mirror;
@@ -31,6 +20,17 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
+import economy.ResourceManager;
+import economy.WorkerManager;
+import idmap.MapUnitID;
+import map.MapDraw;
+import map.MapInformation;
+import map.ScoutManager;
+import structure.BuildingManager;
+import structure.BuildingOrder;
+import structure.BuildingPlacement;
+import structure.TechManager;
+import ui.DrawUI;
 
 /**
  * BonjwAI: Starcraft BroodWar bot using BWAPI 4.1.2
@@ -78,7 +78,8 @@ public class BonjwAI extends DefaultBWListener {
 	private List< Pair<Position,Position> > rallyPoints = new ArrayList< Pair<Position,Position> >();
 	
 	// testing/temp variables
-	TilePosition firstSDPos = null;
+	economy.bResources myResources = new economy.bResources();
+	//System.out.println( myResources.actualMinerals );
 	
 	public void run() {
 		mirror.getModule().setEventListener(this);
@@ -184,9 +185,9 @@ public class BonjwAI extends DefaultBWListener {
 		 * Building Manager, updates building behavior
 		 */
 		if ( game.getFrameCount() % 16 == 0 ) {
-			BuildingManager.buildingManager( game, self, bBasePos, bArmyMap, bRolesMap, bStructMap, 
-					productionMode, bResources, buildOrderStruct, buildOrderTech, mineralSetup, 
-					timeBuildIssued, miningRegionsList, noBuildZones );
+			BuildingManager.buildingManagerWithBuildOrder( game, self, bArmyMap, bRolesMap, bStructMap, productionMode,
+					bResources, noBuildZones, bBasePos, buildOrderStruct, buildOrderTech, mineralSetup, 
+					timeBuildIssued, miningRegionsList );
 		}
 
 		/**

@@ -1,17 +1,17 @@
-package b.map;
+package map;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-import b.economy.WorkerManager;
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BaseLocation;
+import economy.WorkerManager;
 
 /**
  * Scout Manager, on each call

@@ -1,15 +1,15 @@
-package b.idmap;
+package idmap;
 
 import java.util.List;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 
-import b.economy.WorkerManager;
 import bwapi.Game;
 import bwapi.Pair;
 import bwapi.Unit;
 import bwapi.UnitType;
+import economy.WorkerManager;
 
 public class MapUnitID {
 

@@ -1,12 +1,10 @@
-package b.army;
+package army;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Multimap;
 
-import b.economy.WorkerManager;
-import b.map.MapInformation;
 import bwapi.Game;
 import bwapi.Pair;
 import bwapi.Player;
@@ -15,6 +13,8 @@ import bwapi.Unit;
 import bwapi.UnitFilter;
 import bwapi.UnitType;
 import bwta.BaseLocation;
+import economy.WorkerManager;
+import map.MapInformation;
 
 /**
  * This class controls army functions: rallying, individual unit behavior (ex: tank seigeing,

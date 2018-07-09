@@ -1,11 +1,11 @@
-package b.economy;
+package economy;
 
 import com.google.common.collect.Multimap;
 
-import b.idmap.MapUnitID;
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.UnitType;
+import idmap.MapUnitID;
 
 public class SupplyManager {
 

@@ -1,4 +1,4 @@
-package b.army;
+package army;
 
 import bwapi.Unit;
 

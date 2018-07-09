@@ -1,4 +1,4 @@
-package b.ai;
+package ai;
 
 import bwapi.Player;
 import bwapi.Unit;
