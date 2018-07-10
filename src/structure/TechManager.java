@@ -12,6 +12,7 @@ import bwapi.TechType;
 import bwapi.Unit;
 import bwapi.UnitType;
 import economy.ResourceManager;
+import economy.Resources;
 import idmap.MapUnitID;
 
 public class TechManager {
@@ -35,27 +36,27 @@ public class TechManager {
 		addToTechOrder( buildOrderTech, TechType.Tank_Siege_Mode, 41);
 	}
 	
-	public static void addToTechOrder(List<Pair<TechType,Integer>> buildOrderTech,
-			TechType tT,
-			Integer supply) {
+	public static void addToTechOrder(List<Pair<TechType,Integer>> buildOrderTech, TechType tT, Integer supply) {
 		buildOrderTech.add( new Pair<TechType,Integer>(tT, supply) );
 	}
 	
-	public static boolean buildTech(Game game, Player self, Multimap<UnitType, Integer> bStructMap,
-			ArrayList<Integer> bResources, TechType tech) {
+	// NEW FUNCS HERE
+	public static boolean checkIfSupplyMet( Resources bResources, Integer techSupply ) {
+		return bResources.getSupplyUsed() >= techSupply;
+	}
+
+	public static boolean buildTech(Game game, Multimap<UnitType, Integer> bStructMap,
+			Resources bResources, TechType techType) {
 		// first check if enough resources
-		if ( ResourceManager.checkIfEnoughResourcesTech(bResources, tech) ) {
+		if ( bResources.checkIfEnoughMinsAndGas(techType.mineralPrice(), techType.gasPrice()) ) {
 			// get struct that researches the tech
-			Unit struct = MapUnitID.getStruct(game,  bStructMap, tech.whatResearches());
-			// if no such struct, then return false
+			Unit struct = MapUnitID.getStruct(game,  bStructMap, techType.whatResearches());
 			if ( struct == null ) {
-				//System.out.println("Null value reached in buildTech for " + tech);
+				System.out.println("TechManager: Could not find building to research: " + techType );
 				return false;
 			}
-			//System.out.println("trying to research tech 1");
-			if ( struct.canResearch( tech ) ) {
-				System.out.println("trying to research tech 2");
-				return struct.research(tech);
+			if ( struct.canResearch( techType ) ) {
+				return struct.research(techType); // return true if building starts researching tech
 			}
 		}	
 		return false;

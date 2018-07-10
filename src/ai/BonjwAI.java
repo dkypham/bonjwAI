@@ -20,6 +20,7 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
+import economy.Base;
 import economy.ResourceManager;
 import economy.WorkerManager;
 import idmap.MapUnitID;
@@ -53,14 +54,16 @@ public class BonjwAI extends DefaultBWListener {
 	private ArrayList<Position> eStructPos = new ArrayList<Position>();			// enemy structs
 	private ArrayList<BaseLocation> bBasePos = new ArrayList<BaseLocation>();	// b.ai baselocations
 	private ArrayList<BaseLocation> eBasePos = new ArrayList<BaseLocation>();	// enemy baselocations
-
-	private ArrayList<Integer> bResources = new ArrayList<Integer>();			// b.ai lists
-
+	
+	private ArrayList<Base> bBases = new ArrayList<Base>();
+	private economy.Resources bResources = new economy.Resources();
+	
 	// mineralSetup - tells us the configuration of the minerals relative to CC
 	private int mineralSetup = -1;
 	
 	private List<Pair<UnitType,Integer>> buildOrderStruct = new ArrayList<Pair<UnitType,Integer>>();
 	private List<Pair<TechType,Integer>> buildOrderTech = new ArrayList<Pair<TechType,Integer>>();
+	private List<Pair<UnitType,Integer>> buildOrderUnit = new ArrayList<Pair<UnitType,Integer>>();
 	
 	private List<Position> drawStructPos = new ArrayList<Position>();
 	private List<String> drawStructLabel = new ArrayList<String>();
@@ -73,13 +76,10 @@ public class BonjwAI extends DefaultBWListener {
 	private List<Pair<TilePosition,TilePosition>> noBuildZones = new ArrayList<Pair<TilePosition,TilePosition>>();
 	
 	// building stuff
-	int productionMode = 0; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
+	int[] productionMode = {0}; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
 	
 	private List< Pair<Position,Position> > rallyPoints = new ArrayList< Pair<Position,Position> >();
 	
-	// testing/temp variables
-	economy.bResources myResources = new economy.bResources();
-	//System.out.println( myResources.actualMinerals );
 	
 	public void run() {
 		mirror.getModule().setEventListener(this);
@@ -116,6 +116,9 @@ public class BonjwAI extends DefaultBWListener {
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
 		MapInformation.initializeMapInformation( noBuildZones, rallyPoints, miningRegionsList, chokepointList, bBasePos );
 		
+		// NEW FUNCTIONS BELOW
+		bBases.add( new Base( bBasePos.get(0), MapUnitID.getFirstUnitFromUnitMap(game, bArmyMap, UnitType.Terran_Command_Center) ) );
+		
 	}
 
 	public void onUnitMorph(Unit u) {
@@ -140,6 +143,9 @@ public class BonjwAI extends DefaultBWListener {
 		case 2: // structure
 			MapUnitID.addStructToIDMap(bStructMap, u, buildOrderStruct);
 			BuildingPlacement.addToNoBuildZone(noBuildZones, u);
+			if ( u.getType() == UnitType.Terran_Command_Center ) {
+				bBases.add( new Base( bBasePos.get(bStructMap.get(UnitType.Terran_Command_Center).size()), u ));
+			}
 			break;
 		default:
 			break;
@@ -164,7 +170,8 @@ public class BonjwAI extends DefaultBWListener {
 
 	@Override
 	public void onFrame() {	
-
+		
+		
 		// check if SCV roles have been assigned yet
 		// can't put this in OnStart() b/c bArmyMap isn't init yet
 		if ( !WorkerManager.checkIfAllSCVRolesAssigned(bRolesMap) ) { // assigns if false
@@ -172,9 +179,9 @@ public class BonjwAI extends DefaultBWListener {
 		}
 		
 		/**
-		 * Resource Manager, updates resources: minerals, gas, and supply.
+		 * bResources, updates resources: minerals, gas, and supply.
 		 */
-		ResourceManager.updateResources(game, self, bResources, bArmyMap);
+		bResources.updateAll(game, self, bArmyMap);
 		
 		/**
 		 * Scout Manager, updates scouting behavior
@@ -187,13 +194,14 @@ public class BonjwAI extends DefaultBWListener {
 		if ( game.getFrameCount() % 16 == 0 ) {
 			BuildingManager.buildingManagerWithBuildOrder( game, self, bArmyMap, bRolesMap, bStructMap, productionMode,
 					bResources, noBuildZones, bBasePos, buildOrderStruct, buildOrderTech, mineralSetup, 
-					timeBuildIssued, miningRegionsList );
+					timeBuildIssued, miningRegionsList,
+					bBases );
 		}
 
 		/**
 		 * Update productionMode
 		 */
-		productionMode = BuildingManager.updateProductionMode(game, bArmyMap, bArmyMap, productionMode);
+		BuildingManager.updateProductionMode(game, bArmyMap, bArmyMap, productionMode);
 		
 		/**
 		 * Army Manager, updates army
@@ -219,7 +227,7 @@ public class BonjwAI extends DefaultBWListener {
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList, rallyPoints, noBuildZones);		
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, 
 				buildOrderTech, drawStructPos, drawStructLabel, productionMode, 
-				timeBuildIssued, miningRegionsList );
+				timeBuildIssued, miningRegionsList, bBases );
 		
 	}
 

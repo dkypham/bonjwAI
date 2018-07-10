@@ -15,17 +15,21 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
+import economy.Base;
 
 // NOTE: 1 TILE IS 32x32
 
 public class MapInformation {
+	static final int maxDistMins = 300;
+	static final int numMinPatchesPerBase = 7;
 	
 	public static void updateMapInformation(Game game, List<Pair<Position, Position>> miningRegionsList, 
 			ArrayList<BaseLocation> bBasePos, List<Pair<TilePosition,TilePosition>> noBuildZones ) {	
 		if ( miningRegionsList.size() == 1 && MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
 			miningRegionsList.add(MapInformation.initResourceZone2(game, bBasePos.get(1) ) );
 			System.out.println("Added 2nd mining region");
-			noBuildZones.add( new Pair<TilePosition, TilePosition>( miningRegionsList.get(1).first.toTilePosition(), miningRegionsList.get(1).second.toTilePosition()));
+			noBuildZones.add( new Pair<TilePosition, TilePosition>( miningRegionsList.get(1).first.toTilePosition(), 
+					miningRegionsList.get(1).second.toTilePosition()));
 		}
 	}
 	
@@ -51,11 +55,6 @@ public class MapInformation {
 		baseList.add(getClosestUniqueBase(baseList));
     	// get third index
 		baseList.add(getClosestUniqueBase(baseList)); 	
-	}
-	
-	// checks if a Position is explored
-	public static boolean isExplored(Game game, Position position) {
-		return game.isExplored(position.toTilePosition());
 	}
 	
 	// checks if 
@@ -221,8 +220,7 @@ public class MapInformation {
 
 		return new Pair<Position,Position>( new Position( lx - 32, ly - 32) , new Position ( mx + 32, my + 32) );
 	}
-	
-	
+
 	// bonjwAI baselocations
 	private static List<Position> getStartingLocations(Game game) {
 		List<Position> BaseLocationArray = new ArrayList<Position>();
@@ -452,6 +450,35 @@ public class MapInformation {
 			return true;
 		}
 		return false;
+	}
+	
+	// More polished versions below
+	/**
+	 * Check if a position is explored
+	 * 
+	 * @param game
+	 * @param position
+	 * @return
+	 */
+	public static boolean isExplored(Game game, Position position) {
+		return game.isExplored(position.toTilePosition());
+	}
+	
+	/**
+	 * Visible is defined as if 7 or more mineral patches have been seen.
+	 * 
+	 * @param game
+	 * @param base
+	 * @return
+	 */
+	public boolean baseLocationIsVisible( Game game, BaseLocation base ) {
+		int numMinsSeen = 0;
+		for ( Unit minsPatch : base.getMinerals() ) {
+			if ( isExplored(game, minsPatch.getPoint() ) ) {
+				numMinsSeen++;
+			}
+		}
+		return numMinsSeen >= numMinPatchesPerBase;
 	}
 	
 }

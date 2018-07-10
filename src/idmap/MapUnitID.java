@@ -112,4 +112,6 @@ public class MapUnitID {
 		return u.getHitPoints() != u.getInitialHitPoints();
 	}
 	
+	// NEW FUNCTIONS BELOW
+	
 }

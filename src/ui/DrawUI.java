@@ -15,6 +15,8 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BaseLocation;
 import economy.WorkerManager;
+import economy.Base;
+import economy.Resources;
 import idmap.MapUnitID;
 import map.MapDraw;
 
@@ -23,14 +25,15 @@ public class DrawUI {
 	public static void updateUI(Game game, Player self, Multimap<UnitType, Integer> bArmyMap, 
 			Multimap<UnitType, Integer> bStructMap, ArrayList<Position> eBasePos,
 			ArrayList<BaseLocation> bBasePos,
-			ArrayList<Integer> bResources,
+			Resources bResources,
 			List<Pair<UnitType,Integer>> buildOrderStruct,
 			List<Pair<TechType,Integer>> buildOrderTech,
 			List<Position> drawStructPos,
 			List<String> drawStructLabel,
-			int productionMode, 
+			int[] productionMode, 
 			int[] timeBuildIssued,
-			List<Pair<Position, Position>> miningRegionsList ) {
+			List<Pair<Position, Position>> miningRegionsList,
+			List<Base> bBases ) {
 		
 		// Column 1
 		
@@ -39,58 +42,20 @@ public class DrawUI {
 		game.drawTextScreen(10, 20, "APM: " + game.getAPM() );
 		
 		// Row 3-8: bResources 
-		//game.drawTextScreen(10, 40, "aM: " + bResources.get(0) );
-		//game.drawTextScreen(10, 50, "rM: " + bResources.get(1) );
-		//game.drawTextScreen(10, 60, "aG: " + bResources.get(2) );
-		//game.drawTextScreen(10, 70, "rG: " + bResources.get(3) );
-		//game.drawTextScreen(10, 80, "aS: " + bResources.get(4) );
-		//game.drawTextScreen(10, 90, "eS: " + bResources.get(5) );
+		game.drawTextScreen(10, 40, "mins Actual: " + bResources.getMinsActual() );
+		game.drawTextScreen(10, 50, "mins Effective: " + bResources.getMinsEffective() );
+		game.drawTextScreen(10, 60, "gas Actual: " + bResources.getGasActual() );
+		game.drawTextScreen(10, 70, "gas Effective: " + bResources.getGasEffective() );
+		game.drawTextScreen(10, 80, "supply total Actual: " + bResources.getSupplyTotalActual() );
+		game.drawTextScreen(10, 90, "supply total Effective: " + bResources.getSupplyTotalEffective() );
+		game.drawTextScreen(10, 100, "supply used: " + bResources.getSupplyUsed() );
 		
-		// Rows 3-8 now for testing info
-		//game.drawTextScreen( 10,  40, "Is first expo explored?: " + MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) );
-		game.drawTextScreen( 10,  40, "current game time: " + game.elapsedTime() );
-		game.drawTextScreen( 10,  50, "timeBuildIssued: " + timeBuildIssued[0] );
-		
-		
-		Pair<Integer,Integer> mainBaseWorkersDist = WorkerManager.getNumWorkersInBase(game, self, miningRegionsList.get(0), bArmyMap);
-		game.drawTextScreen( 10,  60, "main base mineral miners: " + mainBaseWorkersDist.first);
-		game.drawTextScreen( 10,  70, "main base gas miners: " + mainBaseWorkersDist.second);		
-		
-		if ( miningRegionsList.size() == 2 ) { 
-			Pair<Integer,Integer> secondBaseWorkersDist = WorkerManager.getNumWorkersInBase(game, self, miningRegionsList.get(1), bArmyMap);
-			game.drawTextScreen( 10,  80, "second base mineral miners: " + secondBaseWorkersDist.first);
-			game.drawTextScreen( 10,  90, "second base gas miners: " + secondBaseWorkersDist.second);	
+		int yOffset = 110;
+		for ( Base base : bBases ) {
+			game.drawTextScreen(10, yOffset + 10, "CC UNIT ID: " + base.getCC().getID() ) ;
+			game.drawTextScreen(10, yOffset + 20, "numMinMiners: " + base.getNumMinMiners() ) ;
+			yOffset += 20;
 		}
-		
-		// Row 9-10: buildOrderStruct + buildOrderSupply
-		drawNextBuilding(game, buildOrderStruct);
-		drawNextTech(game, buildOrderTech);
-		
-		// Row 12:
-		game.drawTextScreen(10, 130, "Number of eBuildings seen: " + eBasePos.size());
-		
-		// Row 13-16: Gas Miner IDs 
-		int offset = 10;
-		for( int ID : bArmyMap.get(UnitType.Powerup_Terran_Gas_Tank_Type_1) ) {
-			game.drawTextScreen(10, 140 + offset, "Gas Miner: " + Integer.toString(ID) );
-			offset += 10;
-		}		
-		
-		//game.drawTextScreen(10,  160, "Production Mode: " + productionMode );
-		
-		// Column 2: Unit counts
-		drawUnitCounts(game, self, bArmyMap);
-		
-		// Column 3: Building counts
-		drawUnitIDs(game, bArmyMap, bStructMap);
-		
-		// TO DO: MOVE TO MapDraw.java
-		// In game: draw unit vectors
-		//drawInfo(game, self, bArmyMap, bStructMap);
-		// In game: draw build order zones
-		//drawBuildingPlan(game, drawStructPos, drawStructLabel);
-		
-		drawUnitID(game, bArmyMap );
 	}
 	
 	public static void drawBuildingPlan( Game game,

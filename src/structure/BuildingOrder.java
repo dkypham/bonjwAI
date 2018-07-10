@@ -1,9 +1,17 @@
 package structure;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Multimap;
+
+import bwapi.Game;
 import bwapi.Pair;
+import bwapi.Player;
+import bwapi.TilePosition;
 import bwapi.UnitType;
+import bwta.BaseLocation;
+import economy.Resources;
 
 public class BuildingOrder {
 
@@ -55,6 +63,18 @@ public class BuildingOrder {
 		addToBuildOrder( buildOrderStruct, Factory		, 32);
 		addToBuildOrder( buildOrderStruct, MachineShop	, 39);
 	}
-
 	
+	// NEW FUNCS HERE
+	public static boolean checkIfSupplyMet( Resources bResources, Integer structSupply ) {
+		return bResources.getSupplyUsed() >= structSupply;
+	}
+	
+	public static void setNextOrderNeg( List<Pair<UnitType,Integer>> buildOrderStruct ) {
+		buildOrderStruct.set(0, new Pair<UnitType,Integer>( buildOrderStruct.get(0).first, 
+				buildOrderStruct.get(0).second*-1) );
+	}
+	public static boolean isNextOrderNeg( List<Pair<UnitType,Integer>> buildOrderStruct ) {
+		return buildOrderStruct.get(0).second < 0;
+	}
+
 }

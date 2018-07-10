@@ -35,35 +35,37 @@ public class SupplyManager {
 	}
 
 	// step function for when supply depots should be built
-	public static boolean needSupplyCheck(Player self, int effectiveSupply) {
+	public static boolean needSupplyCheck( Resources bResources) {
 		boolean needSupply = false;
-
+		int supplyUsed = bResources.getSupplyUsed();
+		int supplyTotalEffective = bResources.getSupplyTotalEffective();
+		
 		// need supply at 8/10
-		if (self.supplyTotal() <= 20) {
-			if (effectiveSupply - self.supplyUsed() <= 2) {
+		if (supplyUsed <= 10) {
+			if (supplyTotalEffective - supplyUsed <= 1) {
 				needSupply = true;
 			} 
 		}
-		else if (self.supplyTotal() <= 60) {
-			if (effectiveSupply - self.supplyUsed() < 4) {
+		else if (supplyUsed <= 30) {
+			if (supplyTotalEffective - supplyUsed < 2) {
 				needSupply = true;
 			}
 		}
 		// 30 to 50 supply: need supply at -6
-		else if (self.supplyTotal() < 100) {
-			if (effectiveSupply - self.supplyUsed() < 12) {
+		else if (supplyUsed < 50) {
+			if (supplyTotalEffective - supplyUsed < 6) {
 				needSupply = true;
 			}
 		}
 		// 50 to 100 supply: need supply at -8
-		else if (self.supplyTotal() < 200) {
-			if (effectiveSupply - self.supplyUsed() < 16) {
+		else if (supplyUsed < 100) {
+			if (supplyTotalEffective - supplyUsed < 8) {
 				needSupply = true;
 			}
 		}
 		// 100 to 150 supply: need supply at -8
-		else if (self.supplyTotal() <= 400) {
-			if (effectiveSupply - self.supplyUsed() < 20) {
+		else if (supplyUsed <= 200) {
+			if (supplyTotalEffective - supplyUsed < 10) {
 				needSupply = true;
 			}
 		}	
