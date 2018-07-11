@@ -16,14 +16,14 @@ public class BuildOrder {
 
 	static final int MAX_TIME_BUILD_ISSUED = 20;
 	
-	List<Pair<UnitType,Integer>> buildOrder;
+	List<BuildOrderElement> buildOrder;
 	boolean buildIssued;
 	int timeBuildIssued;
 	TilePosition plannedBuildLocation;
 	
 	boolean completed;
 
-	public BuildOrder( List<Pair<UnitType,Integer>> buildOrderChoice ) {
+	public BuildOrder( List<BuildOrderElement> buildOrderChoice ) {
 		this.buildOrder = buildOrderChoice;
 		this.buildIssued = false;
 		this.timeBuildIssued = -1;
@@ -31,16 +31,15 @@ public class BuildOrder {
 		this.completed = false;
 	}
 	
-	public List<Pair<UnitType,Integer>> getBuildOrder() {
+	public List<BuildOrderElement> getBuildOrder() {
 		return this.buildOrder;
 	}
 	
-	public Pair<UnitType,Integer> getNextPairInBuildOrder() {
-		return this.buildOrder.get(0);
-	}
-	
 	public boolean matchesNextstruct( UnitType uT ) {
-		return uT == this.buildOrder.get(0).first;
+		if ( uT.isBuilding() ) {
+			return uT == this.buildOrder.get(0).getUT();
+		}
+		return false;
 	}
 	
 	public void removeTopOfBuildOrder() {
@@ -49,7 +48,7 @@ public class BuildOrder {
 	
 	// check if buildOrderSupply is met
 	public boolean checkIfSupplyMet( Resources bResources ) {
-		return bResources.getSupplyUsed() >= this.buildOrder.get(0).second;
+		return bResources.getSupplyUsed() >= this.buildOrder.get(0).getSupply();
 	}
 	
 	// check if build was issued

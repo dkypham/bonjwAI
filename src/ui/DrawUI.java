@@ -26,7 +26,6 @@ public class DrawUI {
 			Multimap<UnitType, Integer> bStructMap, ArrayList<Position> eBasePos,
 			ArrayList<BaseLocation> bBasePos,
 			Resources bResources,
-			List<Pair<TechType,Integer>> buildOrderTech,
 			List<Position> drawStructPos,
 			List<String> drawStructLabel,
 			int[] productionMode, 

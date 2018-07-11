@@ -13,7 +13,6 @@ import bwapi.Mirror;
 import bwapi.Pair;
 import bwapi.Player;
 import bwapi.Position;
-import bwapi.TechType;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
@@ -21,7 +20,6 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
 import economy.Base;
-import economy.ResourceManager;
 import economy.WorkerManager;
 import idmap.MapUnitID;
 import map.MapDraw;
@@ -31,7 +29,6 @@ import structure.BuildOrder;
 import structure.BuildingManager;
 import structure.ListOfBuildOrders;
 import structure.BuildingPlacement;
-import structure.TechManager;
 import ui.DrawUI;
 
 /**
@@ -61,8 +58,6 @@ public class BonjwAI extends DefaultBWListener {
 	
 	// mineralSetup - tells us the configuration of the minerals relative to CC
 	private int mineralSetup = -1;
-	
-	private List<Pair<TechType,Integer>> buildOrderTech = new ArrayList<Pair<TechType,Integer>>();
 	
 	private List<Position> drawStructPos = new ArrayList<Position>();
 	private List<String> drawStructLabel = new ArrayList<String>();
@@ -111,7 +106,6 @@ public class BonjwAI extends DefaultBWListener {
 		miningRegionsList.add( MapInformation.initResourceZone2(game, bBasePos.get(0) ) );	
 		
 		ScoutManager.initializeScoutQueue(scoutQueue, bBasePos );
-		TechManager.initializeTechOrder( buildOrderTech);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
 		MapInformation.initializeMapInformation( noBuildZones, rallyPoints, miningRegionsList, chokepointList, bBasePos );
 		
@@ -202,7 +196,7 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		if ( game.getFrameCount() % 16 == 0 ) {
 			BuildingManager.buildingManagerWithBuildOrder( game, self, bArmyMap, bRolesMap, bStructMap, productionMode,
-					bResources, noBuildZones, bBasePos, buildOrderTech, mineralSetup, 
+					bResources, noBuildZones, bBasePos, mineralSetup, 
 					miningRegionsList,
 					bBases, bBuildOrder );
 		}
@@ -234,8 +228,8 @@ public class BonjwAI extends DefaultBWListener {
 		 * Drawing
 		 */
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList, rallyPoints, noBuildZones);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, 
-				buildOrderTech, drawStructPos, drawStructLabel, productionMode, 
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources,
+				drawStructPos, drawStructLabel, productionMode, 
 				timeBuildIssued, miningRegionsList, bBases );
 		
 	}

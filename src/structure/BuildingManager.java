@@ -283,7 +283,6 @@ public class BuildingManager {
 			List<Pair<TilePosition,TilePosition>> noBuildZones,
 			
 			ArrayList<BaseLocation> bBasePos,
-			List<Pair<TechType,Integer>> buildOrderTech,
 			
 			int mineralSetup,
 			
@@ -294,21 +293,19 @@ public class BuildingManager {
 		
 		// check if supply is same as build order
 		if ( bBuildOrder.checkIfSupplyMet(bResources) && !bBuildOrder.checkIfBuildIssued() ) {
-			if ( buildStruct(game, self, bBasePos, mineralSetup, bArmyMap, bRolesMap, bStructMap, bResources, 
-					bBuildOrder.getNextPairInBuildOrder().first, noBuildZones) ) {
-				//ListOfBuildOrders.setNextOrderNeg(buildOrderStruct); // neg flag means SCV is moving to build
-				bBuildOrder.setBuildIssuedTrue();
-				bBuildOrder.setTimeBuildIssued( game.elapsedTime() );	// get time build command is issued for error checking
+			if ( bBuildOrder.getBuildOrder().get(0).isStruct() ) {
+				if ( buildStruct(game, self, bBasePos, mineralSetup, bArmyMap, bRolesMap, bStructMap, bResources, 
+						bBuildOrder.getBuildOrder().get(0).getUT(), noBuildZones) ) {
+					//ListOfBuildOrders.setNextOrderNeg(buildOrderStruct); // neg flag means SCV is moving to build
+					bBuildOrder.setBuildIssuedTrue();
+					bBuildOrder.setTimeBuildIssued( game.elapsedTime() );	// get time build command is issued for error checking
+				}
 			}
-		}
-				
-		// check if supply is same as build order
-		else if ( TechManager.checkIfSupplyMet(bResources, buildOrderTech.get(0).second ) ) {
-			if ( TechManager.buildTech(game, bStructMap, bResources, buildOrderTech.get(0).first ) ) {
-				buildOrderTech.remove(0); // instant so no need to track time for errors
-				return;
+			else if ( bBuildOrder.getBuildOrder().get(0).isTech() ) {
+				if ( buildTech(game, bStructMap, bResources, bBuildOrder.getBuildOrder().get(0).getTT() )) {
+					bBuildOrder.removeTopOfBuildOrder();
+				}
 			}
-			return; // did not build, but still need to
 		}
 		
 		// generic case ( buildOrderStruct supply + tech reads 500 )
@@ -388,6 +385,23 @@ public class BuildingManager {
 			}
 		}
 		return false; // did not train SCV
+	}
+	
+	public static boolean buildTech(Game game, Multimap<UnitType, Integer> bStructMap,
+			Resources bResources, TechType tT) {
+		// first check if enough resources
+		if ( bResources.checkIfEnoughMinsAndGas(tT.mineralPrice(), tT.gasPrice()) ) {
+			// get struct that researches the tech
+			Unit struct = MapUnitID.getStruct(game,  bStructMap, tT.whatResearches());
+			if ( struct == null ) {
+				System.out.println("TechManager: Could not find building to research: " + tT );
+				return false;
+			}
+			if ( struct.canResearch( tT ) ) {
+				return struct.research(tT); // return true if building starts researching tech
+			}
+		}	
+		return false;
 	}
 	
 }
