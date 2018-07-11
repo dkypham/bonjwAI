@@ -283,22 +283,22 @@ public class BuildingManager {
 			List<Pair<TilePosition,TilePosition>> noBuildZones,
 			
 			ArrayList<BaseLocation> bBasePos,
-			List<Pair<UnitType,Integer>> buildOrderStruct,
 			List<Pair<TechType,Integer>> buildOrderTech,
 			
 			int mineralSetup,
-			int[] timeBuildIssued,
 			
 			List<Pair<Position,Position>> miningRegionsList,
 			
-			ArrayList<Base> bBases) {
+			ArrayList<Base> bBases,
+			BuildOrder bBuildOrder ) {
 		
 		// check if supply is same as build order
-		if ( BuildingOrder.checkIfSupplyMet(bResources, buildOrderStruct.get(0).second ) ) {
+		if ( bBuildOrder.checkIfSupplyMet(bResources) && !bBuildOrder.checkIfBuildIssued() ) {
 			if ( buildStruct(game, self, bBasePos, mineralSetup, bArmyMap, bRolesMap, bStructMap, bResources, 
-					buildOrderStruct.get(0).first, noBuildZones) ) {
-				BuildingOrder.setNextOrderNeg(buildOrderStruct); // neg flag means SCV is moving to build
-				timeBuildIssued[0] = game.elapsedTime();	// get time build command is issued for error checking
+					bBuildOrder.getNextPairInBuildOrder().first, noBuildZones) ) {
+				//ListOfBuildOrders.setNextOrderNeg(buildOrderStruct); // neg flag means SCV is moving to build
+				bBuildOrder.setBuildIssuedTrue();
+				bBuildOrder.setTimeBuildIssued( game.elapsedTime() );	// get time build command is issued for error checking
 			}
 		}
 				
@@ -315,12 +315,12 @@ public class BuildingManager {
 		
 		// else build UNIT
 		else {
-			if ( buildOrderStruct.get(0).second < 0 ) { // do not build unit if building is queued
+			if ( bBuildOrder.checkIfBuildIssued() ) { // do not build unit if building is queued
 				// check if time since set negative is > 20 seconds, then make it positive. 
 				// Usually if this is the case, the SCV did not sucessfully build
-				if ( game.elapsedTime() - timeBuildIssued[0] > 20) {
-					if ( BuildingOrder.isNextOrderNeg(buildOrderStruct) ) {
-						BuildingOrder.setNextOrderNeg(buildOrderStruct); // make it neg to pos		
+				if ( bBuildOrder.tooMuchTimeBuildIssued(game.elapsedTime() )) {
+					if ( bBuildOrder.isBuildIssued() ) {
+						bBuildOrder.setBuildIssuedFalse(); // make it neg to pos		
 					}
 					else { 
 						System.out.println("BuildingManager: More than 20 seconds since build command was issued, but "
@@ -376,7 +376,7 @@ public class BuildingManager {
 		if ( SupplyManager.needSupplyCheck(bResources) ) {
 			return false;
 		}
-		
+
 		for ( Base bBase : bBases ) {
 			if ( bBase.getNumMinMiners() < bBase.getMinMinMiners() ) { // not enough min miners
 				Unit CC = bBase.getCC();

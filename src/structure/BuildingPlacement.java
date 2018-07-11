@@ -56,7 +56,7 @@ public class BuildingPlacement {
 									unitsInWay = true;
 							}
 							if (!unitsInWay) {
-								if ( !isInNoBuildZone( game, new TilePosition(i,j), buildingType, noBuildZones ) ) {
+								if ( !isInNoBuildZone( new TilePosition(i,j), buildingType, noBuildZones ) ) {
 									return new TilePosition(i, j);
 								}
 							}
@@ -91,7 +91,7 @@ public class BuildingPlacement {
 						}
 						if (!unitsInWay) {
 							// final check, if in any of the noBuildZones
-							if ( !isInNoBuildZone( game, new TilePosition(i,j), buildingType, noBuildZones ) ) {
+							if ( !isInNoBuildZone( new TilePosition(i,j), buildingType, noBuildZones ) ) {
 								return new TilePosition(i, j);
 							}
 						}
@@ -131,7 +131,7 @@ public class BuildingPlacement {
 	}	
 	
 	// return true if IS overlapping/is in a build zone
-	public static boolean isInNoBuildZone( Game game, TilePosition buildTile, UnitType building, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
+	public static boolean isInNoBuildZone( TilePosition buildTile, UnitType building, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
 		TilePosition btTL = new TilePosition( buildTile.getX(), buildTile.getY() );
 		TilePosition btBR = new TilePosition( buildTile.getX() + building.tileWidth(), buildTile.getY() + building.tileHeight());
 		
@@ -177,6 +177,46 @@ public class BuildingPlacement {
 		TilePosition topLeft = new TilePosition( building.getTilePosition().getX() + 4, building.getTilePosition().getY() + 1 );
 		TilePosition botRight = new TilePosition( topLeft.getX() + 2, topLeft.getY() + 2 );
 		noBuildZones.add( new Pair<TilePosition,TilePosition>( topLeft, botRight ));
+	}
+	
+	// IMPROVED METHODS BELOW
+	public static TilePosition findBuildLocation( Multimap<UnitType, Integer> bStructMap,
+			ArrayList<BaseLocation> bBasePos,
+			List<Pair<TilePosition,TilePosition>> noBuildZones, UnitType struct) {
+		// condition for SD
+		if ( struct == SD ) {
+			if ( bStructMap.get(SD).size() == 0 ) {
+				// method for first depot position, ignore noBuildZone
+			}
+			else {
+				// generic alg, use noBuildZone
+			}
+		}
+		
+		// condition for Barracks
+		else if ( struct == Barracks ) {
+			if ( bStructMap.get(Barracks).size() == 0 ) {
+				// method for first depot position, ignore noBuildZone
+			}
+			else {
+				// generic alg, use noBuildZone
+			}
+		}
+		
+		// conditions for expos
+		else if ( struct == CC ) {
+			// method for expanding, ignore noBuildZone
+		}
+		
+		else if ( struct.isAddon() ) {
+			// method for building addons
+		}
+		
+		else { // catch all
+			
+		}
+		
+		return null;
 	}
 	
 }

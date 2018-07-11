@@ -26,7 +26,6 @@ public class DrawUI {
 			Multimap<UnitType, Integer> bStructMap, ArrayList<Position> eBasePos,
 			ArrayList<BaseLocation> bBasePos,
 			Resources bResources,
-			List<Pair<UnitType,Integer>> buildOrderStruct,
 			List<Pair<TechType,Integer>> buildOrderTech,
 			List<Position> drawStructPos,
 			List<String> drawStructLabel,
@@ -56,6 +55,8 @@ public class DrawUI {
 			game.drawTextScreen(10, yOffset + 20, "numMinMiners: " + base.getNumMinMiners() ) ;
 			yOffset += 20;
 		}
+		
+		drawUnitID(game, bArmyMap);
 	}
 	
 	public static void drawBuildingPlan( Game game,

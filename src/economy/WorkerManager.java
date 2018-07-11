@@ -31,6 +31,7 @@ public class WorkerManager {
 	static String uT_ScoutSCV = "Scout";
 	static String uT_DefendSCV = "Defender";
 	static String uT_RepairSCV ="Repairer";
+	static String uT_BuilderSCV = "Builder";
 	
 	public static void updateWorkerManager(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<String, Integer> bRolesMap,
@@ -389,9 +390,10 @@ public class WorkerManager {
 				repairer.repair(underAttackSCV);
 			}
 		}
-		
 	}
 	
 	// UPDATED FUNCS BELOW
-	
+	public static void moveSCVToBuild( ) {
+		 
+	}
 }

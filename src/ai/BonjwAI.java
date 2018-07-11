@@ -27,8 +27,9 @@ import idmap.MapUnitID;
 import map.MapDraw;
 import map.MapInformation;
 import map.ScoutManager;
+import structure.BuildOrder;
 import structure.BuildingManager;
-import structure.BuildingOrder;
+import structure.ListOfBuildOrders;
 import structure.BuildingPlacement;
 import structure.TechManager;
 import ui.DrawUI;
@@ -61,9 +62,7 @@ public class BonjwAI extends DefaultBWListener {
 	// mineralSetup - tells us the configuration of the minerals relative to CC
 	private int mineralSetup = -1;
 	
-	private List<Pair<UnitType,Integer>> buildOrderStruct = new ArrayList<Pair<UnitType,Integer>>();
 	private List<Pair<TechType,Integer>> buildOrderTech = new ArrayList<Pair<TechType,Integer>>();
-	private List<Pair<UnitType,Integer>> buildOrderUnit = new ArrayList<Pair<UnitType,Integer>>();
 	
 	private List<Position> drawStructPos = new ArrayList<Position>();
 	private List<String> drawStructLabel = new ArrayList<String>();
@@ -79,7 +78,8 @@ public class BonjwAI extends DefaultBWListener {
 	int[] productionMode = {0}; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
 	
 	private List< Pair<Position,Position> > rallyPoints = new ArrayList< Pair<Position,Position> >();
-	
+		
+	BuildOrder bBuildOrder;
 	
 	public void run() {
 		mirror.getModule().setEventListener(this);
@@ -111,23 +111,26 @@ public class BonjwAI extends DefaultBWListener {
 		miningRegionsList.add( MapInformation.initResourceZone2(game, bBasePos.get(0) ) );	
 		
 		ScoutManager.initializeScoutQueue(scoutQueue, bBasePos );
-		BuildingOrder.initializeBuildOrder( buildOrderStruct );
 		TechManager.initializeTechOrder( buildOrderTech);
 		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
 		MapInformation.initializeMapInformation( noBuildZones, rallyPoints, miningRegionsList, chokepointList, bBasePos );
 		
 		// NEW FUNCTIONS BELOW
-		bBases.add( new Base( bBasePos.get(0), MapUnitID.getFirstUnitFromUnitMap(game, bArmyMap, UnitType.Terran_Command_Center) ) );
-		
+		bBuildOrder = new BuildOrder( ListOfBuildOrders.chooseBuildOrder( game.enemy().getRace() ));
 	}
 
 	public void onUnitMorph(Unit u) {
+		// case when refinery is built
 		if ( u.getType() == UnitType.Terran_Refinery ) {
 			MapUnitID.addToIDMap(bStructMap, u);
-			if ( buildOrderStruct.get(0).first == UnitType.Terran_Refinery ) {
-				buildOrderStruct.remove(0);
+			if ( !bBuildOrder.isCompleted() ) { // still using build order
+				if ( bBuildOrder.matchesNextstruct(u.getType())) {
+					// clear top
+					bBuildOrder.removeTopOfBuildOrder();
+				}
 			}
 		}
+		// case when refinery is destroyed
 		if ( u.getType() == UnitType.Resource_Vespene_Geyser ) {
 			MapUnitID.removeFromIDMap(bStructMap, u);
 		}
@@ -141,7 +144,13 @@ public class BonjwAI extends DefaultBWListener {
 			MapUnitID.addToIDMap(bArmyMap, u);
 			break;
 		case 2: // structure
-			MapUnitID.addStructToIDMap(bStructMap, u, buildOrderStruct);
+			MapUnitID.addStructToIDMap(bStructMap, u);
+			if ( !bBuildOrder.isCompleted() ) { // still using build order
+				if ( bBuildOrder.matchesNextstruct(u.getType())) {
+					// clear top
+					bBuildOrder.removeTopOfBuildOrder();
+				}
+			}
 			BuildingPlacement.addToNoBuildZone(noBuildZones, u);
 			if ( u.getType() == UnitType.Terran_Command_Center ) {
 				bBases.add( new Base( bBasePos.get(bStructMap.get(UnitType.Terran_Command_Center).size()), u ));
@@ -193,9 +202,9 @@ public class BonjwAI extends DefaultBWListener {
 		 */
 		if ( game.getFrameCount() % 16 == 0 ) {
 			BuildingManager.buildingManagerWithBuildOrder( game, self, bArmyMap, bRolesMap, bStructMap, productionMode,
-					bResources, noBuildZones, bBasePos, buildOrderStruct, buildOrderTech, mineralSetup, 
-					timeBuildIssued, miningRegionsList,
-					bBases );
+					bResources, noBuildZones, bBasePos, buildOrderTech, mineralSetup, 
+					miningRegionsList,
+					bBases, bBuildOrder );
 		}
 
 		/**
@@ -225,7 +234,7 @@ public class BonjwAI extends DefaultBWListener {
 		 * Drawing
 		 */
 		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList, rallyPoints, noBuildZones);		
-		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, buildOrderStruct, 
+		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources, 
 				buildOrderTech, drawStructPos, drawStructLabel, productionMode, 
 				timeBuildIssued, miningRegionsList, bBases );
 		

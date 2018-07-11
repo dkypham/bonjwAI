@@ -32,16 +32,11 @@ public class MapUnitID {
 	
 	// This function adds a <Unit,Integer> value into unitIDMap
 	public static void addStructToIDMap(Multimap<UnitType, Integer> unitIDMap, 
-			Unit unit, List<Pair<UnitType,Integer>> buildOrderStruct ) {
+			Unit unit ) {
 		if ( unitIDMap.containsEntry(unit, -1) ) {
 			unitIDMap.remove(unit, -1);
 		}
 		unitIDMap.put(unit.getType(), Integer.valueOf(unit.getID()));
-		
-		// remove from buildOrder list
-		if ( unit.getType() == buildOrderStruct.get(0).first ) {
-			buildOrderStruct.remove(0);
-		}
 
 	}
 	
