@@ -7,15 +7,19 @@ import bwapi.Game;
 import bwapi.Pair;
 import bwapi.Position;
 import bwapi.TilePosition;
+import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
+import math.MapMath;
+import structure.BuildOrder;
 
 public class MapDraw {
 
 	public static void drawMapInformation(Game game, List<BaseLocation> bBasePos, 
 			List<BaseLocation> eBasePos, List<Pair<Position,Position>> miningRegionsList,
-			List<Pair<Position, Position>> rallyPoints, List<Pair<TilePosition, TilePosition>> noBuildZones ) {
+			List<Pair<Position, Position>> rallyPoints, List<Pair<TilePosition, TilePosition>> noBuildZones, 
+			BuildOrder bBuildOrder ) {
 		drawBBasePos(game, bBasePos);
 		if (eBasePos.size() != 0) {
 			MapDraw.drawEBasePos(game, eBasePos);
@@ -24,8 +28,24 @@ public class MapDraw {
 		//drawAllChokepoints(game);
 		drawRallyPoints( game, rallyPoints );
 		drawNoBuildZones( game, noBuildZones );
+		
+		drawNextBuildLocation(game, bBuildOrder);
 	}
 	
+	private static void drawNextBuildLocation(Game game, BuildOrder bBuildOrder) {
+		// return if not struct
+		if ( !bBuildOrder.getBuildOrder().get(0).isStruct() ) {
+			return;
+		}
+		
+		TilePosition buildLocation = bBuildOrder.getPlannedBuildLocation();
+		UnitType structType = bBuildOrder.getBuildOrder().get(0).getUT();
+		
+		game.drawBoxMap(buildLocation.toPosition(), MapMath.findBuildingArea(buildLocation, structType).second.toPosition(), 
+				Color.Purple );
+		
+	}
+
 	private static void drawNoBuildZones(Game game, List<Pair<TilePosition, TilePosition>> noBuildZones) {
 		for ( Pair<TilePosition,TilePosition> buildZone : noBuildZones ) {
 			game.drawBoxMap( buildZone.first.toPosition(), buildZone.second.toPosition(), Color.Red );

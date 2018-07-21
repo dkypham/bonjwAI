@@ -19,6 +19,7 @@ import economy.Base;
 import economy.Resources;
 import idmap.MapUnitID;
 import map.MapDraw;
+import structure.BuildOrder;
 
 public class DrawUI {
 
@@ -26,12 +27,10 @@ public class DrawUI {
 			Multimap<UnitType, Integer> bStructMap, ArrayList<Position> eBasePos,
 			ArrayList<BaseLocation> bBasePos,
 			Resources bResources,
-			List<Position> drawStructPos,
-			List<String> drawStructLabel,
 			int[] productionMode, 
 			int[] timeBuildIssued,
 			List<Pair<Position, Position>> miningRegionsList,
-			List<Base> bBases ) {
+			List<Base> bBases, BuildOrder bBuildOrder ) {
 		
 		// Column 1
 		
@@ -69,11 +68,6 @@ public class DrawUI {
 				MapDraw.getBottomRightBuildZonePos(drawStructPos.get(1).toTilePosition(), UnitType.Terran_Barracks.tileWidth(), UnitType.Terran_Barracks.tileHeight() ), 
 				Color.Green);
 		game.drawTextMap(drawStructPos.get(1), drawStructLabel.get(1));
-	}
-	
-	public static void drawNextBuilding(Game game, List<Pair<UnitType,Integer>> buildOrderStruct ) {
-		game.drawTextScreen(10, 100, "Next building: " + buildOrderStruct.get(0).first + " at " + 
-				buildOrderStruct.get(0).second + " supply.");
 	}
 	
 	public static void drawNextTech(Game game, List<Pair<TechType,Integer>> buildOrderTech ) {

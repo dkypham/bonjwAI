@@ -83,7 +83,7 @@ public class BuildingManager {
 		}
 		// if building type is Barracks
 		if ( struct == Barracks ) {
-			TilePosition pos = MapMath.findPosFirstBarracks(game, bBasePos.get(0), mineralSetup);
+			TilePosition pos = MapMath.findPosFirstBarracks(game, MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC), mineralSetup);
 			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, bRolesMap, pos, Barracks) ) {
 				bResources.addMinAndGas( struct.mineralPrice(), struct.gasPrice() );
 
@@ -117,19 +117,7 @@ public class BuildingManager {
 	public static int updateBuildStructTime( Game game ) {
 		return game.elapsedTime();
 	}
-			
-	// COMMAND CENTER FUNCTIONS
 	
-	// method to find build locations
-	public static void getBuildingPlan(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
-			Multimap<UnitType, Integer> bStructMap, List<Position> drawStructPos,
-			List<String> drawStructLabel, int mineralSetup, ArrayList<BaseLocation> bBasePos) {
-		drawStructPos.add( (MapMath.findPosFirstSD(game, bBasePos.get(0), mineralSetup)).toPosition());
-		drawStructLabel.add("First Supply Depot");
-		drawStructPos.add( (MapMath.findPosFirstBarracks(game, bBasePos.get(0), mineralSetup)).toPosition());
-		drawStructLabel.add("First Barracks");
-	}
-
 	public static boolean buildCC( Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<String, Integer> bRolesMap,
 			Multimap<UnitType, Integer> bStructMap,
@@ -227,7 +215,7 @@ public class BuildingManager {
 			// first supply depot position
 			if ( numSupply == 0 ) {
 				// find pos of first SD
-				TilePosition pos = MapMath.findPosFirstSD(game, bBasePos.get(0), mineralSetup);
+				TilePosition pos = MapMath.findPosFirstSD(game, MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC), mineralSetup);
 				// issue build at TilePosition found
 				WorkerManager.issueBuildAtLocation(game, bArmyMap, bRolesMap, pos, SD);
 			}

@@ -2,8 +2,11 @@ package structure;
 
 import java.util.List;
 
+import com.google.common.collect.Multimap;
+
 import bwapi.UnitType;
 import economy.Resources;
+import bwapi.Game;
 import bwapi.Pair;
 import bwapi.TilePosition;
 
@@ -40,6 +43,10 @@ public class BuildOrder {
 			return uT == this.buildOrder.get(0).getUT();
 		}
 		return false;
+	}
+	
+	public UnitType getNextStruct() {
+		return this.buildOrder.get(0).getUT();
 	}
 	
 	public void removeTopOfBuildOrder() {
@@ -87,9 +94,12 @@ public class BuildOrder {
 	}
 	
 	
-	public static TilePosition getPlannedBuildLocation() {
-		
-		return null;
+	public TilePosition getPlannedBuildLocation() {
+		return this.plannedBuildLocation;
+	}
+	
+	public void updatePlannedBuildLocation( Game game, Multimap<UnitType, Integer> bStructMap, UnitType structType ) {
+		this.plannedBuildLocation = BuildingPlacement.getPlannedBuildLocation( game, bStructMap, structType );
 	}
 	
 	public boolean isCompleted() {

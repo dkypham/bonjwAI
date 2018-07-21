@@ -59,14 +59,10 @@ public class BonjwAI extends DefaultBWListener {
 	// mineralSetup - tells us the configuration of the minerals relative to CC
 	private int mineralSetup = -1;
 	
-	private List<Position> drawStructPos = new ArrayList<Position>();
-	private List<String> drawStructLabel = new ArrayList<String>();
-
 	private List<Position> scoutQueue = new ArrayList<Position>();
 	private List<Chokepoint> chokepointList = new ArrayList<Chokepoint>();
 	private List<Pair<Position,Position>> miningRegionsList = new ArrayList<Pair<Position,Position>>();
 	int[] timeBuildIssued = {0};
-	//boolean[] underAttack = {false};
 	private List<Pair<TilePosition,TilePosition>> noBuildZones = new ArrayList<Pair<TilePosition,TilePosition>>();
 	
 	// building stuff
@@ -101,12 +97,11 @@ public class BonjwAI extends DefaultBWListener {
 		/* Enable game speed */
 		game.setLocalSpeed(15);
 		
-		mineralSetup = MapInformation.initMapInfo(game, bStructMap, bBasePos, mineralSetup);
+		MapInformation.initMapInfo(game, bStructMap, bBasePos);
 		System.out.println("Mineral setup: " + mineralSetup);
 		miningRegionsList.add( MapInformation.initResourceZone2(game, bBasePos.get(0) ) );	
 		
 		ScoutManager.initializeScoutQueue(scoutQueue, bBasePos );
-		BuildingManager.getBuildingPlan(game, self, bArmyMap, bStructMap, drawStructPos, drawStructLabel, mineralSetup, bBasePos);
 		MapInformation.initializeMapInformation( noBuildZones, rallyPoints, miningRegionsList, chokepointList, bBasePos );
 		
 		// NEW FUNCTIONS BELOW
@@ -227,10 +222,11 @@ public class BonjwAI extends DefaultBWListener {
 		/**
 		 * Drawing
 		 */
-		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList, rallyPoints, noBuildZones);		
+		MapDraw.drawMapInformation(game, bBasePos, eBasePos, miningRegionsList, rallyPoints, noBuildZones,
+				bBuildOrder );		
 		DrawUI.updateUI(game, self, bArmyMap, bStructMap, eStructPos, bBasePos, bResources,
-				drawStructPos, drawStructLabel, productionMode, 
-				timeBuildIssued, miningRegionsList, bBases );
+				productionMode, 
+				timeBuildIssued, miningRegionsList, bBases, bBuildOrder );
 		
 	}
 

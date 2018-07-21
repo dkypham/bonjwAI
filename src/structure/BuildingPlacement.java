@@ -13,6 +13,7 @@ import bwapi.UnitType;
 import bwta.BaseLocation;
 import economy.WorkerManager;
 import idmap.MapUnitID;
+import map.MapInformation;
 import math.MapMath;
 
 public class BuildingPlacement {
@@ -120,7 +121,7 @@ public class BuildingPlacement {
 
 		// getBuildPositionFirstSD
 		if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, SD) == 0 ) {
-			return MapMath.findPosFirstSD(game, bBasePos.get(0), mineralSetup);	
+			return MapMath.findPosFirstSD(game, MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC), mineralSetup);	
 		}
 		// else
 		// naive build
@@ -217,6 +218,33 @@ public class BuildingPlacement {
 		}
 		
 		return null;
+	}
+
+	public static TilePosition getPlannedBuildLocation(Game game, Multimap<UnitType, Integer> bStructMap, 
+			UnitType structType) {
+		TilePosition buildPos = null;
+		
+		// 1 SD
+		if ( bStructMap.get(SD).size() == 0 ) {
+			Unit firstCC = MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC);
+			int mineralSetup = MapInformation.findMineralSetup(game, firstCC );
+			return MapMath.findPosFirstSD(game, firstCC, mineralSetup);
+		}
+		
+		// 1 Barracks
+		if ( bStructMap.get(Barracks).size() == 0 ) {
+			Unit firstCC = MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC);
+			int mineralSetup = MapInformation.findMineralSetup(game, firstCC );
+			return MapMath.findPosFirstBarracks(game, firstCC, mineralSetup);
+		}		
+		
+		// Reg SD
+		
+		
+		// Reg Barracks
+		
+		
+		return buildPos;
 	}
 	
 }

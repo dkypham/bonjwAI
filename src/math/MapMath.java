@@ -1,7 +1,9 @@
 package math;
 
 import bwapi.Game;
+import bwapi.Pair;
 import bwapi.TilePosition;
+import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BaseLocation;
 
@@ -11,14 +13,21 @@ public class MapMath {
 	static UnitType CC = UnitType.Terran_Command_Center;
 	static UnitType Barracks = UnitType.Terran_Barracks;
 	
+	public static Pair<TilePosition,TilePosition> findBuildingArea(TilePosition buildLocation, UnitType structType) {
+		return new Pair<TilePosition, TilePosition>( buildLocation, new TilePosition(buildLocation.getX() 
+				+ structType.width(), buildLocation.getY() + structType.height()));
+	}
+	
+	
+	
 	// Building implementation for 1st supply depot
-	public static TilePosition findPosFirstSD(Game game, BaseLocation startingBL, int mineralSetup ) {
+	public static TilePosition findPosFirstSD(Game game, Unit CC, int mineralSetup ) {
 		// relative to startingCC location
-		int startingCC_X = startingBL.getTilePosition().getX();
-		int startingCC_Y = startingBL.getTilePosition().getY();
+		int startingCC_X = CC.getTilePosition().getX();
+		int startingCC_Y = CC.getTilePosition().getY();
 			
 		// default pos
-		TilePosition pos = startingBL.getTilePosition();
+		TilePosition pos = CC.getTilePosition();
 		
 		// minerals above CC
 		if ( mineralSetup == 12 ) { 
@@ -59,13 +68,13 @@ public class MapMath {
 	}
 		
 	// Building implementation for 1st supply depot
-	public static TilePosition findPosFirstBarracks(Game game,  BaseLocation startingBL, int mineralSetup ) {
+	public static TilePosition findPosFirstBarracks(Game game,  Unit CC, int mineralSetup ) {
 		// relative to startingCC location
-		int startingCC_X = startingBL.getTilePosition().getX();
-		int startingCC_Y = startingBL.getTilePosition().getY();
+		int startingCC_X = CC.getTilePosition().getX();
+		int startingCC_Y = CC.getTilePosition().getY();
 		
 		// default pos
-		TilePosition pos = startingBL.getTilePosition();
+		TilePosition pos = CC.getTilePosition();
 		
 		// minerals above CC
 		if ( mineralSetup == 12 ) { 

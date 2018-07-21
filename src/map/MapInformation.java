@@ -36,11 +36,9 @@ public class MapInformation {
 	// On initialization: 
 	// populate resourceZone
 	// find mineral setup
-	public static int initMapInfo(Game game, Multimap<UnitType, Integer> bStructMap,
-			ArrayList<BaseLocation> bBasePos,
-			int mineralSetup ) {
+	public static void initMapInfo(Game game, Multimap<UnitType, Integer> bStructMap,
+			ArrayList<BaseLocation> bBasePos ) {
 		findNearBasePos(game, bBasePos);
-		return findMineralSetup(game, bBasePos, mineralSetup);
 	}
 	
 	// Populate bBases based on base visibility
@@ -81,10 +79,9 @@ public class MapInformation {
 	// 3 -> minerals right of main
 	// 6 -> minerals below main
 	// 9 -> minerals left of main
-	public static int findMineralSetup( Game game, List<BaseLocation> bBasePos,
-			int mineralSetup ) {
-		int startingCC_X = bBasePos.get(0).getX();
-		int startingCC_Y = bBasePos.get(0).getY();
+	public static int findMineralSetup( Game game, Unit startingCC ) {
+		int startingCC_X = startingCC.getX();
+		int startingCC_Y = startingCC.getY();
 		
 		boolean allAbove = true;
 		boolean allRight = true;
@@ -93,38 +90,19 @@ public class MapInformation {
 		
 		for ( Unit nUnit : game.neutral().getUnits() ) {
 			if ( (nUnit.getType().isMineralField() && nUnit.isVisible() )) {
-				if ( nUnit.getX() < startingCC_X ) {
-					allRight = false;
-				}
-				if ( nUnit.getX() > startingCC_X ) {
-					allLeft = false;
-				}
-				if ( nUnit.getY() < startingCC_Y ) {
-					allAbove = false;
-				}
-				if ( nUnit.getY() > startingCC_Y ) {
-					allBelow = false;
-				}
-				
+				if ( nUnit.getX() < startingCC_X ) allRight = false;
+				if ( nUnit.getX() > startingCC_X ) allLeft = false;
+				if ( nUnit.getY() < startingCC_Y ) allAbove = false;
+				if ( nUnit.getY() > startingCC_Y ) allBelow = false;
 			}
 		}
-		if ( allAbove == true ) {
-			return mineralSetup = 12;
-		}
-		if ( allRight == true ) {
-			return mineralSetup = 3;
-		}
-		if ( allBelow == true ) {
-			return mineralSetup = 6;
-		}
-		if ( allLeft == true ) {
-			return mineralSetup = 9;
-		}
-		
-		System.out.println(mineralSetup);
-		
+		if ( allAbove == true ) return 12;
+		if ( allRight == true ) return 3;
+		if ( allBelow == true ) return 6;
+		if ( allLeft == true ) return 9;
+			
 		// error
-		return -2;
+		return -1;
 	}
 	
 	public static Pair<Position,Position> initResourceZone(Game game,
