@@ -45,6 +45,10 @@ public class BuildOrder {
 		return false;
 	}
 	
+	public boolean nextIsStruct() {
+		return this.buildOrder.get(0).isStruct();
+	}
+	
 	public UnitType getNextStruct() {
 		return this.buildOrder.get(0).getUT();
 	}
@@ -96,6 +100,10 @@ public class BuildOrder {
 	
 	public TilePosition getPlannedBuildLocation() {
 		return this.plannedBuildLocation;
+	}
+	
+	public boolean nextBuildLocationInvalid() {
+		return this.plannedBuildLocation.getX() == -1;
 	}
 	
 	public void updatePlannedBuildLocation( Game game, Multimap<UnitType, Integer> bStructMap, UnitType structType ) {

@@ -34,12 +34,14 @@ public class MapDraw {
 	
 	private static void drawNextBuildLocation(Game game, BuildOrder bBuildOrder) {
 		// return if not struct
-		if ( !bBuildOrder.getBuildOrder().get(0).isStruct() ) {
+		if ( !bBuildOrder.nextIsStruct() || !bBuildOrder.nextBuildLocationInvalid() ) {
 			return;
 		}
 		
 		TilePosition buildLocation = bBuildOrder.getPlannedBuildLocation();
 		UnitType structType = bBuildOrder.getBuildOrder().get(0).getUT();
+		
+		System.out.println( buildLocation.getX() + " " + buildLocation.getY() );
 		
 		game.drawBoxMap(buildLocation.toPosition(), MapMath.findBuildingArea(buildLocation, structType).second.toPosition(), 
 				Color.Purple );

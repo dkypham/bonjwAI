@@ -266,18 +266,17 @@ public class BuildingManager {
 	public static void buildingManagerWithBuildOrder( Game game, Player self,
 			Multimap<UnitType, Integer> bArmyMap, Multimap<String, Integer> bRolesMap,
 			Multimap<UnitType, Integer> bStructMap,
-			int[] productionMode, Resources bResources,
-			
+			int[] productionMode, Resources bResources,			
 			List<Pair<TilePosition,TilePosition>> noBuildZones,
-			
-			ArrayList<BaseLocation> bBasePos,
-			
-			int mineralSetup,
-			
-			List<Pair<Position,Position>> miningRegionsList,
-			
+			ArrayList<BaseLocation> bBasePos,			
+			int mineralSetup,			
+			List<Pair<Position,Position>> miningRegionsList,		
 			ArrayList<Base> bBases,
 			BuildOrder bBuildOrder ) {
+		//  update buildingOrder
+		if ( bBuildOrder.nextIsStruct() && bBuildOrder.nextBuildLocationInvalid() ) {
+			bBuildOrder.updatePlannedBuildLocation(game, bStructMap, bBuildOrder.getNextStruct()  );
+		}
 		
 		// check if supply is same as build order
 		if ( bBuildOrder.checkIfSupplyMet(bResources) && !bBuildOrder.checkIfBuildIssued() ) {
