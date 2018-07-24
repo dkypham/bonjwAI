@@ -8,6 +8,7 @@ import bwapi.UnitType;
 import economy.Resources;
 import bwapi.Game;
 import bwapi.Pair;
+import bwapi.TechType;
 import bwapi.TilePosition;
 
 /**
@@ -20,7 +21,7 @@ public class BuildOrder {
 	static final int MAX_TIME_BUILD_ISSUED = 20;
 	
 	List<BuildOrderElement> buildOrder;
-	boolean buildIssued;
+	boolean isBuildIssued;
 	int timeBuildIssued;
 	TilePosition plannedBuildLocation;
 	
@@ -28,7 +29,7 @@ public class BuildOrder {
 
 	public BuildOrder( List<BuildOrderElement> buildOrderChoice ) {
 		this.buildOrder = buildOrderChoice;
-		this.buildIssued = false;
+		this.isBuildIssued = false;
 		this.timeBuildIssued = -1;
 		this.plannedBuildLocation = new TilePosition(-1,-1);
 		this.completed = false;
@@ -55,6 +56,7 @@ public class BuildOrder {
 	
 	public void removeTopOfBuildOrder() {
 		this.buildOrder.remove(0);
+		this.plannedBuildLocation = new TilePosition(-1, -1);
 	}
 	
 	// check if buildOrderSupply is met
@@ -64,20 +66,20 @@ public class BuildOrder {
 	
 	// check if build was issued
 	public boolean checkIfBuildIssued() {
-		return this.buildIssued;
+		return this.isBuildIssued;
 	}
 	
-	public void setBuildIssuedTrue() {
-		if ( this.buildIssued == false ) {
-			this.buildIssued = true;
+	public void setIsBuildIssuedTrue() {
+		if ( this.isBuildIssued == false ) {
+			this.isBuildIssued = true;
 		}
 		else {
 			System.out.println("BuildOrder: buildIssued is already true.");
 		}
 	}
-	public void setBuildIssuedFalse() {
-		if ( this.buildIssued == true ) {
-			this.buildIssued = false;
+	public void setIsBuildIssuedFalse() {
+		if ( this.isBuildIssued == true ) {
+			this.isBuildIssued = false;
 		}
 		else {
 			System.out.println("BuildOrder: buildIssued is already false.");
@@ -85,8 +87,8 @@ public class BuildOrder {
 	}
 	
 	
-	public boolean isBuildIssued() {
-		return this.buildIssued;
+	public boolean getIsBuildIssued() {
+		return this.isBuildIssued;
 	}
 	
 	public void setTimeBuildIssued( int time ) {
@@ -106,12 +108,18 @@ public class BuildOrder {
 		return this.plannedBuildLocation.getX() == -1;
 	}
 	
-	public void updatePlannedBuildLocation( Game game, Multimap<UnitType, Integer> bStructMap, UnitType structType ) {
-		this.plannedBuildLocation = BuildingPlacement.getPlannedBuildLocation( game, bStructMap, structType );
+	public void updatePlannedBuildLocation( Game game, Multimap<UnitType, Integer> bStructMap, UnitType structType,
+			List<Pair<TilePosition,TilePosition>> noBuildZones) {
+		this.plannedBuildLocation = BuildingPlacement.getPlannedBuildLocation( game, bStructMap, structType, 
+				noBuildZones );
 	}
 	
 	public boolean isCompleted() {
 		return this.completed;
+	}
+
+	public TechType getNextTech() {
+		return this.buildOrder.get(0).getTT();
 	}
 	
 }

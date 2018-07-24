@@ -47,12 +47,8 @@ public class DrawUI {
 		game.drawTextScreen(10, 90, "supply total Effective: " + bResources.getSupplyTotalEffective() );
 		game.drawTextScreen(10, 100, "supply used: " + bResources.getSupplyUsed() );
 		
-		int yOffset = 110;
-		for ( Base base : bBases ) {
-			game.drawTextScreen(10, yOffset + 10, "CC UNIT ID: " + base.getCC().getID() ) ;
-			game.drawTextScreen(10, yOffset + 20, "numMinMiners: " + base.getNumMinMiners() ) ;
-			yOffset += 20;
-		}
+		game.drawTextScreen(10,  120, "bBuildOrder: next struct: " + bBuildOrder.getNextStruct().toString() + 
+				" at " + bBuildOrder.getBuildOrder().get(0).getSupply() + " supply.");
 		
 		drawUnitID(game, bArmyMap);
 	}

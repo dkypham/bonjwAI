@@ -23,7 +23,7 @@ public class BuildingPlacement {
 	static UnitType Barracks = UnitType.Terran_Barracks;
 	
 	// NAIVE BUILDING PLACEMENT IMPLEMENTATION
-	public static TilePosition getBuildTile(Game game, Unit builder, UnitType buildingType, TilePosition aroundTile,
+	public static TilePosition getBuildTile(Game game, UnitType buildingType, TilePosition aroundTile,
 			List<Pair<TilePosition,TilePosition>> noBuildZones ) {
 		TilePosition ret = null;
 		int maxDist = 3;
@@ -39,19 +39,23 @@ public class BuildingPlacement {
 			}
 		}
 
-		// if building type is a factory, make sure right two spaces are open
-		if (buildingType == UnitType.Terran_Factory || buildingType == UnitType.Terran_Command_Center || buildingType == UnitType.Terran_Starport) {
+		if ( buildingType.isAddon() ) {
+			return new TilePosition(-3,-3);
+		}
+		
+		// if building type can build add on, make sure right two spaces are open
+		if (buildingType.canBuildAddon() ) {
 			while ((maxDist < stopDist) && (ret == null)) {
 				for (int i = aroundTile.getX() - maxDist; i <= aroundTile.getX() + maxDist; i++) {
 					for (int j = aroundTile.getY() - maxDist; j <= aroundTile.getY() + maxDist; j++) {
 						// if you can build here and two to the right (if there is space for the add on)
-						if (game.canBuildHere(new TilePosition(i, j), buildingType, builder, false)
-								&& game.canBuildHere(new TilePosition(i+2, j), buildingType, builder, false) ) {
+						if (game.canBuildHere(new TilePosition(i, j), buildingType)
+								&& game.canBuildHere(new TilePosition(i+2, j), buildingType) ) {
 							// units that are blocking the tile
 							boolean unitsInWay = false;
 							for (Unit u : game.getAllUnits()) {
-								if (u.getID() == builder.getID())
-									continue;
+								//if (u.getID() == builder.getID())
+								//	continue;
 								if ((Math.abs(u.getTilePosition().getX() - i) < 4)
 										&& (Math.abs(u.getTilePosition().getY() - j) < 4))
 									unitsInWay = true;
@@ -80,12 +84,12 @@ public class BuildingPlacement {
 			for (int i = aroundTile.getX() - maxDist; i <= aroundTile.getX() + maxDist; i++) {
 				for (int j = aroundTile.getY() - maxDist; j <= aroundTile.getY() + maxDist; j++) {
 					// if you can build here
-					if (game.canBuildHere(new TilePosition(i, j), buildingType, builder, false) ) {
+					if (game.canBuildHere(new TilePosition(i, j), buildingType) ) {
 						// units that are blocking the tile
 						boolean unitsInWay = false;
 						for (Unit u : game.getAllUnits()) {
-							if (u.getID() == builder.getID())
-								continue;
+							//if (u.getID() == builder.getID())
+							//	continue;
 							if ((Math.abs(u.getTilePosition().getX() - i) < 4)
 									&& (Math.abs(u.getTilePosition().getY() - j) < 4))
 								unitsInWay = true;
@@ -112,24 +116,6 @@ public class BuildingPlacement {
 	public static TilePosition getBuildTileNew(Game game, Unit builder, UnitType buildingType) {
 		return builder.getTilePosition();
 	}
-	
-	public static TilePosition getBuildPositionSD(Game game, Multimap<UnitType, Integer> bArmyMap,
-			Multimap<String, Integer> bRolesMap,
-			Multimap<UnitType, Integer> bStructMap,
-			ArrayList<BaseLocation> bBasePos, int mineralSetup,
-			List<Pair<TilePosition,TilePosition>> noBuildZones ) {
-
-		// getBuildPositionFirstSD
-		if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, SD) == 0 ) {
-			return MapMath.findPosFirstSD(game, MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC), mineralSetup);	
-		}
-		// else
-		// naive build
-		
-		Unit SCV = 	game.getUnit(WorkerManager.getFreeSCVID(game,bArmyMap, bRolesMap));
-		
-		return getBuildTile(game, SCV, SD, bBasePos.get(0).getTilePosition(), noBuildZones );
-	}	
 	
 	// return true if IS overlapping/is in a build zone
 	public static boolean isInNoBuildZone( TilePosition buildTile, UnitType building, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
@@ -220,8 +206,9 @@ public class BuildingPlacement {
 		return null;
 	}
 
-	public static TilePosition getPlannedBuildLocation(Game game, Multimap<UnitType, Integer> bStructMap, 
-			UnitType structType) {
+	public static TilePosition getPlannedBuildLocation(Game game,
+			Multimap<UnitType, Integer> bStructMap, UnitType structType, 
+			List<Pair<TilePosition,TilePosition>> noBuildZones ) {
 		TilePosition buildPos = null;
 		
 		// 1 SD
@@ -243,8 +230,10 @@ public class BuildingPlacement {
 		
 		// Reg Barracks
 		
+		// else
+		Unit startingCC = MapUnitID.getFirstUnitFromUnitMap(game,  bStructMap,  CC);
+		return getBuildTile(game, structType, startingCC.getTilePosition(), noBuildZones);
 		
-		return buildPos;
 	}
 	
 }

@@ -56,9 +56,6 @@ public class BonjwAI extends DefaultBWListener {
 	private ArrayList<Base> bBases = new ArrayList<Base>();
 	private economy.Resources bResources = new economy.Resources();
 	
-	// mineralSetup - tells us the configuration of the minerals relative to CC
-	private int mineralSetup = -1;
-	
 	private List<Position> scoutQueue = new ArrayList<Position>();
 	private List<Chokepoint> chokepointList = new ArrayList<Chokepoint>();
 	private List<Pair<Position,Position>> miningRegionsList = new ArrayList<Pair<Position,Position>>();
@@ -98,7 +95,6 @@ public class BonjwAI extends DefaultBWListener {
 		game.setLocalSpeed(15);
 		
 		MapInformation.initMapInfo(game, bStructMap, bBasePos);
-		System.out.println("Mineral setup: " + mineralSetup);
 		miningRegionsList.add( MapInformation.initResourceZone2(game, bBasePos.get(0) ) );	
 		
 		ScoutManager.initializeScoutQueue(scoutQueue, bBasePos );
@@ -193,7 +189,7 @@ public class BonjwAI extends DefaultBWListener {
 		// if buildOrder is still in use
 		if ( !bBuildOrder.isCompleted() ) {
 			BuildingManager.buildingManagerWithBuildOrder( game, self, bArmyMap, bRolesMap, bStructMap, productionMode,
-						bResources, noBuildZones, bBasePos, mineralSetup, 
+						bResources, noBuildZones, bBasePos, 
 						miningRegionsList, bBases, bBuildOrder );
 		}
 		

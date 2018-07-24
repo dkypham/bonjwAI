@@ -15,7 +15,7 @@ public class MapMath {
 	
 	public static Pair<TilePosition,TilePosition> findBuildingArea(TilePosition buildLocation, UnitType structType) {
 		return new Pair<TilePosition, TilePosition>( buildLocation, new TilePosition(buildLocation.getX() 
-				+ structType.width(), buildLocation.getY() + structType.height()));
+				+ structType.tileWidth(), buildLocation.getY() + structType.tileHeight()));
 	}
 	
 	

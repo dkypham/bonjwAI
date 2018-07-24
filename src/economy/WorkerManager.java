@@ -31,7 +31,7 @@ public class WorkerManager {
 	static String uT_ScoutSCV = "Scout";
 	static String uT_DefendSCV = "Defender";
 	static String uT_RepairSCV ="Repairer";
-	static String uT_BuilderSCV = "Builder";
+	static String uT_BuildSCV = "Builder";
 	
 	public static void updateWorkerManager(Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<String, Integer> bRolesMap,
@@ -131,7 +131,7 @@ public class WorkerManager {
 		Unit SCV = game.getUnit(freeSCVID);
 		
 		SCV.stop();
-		TilePosition buildTile = BuildingPlacement.getBuildTile(game, SCV, struct,
+		TilePosition buildTile = BuildingPlacement.getBuildTile(game, struct,
 				self.getStartLocation(), noBuildZones);
 		if (buildTile != null) {
 			if ( SCV.build(struct, buildTile) ) {
@@ -306,7 +306,9 @@ public class WorkerManager {
 		for ( Integer scoutID : bRolesMap.get(uT_DefendSCV )) { // defend
 			invalidIDs.add(scoutID);
 		}
-		
+		for ( Integer scoutID : bRolesMap.get(uT_BuildSCV )) { // build
+			invalidIDs.add(scoutID);
+		}
 		for ( Integer scvID : bArmyMap.get(UnitType.Terran_SCV) ) {
 			if ( invalidIDs.contains(scvID) ) {	// if this ID is assigned a role, go to next one
 				continue;
@@ -324,7 +326,7 @@ public class WorkerManager {
 	 */
 	public static boolean checkIfAllSCVRolesAssigned( Multimap<String, Integer> bRolesMap ) {
 		if ( bRolesMap.get(uT_ScoutSCV).isEmpty() || bRolesMap.get(uT_DefendSCV).isEmpty()
-				|| bRolesMap.get(uT_RepairSCV).isEmpty() ) {
+				|| bRolesMap.get(uT_RepairSCV).isEmpty() || bRolesMap.get(uT_BuildSCV).isEmpty() ) {
 			return false;
 		}
 		return true;
@@ -346,7 +348,9 @@ public class WorkerManager {
 		if ( bRolesMap.get( uT_RepairSCV ).isEmpty() ) {
 			assignRepairSCV( bRolesMap, bArmyMap );
 		}
-		
+		if ( bRolesMap.get( uT_BuildSCV ).isEmpty() ) {
+			assignBuildSCV( bRolesMap, bArmyMap );
+		}
 		/*
 		System.out.println("reg SCV ID: " + bArmyMap.get(UnitType.Terran_SCV));
 		System.out.println("scout SCV ID: " + bRolesMap.get(uT_ScoutSCV));
@@ -373,6 +377,12 @@ public class WorkerManager {
 		bRolesMap.put( uT_RepairSCV , freeSCVID );
 		System.out.println("Assiged SCV with ID as repairer: " + bRolesMap.get(uT_RepairSCV));
 	}
+	public static void assignBuildSCV( Multimap<String, Integer> bRolesMap,
+			Multimap<UnitType, Integer> bArmyMap ) {
+		int freeSCVID = getSCVwithNoRole( bRolesMap, bArmyMap );
+		bRolesMap.put( uT_BuildSCV , freeSCVID );
+		System.out.println("Assiged SCV with ID as builder: " + bRolesMap.get(uT_BuildSCV));
+	}
 	
 	public static void defendAgainstSCout( Game game, Multimap<String, Integer> bRolesMap, Unit underAttackSCV,
 			Unit enemyScout ) {
@@ -392,8 +402,5 @@ public class WorkerManager {
 		}
 	}
 	
-	// UPDATED FUNCS BELOW
-	public static void moveSCVToBuild( ) {
-		 
-	}
+	
 }

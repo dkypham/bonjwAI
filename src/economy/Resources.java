@@ -119,5 +119,9 @@ public class Resources {
 		this.supplyTotalEffective = this.supplyTotalEffective / 2;
 		this.supplyUsed = this.supplyUsed / 2;
 	}
+	
+	public boolean checkIfSixtyPercent( UnitType uT ) {
+		return (this.minsEffective >= uT.mineralPrice()*.6) && (this.gasEffective >= uT.gasPrice()*.6);
+	}
 
 }

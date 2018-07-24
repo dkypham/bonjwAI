@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.Multimap;
 
+import bwapi.Color;
 import bwapi.Game;
 import bwapi.Pair;
 import bwapi.Player;
@@ -32,21 +33,23 @@ import math.MapMath;
  */
 public class BuildingManager {
 
-	static int SUPPLY_VALUE_SD = 16;
-	static int SUPPLY_VALUE_CC = 20;
+	static final String uT_BuildSCV = "Builder";
+	
+	static final int SUPPLY_VALUE_SD = 16;
+	static final int SUPPLY_VALUE_CC = 20;
 
-	static UnitType SD = UnitType.Terran_Supply_Depot;
-	static UnitType CC = UnitType.Terran_Command_Center;
+	static final UnitType SD = UnitType.Terran_Supply_Depot;
+	static final UnitType CC = UnitType.Terran_Command_Center;
 	
-	static UnitType Refinery = UnitType.Terran_Refinery;
-	static UnitType Academy = UnitType.Terran_Academy;
-	static UnitType Barracks = UnitType.Terran_Barracks;
-	static UnitType Factory = UnitType.Terran_Factory;
+	static final UnitType Refinery = UnitType.Terran_Refinery;
+	static final UnitType Academy = UnitType.Terran_Academy;
+	static final UnitType Barracks = UnitType.Terran_Barracks;
+	static final UnitType Factory = UnitType.Terran_Factory;
 	
-	static UnitType SCV = UnitType.Terran_SCV;
-	static UnitType Marine = UnitType.Terran_Marine;
-	static UnitType Medic = UnitType.Terran_Medic;
-	static UnitType TankTank = UnitType.Terran_Siege_Tank_Tank_Mode;
+	static final UnitType SCV = UnitType.Terran_SCV;
+	static final UnitType Marine = UnitType.Terran_Marine;
+	static final UnitType Medic = UnitType.Terran_Medic;
+	static final UnitType TankTank = UnitType.Terran_Siege_Tank_Tank_Mode;
 	
 	public static boolean buildStruct( Game game, Player self, 
 			ArrayList<BaseLocation> bBasePos,
@@ -56,39 +59,12 @@ public class BuildingManager {
 			Multimap<UnitType, Integer> bStructMap,
 			Resources bResources,
 			UnitType struct,
-			List<Pair<TilePosition,TilePosition>> noBuildZones
+			List<Pair<TilePosition,TilePosition>> noBuildZones,
+			BuildOrder bBuildOrder
 			) {
 		// check if enough resources
 		if ( !bResources.checkIfEnoughMinsAndGas(struct.mineralPrice(), struct.gasPrice()) ) {
 			return false;
-		}
-		
-		// if building type is SD
-		if ( struct == SD ) {
-			// first SD, use specific location
-			if ( MapUnitID.getStructCount(game, bArmyMap, bStructMap, struct) == 0 ) {
-				TilePosition pos = BuildingPlacement.getBuildPositionSD(game, bArmyMap, bRolesMap, bStructMap, 
-						bBasePos, mineralSetup, noBuildZones);
-				// if issue build command passes, update resource manager and exit
-				if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, bRolesMap, pos, SD) ) {
-					// update bResources
-					bResources.addMinAndGas( struct.mineralPrice(), struct.gasPrice() );
-					return true;
-				}
-			}
-			else {
-				bResources.addMinAndGas( struct.mineralPrice(), struct.gasPrice() );
-				return WorkerManager.issueBuild(game, self, bArmyMap, bRolesMap, bStructMap, struct, noBuildZones);				
-			}
-		}
-		// if building type is Barracks
-		if ( struct == Barracks ) {
-			TilePosition pos = MapMath.findPosFirstBarracks(game, MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC), mineralSetup);
-			if ( WorkerManager.issueBuildAtLocation(game, bArmyMap, bRolesMap, pos, Barracks) ) {
-				bResources.addMinAndGas( struct.mineralPrice(), struct.gasPrice() );
-
-				return true;
-			}
 		}
 		
 		// if building type is an addon
@@ -112,6 +88,16 @@ public class BuildingManager {
 			return WorkerManager.issueBuild(game, self, bArmyMap, bRolesMap, bStructMap, struct, noBuildZones);
 		}
 		return false;
+	}
+	
+	public static boolean issueBuildAtLocation(Game game,
+			Multimap<UnitType, Integer> bArmyMap,
+			Multimap<String, Integer> bRolesMap,
+			TilePosition pos,
+			UnitType building ) {
+		Unit buildSCV = MapUnitID.getFirstUnitFromRolesMap(game, bRolesMap, uT_BuildSCV); 
+		pos = game.getBuildLocation(building, pos, 1);
+		return buildSCV.build(building,pos);
 	}
 	
 	public static int updateBuildStructTime( Game game ) {
@@ -269,26 +255,73 @@ public class BuildingManager {
 			int[] productionMode, Resources bResources,			
 			List<Pair<TilePosition,TilePosition>> noBuildZones,
 			ArrayList<BaseLocation> bBasePos,			
-			int mineralSetup,			
 			List<Pair<Position,Position>> miningRegionsList,		
 			ArrayList<Base> bBases,
 			BuildOrder bBuildOrder ) {
-		//  update buildingOrder
+		
+		//  update bBuildOrder building placement
 		if ( bBuildOrder.nextIsStruct() && bBuildOrder.nextBuildLocationInvalid() ) {
-			bBuildOrder.updatePlannedBuildLocation(game, bStructMap, bBuildOrder.getNextStruct()  );
+			bBuildOrder.updatePlannedBuildLocation(game, bStructMap, bBuildOrder.getNextStruct(), noBuildZones  );
+			System.out.println("BuildingManager: Next build placement" + bBuildOrder.getPlannedBuildLocation() );
 		}
 		
-		// check if supply is same as build order
+		// supply met and no build issued
 		if ( bBuildOrder.checkIfSupplyMet(bResources) && !bBuildOrder.checkIfBuildIssued() ) {
-			if ( bBuildOrder.getBuildOrder().get(0).isStruct() ) {
-				if ( buildStruct(game, self, bBasePos, mineralSetup, bArmyMap, bRolesMap, bStructMap, bResources, 
-						bBuildOrder.getBuildOrder().get(0).getUT(), noBuildZones) ) {
-					//ListOfBuildOrders.setNextOrderNeg(buildOrderStruct); // neg flag means SCV is moving to build
-					bBuildOrder.setBuildIssuedTrue();
-					bBuildOrder.setTimeBuildIssued( game.elapsedTime() );	// get time build command is issued for error checking
+			// if next element is a struct
+			if ( bBuildOrder.getBuildOrder().get(0).isStruct() ) { // is struct
+				UnitType structType = bBuildOrder.getNextStruct();
+				// struct is add on
+				if ( structType.isAddon() ) {
+					if ( bResources.enoughResourcesBuildUnit(structType) ) {
+						for ( Integer buildsAddOnID : bStructMap.get(structType.whatBuilds().first)) {
+							Unit buildsAddOnStruct = game.getUnit(buildsAddOnID);
+							if ( buildsAddOnStruct.canBuildAddon(structType) ) {
+								buildsAddOnStruct.buildAddon(structType);
+								return;
+							}
+						}
+					}
+					return;
 				}
-			}
+				
+				// if enough resources, try to build
+				if ( bResources.enoughResourcesBuildUnit(structType) ) {
+					// struct is building
+					if ( issueBuildAtLocation(game, bArmyMap, bRolesMap, bBuildOrder.getPlannedBuildLocation(), 
+							structType )) {
+						// build command was issued
+						bResources.addMinAndGas( structType.mineralPrice(), structType.gasPrice() );
+						bBuildOrder.setIsBuildIssuedTrue();
+						bBuildOrder.setTimeBuildIssued( game.elapsedTime() );	// get time build command is issued for error checking
+						return;
+					}
+				}
+				// if not enough resources check if 60 percent to move SCV
+				else if ( bResources.checkIfSixtyPercent(structType) ) {
+					// move build scv to position if not already
+					Unit buildSCV = MapUnitID.getFirstUnitFromRolesMap(game, bRolesMap, uT_BuildSCV);
+					if ( buildSCV.isGatheringMinerals() ) { // if still mining, make patrol
+						System.out.println("Sending build SCV to patrol");
+						Pair<TilePosition,TilePosition> buildArea = MapMath.findBuildingArea(
+								bBuildOrder.getPlannedBuildLocation(), structType);
+						// make patrol area tighter
+						Position topLeft = buildArea.first.toPosition();
+						Position botRight = buildArea.second.toPosition();
+						int upDist = botRight.getY() - topLeft.getY();
+						int sideDist = botRight.getX() - botRight.getX();
+						topLeft = new Position((int)(topLeft.getX() + sideDist*.3),(int)(topLeft.getY() + upDist*.3));
+						botRight = new Position((int)(botRight.getX() - sideDist*.3),(int)(botRight.getY() - upDist*.3));
+						game.drawBoxMap(topLeft,botRight,Color.Black);
+						buildSCV.move( topLeft );
+						buildSCV.patrol( botRight, true);
+					}
+				}
+				
+				
+			}	
+			// if next element is a tech
 			else if ( bBuildOrder.getBuildOrder().get(0).isTech() ) {
+				TechType techType = bBuildOrder.getNextTech();
 				if ( buildTech(game, bStructMap, bResources, bBuildOrder.getBuildOrder().get(0).getTT() )) {
 					bBuildOrder.removeTopOfBuildOrder();
 				}
@@ -303,8 +336,8 @@ public class BuildingManager {
 				// check if time since set negative is > 20 seconds, then make it positive. 
 				// Usually if this is the case, the SCV did not sucessfully build
 				if ( bBuildOrder.tooMuchTimeBuildIssued(game.elapsedTime() )) {
-					if ( bBuildOrder.isBuildIssued() ) {
-						bBuildOrder.setBuildIssuedFalse(); // make it neg to pos		
+					if ( bBuildOrder.getIsBuildIssued() ) {
+						bBuildOrder.setIsBuildIssuedFalse(); // make it neg to pos		
 					}
 					else { 
 						System.out.println("BuildingManager: More than 20 seconds since build command was issued, but "
