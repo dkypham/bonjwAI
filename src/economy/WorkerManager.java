@@ -84,6 +84,7 @@ public class WorkerManager {
 					&& !bRolesMap.containsEntry(uT_ScoutSCV, SCV.getID()) 
 					&& !bRolesMap.containsEntry(uT_DefendSCV, SCV.getID())
 					&& !bRolesMap.containsEntry(uT_RepairSCV, SCV.getID())
+					&& !SCV.isConstructing()
 					) {
 				return SCVID;
 			}
@@ -337,19 +338,19 @@ public class WorkerManager {
 	 * 
 	 * @param bArmyMap
 	 */
-	public static void fillSCVRoles( Multimap<String, Integer> bRolesMap,
+	public static void fillSCVRoles( Game game, Multimap<String, Integer> bRolesMap,
 			Multimap<UnitType, Integer> bArmyMap ) {
 		if ( bRolesMap.get( uT_ScoutSCV ).isEmpty() ) {
-			assignScoutSCV( bRolesMap, bArmyMap );
+			assignScoutSCV( game, bRolesMap, bArmyMap );
 		}
 		if ( bRolesMap.get( uT_DefendSCV ).isEmpty() ) {
-			assignDefendSCV( bRolesMap, bArmyMap );
+			assignDefendSCV( game, bRolesMap, bArmyMap );
 		}
 		if ( bRolesMap.get( uT_RepairSCV ).isEmpty() ) {
-			assignRepairSCV( bRolesMap, bArmyMap );
+			assignRepairSCV( game, bRolesMap, bArmyMap );
 		}
 		if ( bRolesMap.get( uT_BuildSCV ).isEmpty() ) {
-			assignBuildSCV( bRolesMap, bArmyMap );
+			assignBuildSCV( game, bRolesMap, bArmyMap );
 		}
 		/*
 		System.out.println("reg SCV ID: " + bArmyMap.get(UnitType.Terran_SCV));
@@ -359,27 +360,27 @@ public class WorkerManager {
 		*/
 	}
 	
-	public static void assignScoutSCV( Multimap<String, Integer> bRolesMap,
+	public static void assignScoutSCV( Game game, Multimap<String, Integer> bRolesMap,
 			Multimap<UnitType, Integer> bArmyMap ) {
-		int freeSCVID = getSCVwithNoRole( bRolesMap, bArmyMap );
+		int freeSCVID = getFreeSCVID( game, bArmyMap, bRolesMap );
 		bRolesMap.put( uT_ScoutSCV , freeSCVID );
 		System.out.println("Assiged SCV with ID as scout: " + bRolesMap.get(uT_ScoutSCV));
 	}
-	public static void assignDefendSCV( Multimap<String, Integer> bRolesMap,
+	public static void assignDefendSCV( Game game, Multimap<String, Integer> bRolesMap,
 			Multimap<UnitType, Integer> bArmyMap ) {
-		int freeSCVID = getSCVwithNoRole( bRolesMap, bArmyMap );
+		int freeSCVID = getFreeSCVID( game, bArmyMap, bRolesMap );
 		bRolesMap.put( uT_DefendSCV , freeSCVID );
 		System.out.println("Assiged SCV with ID as defender: " + bRolesMap.get(uT_DefendSCV));
 	}
-	public static void assignRepairSCV( Multimap<String, Integer> bRolesMap,
+	public static void assignRepairSCV( Game game, Multimap<String, Integer> bRolesMap,
 			Multimap<UnitType, Integer> bArmyMap ) {
-		int freeSCVID = getSCVwithNoRole( bRolesMap, bArmyMap );
+		int freeSCVID = getFreeSCVID( game, bArmyMap, bRolesMap );
 		bRolesMap.put( uT_RepairSCV , freeSCVID );
 		System.out.println("Assiged SCV with ID as repairer: " + bRolesMap.get(uT_RepairSCV));
 	}
-	public static void assignBuildSCV( Multimap<String, Integer> bRolesMap,
+	public static void assignBuildSCV( Game game, Multimap<String, Integer> bRolesMap,
 			Multimap<UnitType, Integer> bArmyMap ) {
-		int freeSCVID = getSCVwithNoRole( bRolesMap, bArmyMap );
+		int freeSCVID = getFreeSCVID( game, bArmyMap, bRolesMap );
 		bRolesMap.put( uT_BuildSCV , freeSCVID );
 		System.out.println("Assiged SCV with ID as builder: " + bRolesMap.get(uT_BuildSCV));
 	}

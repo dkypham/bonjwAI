@@ -94,10 +94,10 @@ public class BuildingManager {
 			Multimap<UnitType, Integer> bArmyMap,
 			Multimap<String, Integer> bRolesMap,
 			TilePosition pos,
-			UnitType building ) {
+			UnitType building,
+			BuildOrder bBuildOrder ) {
 		Unit buildSCV = MapUnitID.getFirstUnitFromRolesMap(game, bRolesMap, uT_BuildSCV); 
-		pos = game.getBuildLocation(building, pos, 1);
-		return buildSCV.build(building,pos);
+		return buildSCV.build(building,bBuildOrder.getPlannedBuildLocation());
 	}
 	
 	public static int updateBuildStructTime( Game game ) {
@@ -288,7 +288,7 @@ public class BuildingManager {
 				if ( bResources.enoughResourcesBuildUnit(structType) ) {
 					// struct is building
 					if ( issueBuildAtLocation(game, bArmyMap, bRolesMap, bBuildOrder.getPlannedBuildLocation(), 
-							structType )) {
+							structType, bBuildOrder )) {
 						// build command was issued
 						bResources.addMinAndGas( structType.mineralPrice(), structType.gasPrice() );
 						bBuildOrder.setIsBuildIssuedTrue();

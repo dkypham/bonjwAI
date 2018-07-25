@@ -96,7 +96,7 @@ public class BuildOrder {
 	}
 	
 	public boolean tooMuchTimeBuildIssued( int gameTime ) {
-		return gameTime - this.timeBuildIssued > MAX_TIME_BUILD_ISSUED;
+		return (gameTime - this.timeBuildIssued) > MAX_TIME_BUILD_ISSUED;
 	}
 	
 	

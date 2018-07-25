@@ -35,7 +35,7 @@ public class ScoutManager {
 		
 		// assign a scout if there is no scout
 		if ( bSpecialRoles.get( scoutRole ).size() == 0 ) {
-			WorkerManager.assignScoutSCV(bSpecialRoles, bArmyMap);
+			WorkerManager.assignScoutSCV(game, bSpecialRoles, bArmyMap);
 		}
 		Unit scout = getScout( game, bSpecialRoles );
 		

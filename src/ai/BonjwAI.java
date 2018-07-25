@@ -112,6 +112,9 @@ public class BonjwAI extends DefaultBWListener {
 				if ( bBuildOrder.matchesNextstruct(u.getType())) {
 					// clear top
 					bBuildOrder.removeTopOfBuildOrder();
+					// remove builder and assign new one
+					bRolesMap.get("Builder").clear();
+					WorkerManager.assignBuildSCV(game, bRolesMap, bArmyMap);
 				}
 			}
 		}
@@ -134,6 +137,9 @@ public class BonjwAI extends DefaultBWListener {
 				if ( bBuildOrder.matchesNextstruct(u.getType())) {
 					// clear top
 					bBuildOrder.removeTopOfBuildOrder();
+					// remove builder and assign new one
+					bRolesMap.get("Builder").clear();
+					WorkerManager.assignBuildSCV(game, bRolesMap, bArmyMap);
 				}
 			}
 			BuildingPlacement.addToNoBuildZone(noBuildZones, u);
@@ -169,7 +175,7 @@ public class BonjwAI extends DefaultBWListener {
 		// check if SCV roles have been assigned yet
 		// can't put this in OnStart() b/c bArmyMap isn't init yet
 		if ( !WorkerManager.checkIfAllSCVRolesAssigned(bRolesMap) ) { // assigns if false
-			WorkerManager.fillSCVRoles(bRolesMap, bArmyMap);
+			WorkerManager.fillSCVRoles(game, bRolesMap, bArmyMap);
 		}
 		
 		/**

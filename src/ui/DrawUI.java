@@ -49,7 +49,8 @@ public class DrawUI {
 		
 		game.drawTextScreen(10,  120, "bBuildOrder: next struct: " + bBuildOrder.getNextStruct().toString() + 
 				" at " + bBuildOrder.getBuildOrder().get(0).getSupply() + " supply.");
-		
+		game.drawTextScreen(10,  130, "buildIssued: " + bBuildOrder.getIsBuildIssued() );
+		game.drawTextScreen(10,  140, "supplyMet: " + bBuildOrder.checkIfSupplyMet(bResources) );
 		drawUnitID(game, bArmyMap);
 	}
 	
