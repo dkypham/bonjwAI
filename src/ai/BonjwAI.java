@@ -117,6 +117,16 @@ public class BonjwAI extends DefaultBWListener {
 					WorkerManager.assignBuildSCV(game, bRolesMap, bArmyMap);
 				}
 			}
+			
+			// add to relevant bBase
+			for ( Base bBase : bBases ) {
+				if ( u.getDistance(bBase.getCC()) < 500 ) {
+					bBase.assignRefinery( u );
+					bRolesMap.put( "GasMiner" , u.getBuildUnit().getID() ); // assign generic role
+					bBase.addToGasMinerIDs( u.getBuildUnit().getID() ); // assign to base
+					
+				}
+			}
 		}
 		// case when refinery is destroyed
 		if ( u.getType() == UnitType.Resource_Vespene_Geyser ) {
@@ -212,7 +222,7 @@ public class BonjwAI extends DefaultBWListener {
 		/**
 		 * Worker Manager, updates workers
 		 */
-		WorkerManager.updateWorkerManager(game, self, bArmyMap, bRolesMap, bStructMap);
+		WorkerManager.updateWorkerManager(game, self, bArmyMap, bRolesMap, bStructMap, bBases);
 		
 		/**
 		 * Map Information, updates known map information

@@ -17,6 +17,8 @@ public class Base {
 	BaseLocation bL;
 	Unit CC;
 	Pair<Position,Position> miningRegion;
+	Unit Refinery;
+	ArrayList<Integer> gasMinerIDs;
 	
 	int minMinMiners = 24; // TODO: write function to update based on number of patches
 	int minGasMiners = 3;	// TODO: write function to update
@@ -27,6 +29,8 @@ public class Base {
 		}
 		
 		this.bL = baseLocation;
+		this.Refinery = null;
+		this.gasMinerIDs = new ArrayList<Integer>();
 	}
 	public Base( BaseLocation baseLocation, Unit newCC ) {
 		if ( bL != null || this.CC != null ) {
@@ -35,6 +39,8 @@ public class Base {
 		
 		this.bL = baseLocation;
 		this.CC = newCC;
+		this.Refinery = null;
+		this.gasMinerIDs = new ArrayList<Integer>();
 	}
 	
 	public Unit getCC() {
@@ -43,6 +49,17 @@ public class Base {
 	
 	public void setCC( Unit newCC ) {
 		this.CC = newCC;
+	}
+	
+	public void assignRefinery( Unit newRefinery ) {
+		this.Refinery = newRefinery;
+	}
+	
+	public boolean isGasMinable() {
+		if ( this.Refinery == null ) {
+			return false;
+		}
+		return this.Refinery.isCompleted();
 	}
 	
 	public boolean isMinable( ) {
@@ -58,6 +75,7 @@ public class Base {
 		return numMinMiners;
 	}
 	public int getNumGasMiners() { 
+		/*
 		int numGasMiners = 0;
 		for ( Unit nearbyU : this.CC.getUnitsInRadius(maxDistMiners) ) {
 			if ( nearbyU.isGatheringGas() ) {
@@ -65,6 +83,12 @@ public class Base {
 			}
 		}
 		return numGasMiners;
+		*/
+		return this.gasMinerIDs.size();
+	}
+	
+	public void addToGasMinerIDs( int ID ) {
+		this.gasMinerIDs.add( ID );
 	}
 	
 	public int getMinMinMiners() {
@@ -73,11 +97,6 @@ public class Base {
 	
 	public int getMinGasMiners() {
 		return this.minGasMiners;
-	}
-
-	public boolean initMiningRegion( Game game, Base base ) {
-			
-		return false;
 	}
 	
 }
