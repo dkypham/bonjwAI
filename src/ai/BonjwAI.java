@@ -20,6 +20,7 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
 import economy.Base;
+import economy.Resources;
 import economy.WorkerManager;
 import idmap.MapUnitID;
 import map.MapDraw;
@@ -54,13 +55,15 @@ public class BonjwAI extends DefaultBWListener {
 	private ArrayList<BaseLocation> eBasePos = new ArrayList<BaseLocation>();	// enemy baselocations
 	
 	private ArrayList<Base> bBases = new ArrayList<Base>();
-	private economy.Resources bResources = new economy.Resources();
+	private Resources bResources = new Resources();
 	
 	private List<Position> scoutQueue = new ArrayList<Position>();
 	private List<Chokepoint> chokepointList = new ArrayList<Chokepoint>();
 	private List<Pair<Position,Position>> miningRegionsList = new ArrayList<Pair<Position,Position>>();
 	int[] timeBuildIssued = {0};
 	private List<Pair<TilePosition,TilePosition>> noBuildZones = new ArrayList<Pair<TilePosition,TilePosition>>();
+	
+	boolean[] underAttack = {false};
 	
 	// building stuff
 	int[] productionMode = {0}; // 0 to start (SCVs only), 1 for SCVS+Marines, 2 for SCVs+Marines+Medics
@@ -196,7 +199,7 @@ public class BonjwAI extends DefaultBWListener {
 		/**
 		 * Scout Manager, updates scouting behavior
 		 */
-		ScoutManager.updateScoutManager(game, self, bArmyMap, bRolesMap, eStructPos, bBasePos, scoutQueue);
+		ScoutManager.updateScoutManager(game, self, bArmyMap, bRolesMap, eStructPos, bBasePos, scoutQueue, underAttack);
 
 		/**
 		 * Building Manager, updates building behavior

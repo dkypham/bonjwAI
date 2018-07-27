@@ -8,10 +8,12 @@ import com.google.common.collect.Multimap;
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.Position;
+import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BaseLocation;
 import economy.WorkerManager;
+import idmap.MapUnitID;
 
 /**
  * Scout Manager, on each call
@@ -31,7 +33,12 @@ public class ScoutManager {
 			Multimap<String, Integer> bSpecialRoles, 
 			ArrayList<Position> eStructPos, 
 			ArrayList<BaseLocation> bBasePos, // then remove this
-			List<Position> scoutQueue ) {
+			List<Position> scoutQueue,
+			boolean[] underAttack) {
+		// don't update scout if under attack
+		if ( underAttack[0] == true ) {
+			return;
+		}
 		
 		// assign a scout if there is no scout
 		if ( bSpecialRoles.get( scoutRole ).size() == 0 ) {
@@ -41,32 +48,27 @@ public class ScoutManager {
 		
 		// Check if valid scout and supply > 12
 		if ( scout != null && self.supplyUsed() > 24 ) {
-			// TODO: check if under attack
-			if ( !scout.isAttacking() ) {
-				// if scoutQueue is NOT empty
-				if ( !scoutQueue.isEmpty() ) {	
-					// TODO: update scouting move behavior
-					scout.attack( scoutQueue.get(0) );
-				}
-				// if scoutQueue is empty
-				else if ( eStructPos.size() == 0 ) {
-					// TODO: update scouting move behavior
-					ScoutManager.scoutForUnknownEnemy(game, bArmyMap, eStructPos);
-				}	
+			// scout queue not empty, then scout it
+			if ( scoutQueue.size() != 0 ) {
+				scout.attack( scoutQueue.get(0) );
 			}
-			MapInformation.updateEnemyBuildingMemory(game, eStructPos);
+			// if no enemy structs scouted and nothing in queue, generic scout
+			else if ( eStructPos.size() == 0 ) {
+				ScoutManager.scoutForUnknownEnemy(game, scout);
+			}
+			else if ( scout.getDistance(bBasePos.get(0).getPoint()) > 700 ) {
+				scout.move( bBasePos.get(0).getPoint() );
+			}
 		}
 
 		// update scout queue
-		if ( self.supplyUsed() > 24 && scoutQueue.size() == 1 ) {
-
+		if ( self.supplyUsed() > 24 && scoutQueue.size() != 0 ) {
 			// if value in scoutQueue is seen, remove it
-			// TODO: check if value 0 of scoutQueue is seen, then remove it
-			if ( MapInformation.checkIfExpoIsExplored(game, bBasePos.get(1) ) ) {
+			if ( isPosScouted(game, scoutQueue.get(0)) ) {
 				scoutQueue.remove( 0 );	
 			}
 		}
-
+		MapInformation.updateEnemyBuildingMemory(game, eStructPos);
 	}
 	
 	/**
@@ -77,11 +79,7 @@ public class ScoutManager {
 	 * @return
 	 */
 	public static Unit getScout(Game game, Multimap<String, Integer> bRolesMap ) {
-		Unit scout = null;
-		for ( Integer scoutID : bRolesMap.get( scoutRole ) ) {
-			scout = game.getUnit(scoutID);
-		}
-		return scout;
+		return MapUnitID.getFirstUnitFromRolesMap(game, bRolesMap, scoutRole);
 	}
 	
 	/**
@@ -91,20 +89,8 @@ public class ScoutManager {
 	 * @param bArmyMap
 	 * @param eStructPos
 	 */
-	public static void scoutForUnknownEnemy(Game game, 
-			Multimap<UnitType, Integer> bArmyMap, 
-			ArrayList<Position> eStructPos) {
-
-		Unit scout = null;
-		for ( Integer scoutID : bArmyMap.get(UnitType.Protoss_Scout ) ) {
-			scout = game.getUnit(scoutID);
-		}
-		
-		if ( scout != null ) {
-			if ( !scout.isMoving() && eStructPos.size() == 0) {
-				scout.move( MapInformation.getNearestUnexploredStartingLocation(game,scout.getPosition() ) );
-			}
-		}
+	public static void scoutForUnknownEnemy(Game game, Unit scout ) {
+		scout.move( MapInformation.getNearestUnexploredStartingLocation(game,scout.getPosition() ) );
 	}
 	
 	/**
@@ -118,6 +104,17 @@ public class ScoutManager {
 			scout.move(baseLocation);
 		}
 	}
+	
+	public static boolean isPosScouted( Game game, Position pos ) {
+		TilePosition tp = pos.toTilePosition();
+		TilePosition farRight = new TilePosition(tp.getX() + 1, tp.getY());
+		TilePosition farLeft = new TilePosition(tp.getX() - 1, tp.getY());
+		TilePosition farUp = new TilePosition(tp.getX(), tp.getY() + 1);
+		TilePosition farDown = new TilePosition(tp.getX(), tp.getY() - 1);
+		//return ( game.isExplored(tp) && game.isExplored(farRight) && game.isExplored(farLeft) 
+		//		&& game.isExplored(farLeft) && game.isExplored(farDown) );
+		return game.isExplored(tp);
+	}
 
 	/**
 	 * initialize scoutQueue
@@ -129,7 +126,13 @@ public class ScoutManager {
 	 * @param bBasePos
 	 */
 	public static void initializeScoutQueue(List<Position> scoutQueue, ArrayList<BaseLocation> bBasePos) {
-		scoutQueue.add(bBasePos.get(1).getPosition() );	
+		// add first expansion
+		for ( Unit minPatches : bBasePos.get(1).getMinerals() ) {
+			scoutQueue.add(minPatches.getPosition());
+		}	
+		for ( Unit gasPatches : bBasePos.get(1).getGeysers() ) {
+			scoutQueue.add(gasPatches.getPosition());
+		}
 	}
 	
 }
