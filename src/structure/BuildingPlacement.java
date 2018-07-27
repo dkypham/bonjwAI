@@ -197,22 +197,9 @@ public class BuildingPlacement {
 			Multimap<UnitType, Integer> bStructMap, UnitType structType,
 			ArrayList<BaseLocation> bBasePos,
 			List<Pair<TilePosition,TilePosition>> noBuildZones ) {
-		TilePosition buildPos = null;
-		
-		// SD
-		if ( structType == SD ) {
-			return getBuildTileSD(game, bStructMap, SD, noBuildZones);
-		}
-		
-		// Barracks
-		if ( structType == Barracks ) {
-			return getBuildTileBarracks(game, bStructMap, Barracks, noBuildZones);
-		}		
-		
-		// CC
-		if ( structType == CC ) {
-			return getBuildTileCC(game, bStructMap, bBasePos, CC);
-		}
+		if ( structType == SD ) return getBuildTileSD(game, bStructMap, SD, noBuildZones);	
+		if ( structType == Barracks ) return getBuildTileBarracks(game, bStructMap, Barracks, noBuildZones);
+		if ( structType == CC ) return getBuildTileCC(game, bStructMap, bBasePos, CC);
 		
 		// else
 		Unit startingCC = MapUnitID.getFirstUnitFromUnitMap(game,  bStructMap,  CC);

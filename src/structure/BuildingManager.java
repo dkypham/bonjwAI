@@ -418,7 +418,7 @@ public class BuildingManager {
 			// get struct that researches the tech
 			Unit struct = MapUnitID.getStruct(game,  bStructMap, tT.whatResearches());
 			if ( struct == null ) {
-				System.out.println("TechManager: Could not find building to research: " + tT );
+				//System.out.println("TechManager: Could not find building to research: " + tT );
 				return false;
 			}
 			if ( struct.canResearch( tT ) ) {
