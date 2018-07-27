@@ -79,7 +79,7 @@ public class BuildingManager {
 		
 		// if building type is a CC
 		if ( struct == CC ) {
-			return buildCC( game, self, bArmyMap, bRolesMap, bStructMap, bBasePos );
+			return buildCC( game, self, bArmyMap, bRolesMap, bStructMap, bBasePos, bBuildOrder );
 		}
 		
 		// general case
@@ -107,9 +107,11 @@ public class BuildingManager {
 	public static boolean buildCC( Game game, Player self, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<String, Integer> bRolesMap,
 			Multimap<UnitType, Integer> bStructMap,
-			ArrayList<BaseLocation> bBasePos ) {
+			ArrayList<BaseLocation> bBasePos,
+			BuildOrder bBuildOrder) {
 		int numCC = MapUnitID.getStructCount(game, bArmyMap, bStructMap, CC);
-		return WorkerManager.issueBuildAtLocation(game, bArmyMap, bRolesMap, bBasePos.get(numCC).getTilePosition(), CC);
+		return issueBuildAtLocation(game, bArmyMap, bRolesMap, bBuildOrder.getPlannedBuildLocation(), 
+				CC, bBuildOrder );
 	}
 	
 	// function to build marines
@@ -192,7 +194,8 @@ public class BuildingManager {
 			Resources bResources,
 			ArrayList<BaseLocation> bBasePos,
 			int mineralSetup,
-			List<Pair<TilePosition,TilePosition>> noBuildZones) {
+			List<Pair<TilePosition,TilePosition>> noBuildZones,
+			BuildOrder bBuildOrder ) {
 		// get number of supply depots
 		int numSupply = MapUnitID.getStructCount(game, bArmyMap, bStructMap, SD);
 
@@ -203,7 +206,8 @@ public class BuildingManager {
 				// find pos of first SD
 				TilePosition pos = MapMath.findPosFirstSD(game, MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC), mineralSetup);
 				// issue build at TilePosition found
-				WorkerManager.issueBuildAtLocation(game, bArmyMap, bRolesMap, pos, SD);
+				issueBuildAtLocation(game, bArmyMap, bRolesMap, bBuildOrder.getPlannedBuildLocation(), 
+						SD, bBuildOrder );
 			}
 			else {
 				// default build alg
@@ -261,7 +265,7 @@ public class BuildingManager {
 		
 		//  update bBuildOrder building placement
 		if ( bBuildOrder.nextIsStruct() && bBuildOrder.nextBuildLocationInvalid() ) {
-			bBuildOrder.updatePlannedBuildLocation(game, bStructMap, bBuildOrder.getNextStruct(), noBuildZones  );
+			bBuildOrder.updatePlannedBuildLocation(game, bStructMap, bBuildOrder.getNextStruct(), bBasePos, noBuildZones  );
 			System.out.println("BuildingManager: Next build placement" + bBuildOrder.getPlannedBuildLocation() );
 		}
 		

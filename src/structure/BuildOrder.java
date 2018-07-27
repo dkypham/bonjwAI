@@ -1,10 +1,12 @@
 package structure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Multimap;
 
 import bwapi.UnitType;
+import bwta.BaseLocation;
 import economy.Resources;
 import bwapi.Game;
 import bwapi.Pair;
@@ -109,9 +111,9 @@ public class BuildOrder {
 	}
 	
 	public void updatePlannedBuildLocation( Game game, Multimap<UnitType, Integer> bStructMap, UnitType structType,
-			List<Pair<TilePosition,TilePosition>> noBuildZones) {
+			ArrayList<BaseLocation> bBasePos, List<Pair<TilePosition,TilePosition>> noBuildZones) {
 		this.plannedBuildLocation = BuildingPlacement.getPlannedBuildLocation( game, bStructMap, structType, 
-				noBuildZones );
+				bBasePos, noBuildZones );
 	}
 	
 	public boolean isCompleted() {

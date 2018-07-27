@@ -29,7 +29,7 @@ public class BuildingPlacement {
 		int maxDist = 3;
 		int stopDist = 40;
 
-		// Refinery, Assimilator, Extractor
+		// Refinery
 		if (buildingType.isRefinery()) {
 			for (Unit n : game.neutral().getUnits()) {
 				if ((n.getType() == UnitType.Resource_Vespene_Geyser)
@@ -39,12 +39,13 @@ public class BuildingPlacement {
 			}
 		}
 
-		if ( buildingType.isAddon() ) {
+		// if is addon, don't worry abbout it
+		else if ( buildingType.isAddon() ) {
 			return new TilePosition(-3,-3);
 		}
 		
-		// if building type can build add on, make sure right two spaces are open
-		if (buildingType.canBuildAddon() ) {
+		// if building type can build add on (not CC), make sure right two spaces are open
+		else if (buildingType.canBuildAddon() && buildingType != CC ) {
 			while ((maxDist < stopDist) && (ret == null)) {
 				for (int i = aroundTile.getX() - maxDist; i <= aroundTile.getX() + maxDist; i++) {
 					for (int j = aroundTile.getY() - maxDist; j <= aroundTile.getY() + maxDist; j++) {
@@ -75,7 +76,7 @@ public class BuildingPlacement {
 				game.printf("Unable to find suitable build position for " + buildingType.toString());
 			return ret;
 		}
-		 
+		
 		// if building doesn't require addon
 		// maxDist = (iterative) how far we are searching, stopDist = (set) max dist we will searched
 		// ret = return tilePosition
@@ -113,8 +114,34 @@ public class BuildingPlacement {
 	}
 	// END OF NAIVE BUILDING IMPLEMENTATION
 	
-	public static TilePosition getBuildTileNew(Game game, Unit builder, UnitType buildingType) {
-		return builder.getTilePosition();
+	public static TilePosition getBuildTileCC(Game game, Multimap<UnitType, Integer> bStructMap, 
+			ArrayList<BaseLocation> bBasePos, UnitType buildingType ) {
+		int numCC = bStructMap.get(CC).size();
+		return bBasePos.get(numCC).getTilePosition();
+		
+	}
+	
+	public static TilePosition getBuildTileSD(Game game, Multimap<UnitType, Integer> bStructMap, 
+			UnitType buildingType, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
+		Unit firstCC = MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC);
+		int numSD = bStructMap.get(SD).size();
+		if ( numSD == 0 ) {
+			int mineralSetup = MapInformation.findMineralSetup(game, firstCC );
+			return MapMath.findPosFirstSD(game, firstCC, mineralSetup);
+		}
+		return getBuildTile(game, SD, firstCC.getTilePosition(), noBuildZones);
+		
+	}
+	
+	public static TilePosition getBuildTileBarracks(Game game, Multimap<UnitType, Integer> bStructMap, 
+			UnitType buildingType, List<Pair<TilePosition,TilePosition>> noBuildZones ) {
+		Unit firstCC = MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC);
+		int numBarracks = bStructMap.get(Barracks).size();
+		if ( numBarracks == 0 ) {
+			int mineralSetup = MapInformation.findMineralSetup(game, firstCC );
+			return MapMath.findPosFirstBarracks(game, firstCC, mineralSetup);
+		}
+		return getBuildTile(game, Barracks, firstCC.getTilePosition(), noBuildZones);
 	}
 	
 	// return true if IS overlapping/is in a build zone
@@ -166,69 +193,26 @@ public class BuildingPlacement {
 		noBuildZones.add( new Pair<TilePosition,TilePosition>( topLeft, botRight ));
 	}
 	
-	// IMPROVED METHODS BELOW
-	public static TilePosition findBuildLocation( Multimap<UnitType, Integer> bStructMap,
-			ArrayList<BaseLocation> bBasePos,
-			List<Pair<TilePosition,TilePosition>> noBuildZones, UnitType struct) {
-		// condition for SD
-		if ( struct == SD ) {
-			if ( bStructMap.get(SD).size() == 0 ) {
-				// method for first depot position, ignore noBuildZone
-			}
-			else {
-				// generic alg, use noBuildZone
-			}
-		}
-		
-		// condition for Barracks
-		else if ( struct == Barracks ) {
-			if ( bStructMap.get(Barracks).size() == 0 ) {
-				// method for first depot position, ignore noBuildZone
-			}
-			else {
-				// generic alg, use noBuildZone
-			}
-		}
-		
-		// conditions for expos
-		else if ( struct == CC ) {
-			// method for expanding, ignore noBuildZone
-		}
-		
-		else if ( struct.isAddon() ) {
-			// method for building addons
-		}
-		
-		else { // catch all
-			
-		}
-		
-		return null;
-	}
-
 	public static TilePosition getPlannedBuildLocation(Game game,
-			Multimap<UnitType, Integer> bStructMap, UnitType structType, 
+			Multimap<UnitType, Integer> bStructMap, UnitType structType,
+			ArrayList<BaseLocation> bBasePos,
 			List<Pair<TilePosition,TilePosition>> noBuildZones ) {
 		TilePosition buildPos = null;
 		
-		// 1 SD
-		if ( bStructMap.get(SD).size() == 0 ) {
-			Unit firstCC = MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC);
-			int mineralSetup = MapInformation.findMineralSetup(game, firstCC );
-			return MapMath.findPosFirstSD(game, firstCC, mineralSetup);
+		// SD
+		if ( structType == SD ) {
+			return getBuildTileSD(game, bStructMap, SD, noBuildZones);
 		}
 		
-		// 1 Barracks
-		if ( bStructMap.get(Barracks).size() == 0 ) {
-			Unit firstCC = MapUnitID.getFirstUnitFromUnitMap(game,bStructMap,CC);
-			int mineralSetup = MapInformation.findMineralSetup(game, firstCC );
-			return MapMath.findPosFirstBarracks(game, firstCC, mineralSetup);
+		// Barracks
+		if ( structType == Barracks ) {
+			return getBuildTileBarracks(game, bStructMap, Barracks, noBuildZones);
 		}		
 		
-		// Reg SD
-		
-		
-		// Reg Barracks
+		// CC
+		if ( structType == CC ) {
+			return getBuildTileCC(game, bStructMap, bBasePos, CC);
+		}
 		
 		// else
 		Unit startingCC = MapUnitID.getFirstUnitFromUnitMap(game,  bStructMap,  CC);

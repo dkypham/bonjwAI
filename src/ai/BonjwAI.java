@@ -125,6 +125,7 @@ public class BonjwAI extends DefaultBWListener {
 			for ( Base bBase : bBases ) {
 				if ( u.getDistance(bBase.getCC()) < 500 ) {
 					bBase.assignRefinery( u );
+					bRolesMap.get("Builder").clear();
 					bRolesMap.put( "GasMiner" , u.getBuildUnit().getID() ); // assign generic role
 					bBase.addToGasMinerIDs( u.getBuildUnit().getID() ); // assign to base
 					

@@ -157,32 +157,6 @@ public class WorkerManager {
 		return false;
 	}
 	
-	public static boolean issueBuildAtLocation(Game game,
-			Multimap<UnitType, Integer> bArmyMap,
-			Multimap<String, Integer> bRolesMap,
-			TilePosition pos,
-			UnitType building ) {
-		//if ( bStructMap.containsEntry(building,-1) ) {
-		//	//System.out.println("" + building + "is already being built");
-		//	return;
-		//}
-		//game.drawTextMap( pos.getX(), pos.getY(), "build here2222222222");
-
-		int freeSCVID = getFreeSCVID(game,bArmyMap,bRolesMap);
-		if ( freeSCVID == -1 ) {
-			return false; // no valid SCV found
-		}
-		Unit SCV = game.getUnit(freeSCVID);
-		
-		//SCV.stop();
-		pos = game.getBuildLocation(building, pos, 1);
-		//if ( !game.canBuildHere(pos,  SD, SCV, false)) {
-		//	System.out.println("Cannot build here");
-		//}
-		return SCV.build(building,pos);
-		//System.out.println("issued build order");
-	}
-	
 	public static int getMineralMinerCount(Game game, Multimap<UnitType, Integer> armyMap) {
 		int mineralMinerCount = 0;
 		List<Integer> arraySCV = (List<Integer>) armyMap.get(UnitType.Terran_SCV);
