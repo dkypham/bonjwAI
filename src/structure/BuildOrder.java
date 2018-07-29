@@ -51,7 +51,12 @@ public class BuildOrder {
 	public boolean nextIsStruct() {
 		return this.buildOrder.get(0).isStruct();
 	}
-	
+	public boolean nextIsTech() {
+		return this.buildOrder.get(0).isTech();
+	}
+	public boolean nextIsUnit() {
+		return this.buildOrder.get(0).isUnit();
+	}
 	public UnitType getNextStruct() {
 		return this.buildOrder.get(0).getUT();
 	}
@@ -122,6 +127,9 @@ public class BuildOrder {
 
 	public TechType getNextTech() {
 		return this.buildOrder.get(0).getTT();
+	}
+	public UnitType getNextUnit() {
+		return this.buildOrder.get(0).getUT();
 	}
 	
 }

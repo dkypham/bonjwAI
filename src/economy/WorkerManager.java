@@ -87,8 +87,7 @@ public class WorkerManager {
 	
 	public static int getFreeSCVID(Game game, Multimap<UnitType, Integer> bArmyMap,
 			Multimap<String, Integer> bRolesMap ) {
-		List<Integer> arraySCV = (List<Integer>) bArmyMap.get(UnitType.Terran_SCV);
-		for ( Integer SCVID : arraySCV ) {
+		for ( Integer SCVID : bArmyMap.get(UnitType.Terran_SCV) ) {
 			Unit SCV = game.getUnit(SCVID);		
 			if (SCV.isConstructing() == false 
 					&& SCV.isCarryingMinerals() == false 
@@ -133,11 +132,6 @@ public class WorkerManager {
 			Multimap<UnitType, Integer> bStructMap,
 			UnitType struct,
 			List<Pair<TilePosition,TilePosition>> noBuildZones) {
-		//if ( bStructMap.containsEntry(building,-1) ) {
-		//	//System.out.println("" + building + "is already being built");
-		//	return;
-		//}
-		
 		int freeSCVID = getFreeSCVID(game,bArmyMap,bRolesMap);
 		if ( freeSCVID == -1 ) {
 			return false; // no valid SCV found

@@ -113,9 +113,10 @@ public class BonjwAI extends DefaultBWListener {
 			MapUnitID.addToIDMap(bStructMap, u);
 			if ( !bBuildOrder.isCompleted() ) { // still using build order
 				if ( bBuildOrder.matchesNextstruct(u.getType())) {
-					// clear top
+					// clear refinery from buildOrder
 					bBuildOrder.removeTopOfBuildOrder();
 					// remove builder and assign new one
+					bRolesMap.put( "GasMiner" , u.getBuildUnit().getID() ); // assign generic role
 					bRolesMap.get("Builder").clear();
 					WorkerManager.assignBuildSCV(game, bRolesMap, bArmyMap);
 				}
@@ -124,11 +125,8 @@ public class BonjwAI extends DefaultBWListener {
 			// add to relevant bBase
 			for ( Base bBase : bBases ) {
 				if ( u.getDistance(bBase.getCC()) < 500 ) {
-					bBase.assignRefinery( u );
-					bRolesMap.get("Builder").clear();
-					bRolesMap.put( "GasMiner" , u.getBuildUnit().getID() ); // assign generic role
-					bBase.addToGasMinerIDs( u.getBuildUnit().getID() ); // assign to base
-					
+					bBase.assignRefinery( u ); // assign refinery to base
+					bBase.addToGasMinerIDs( u.getBuildUnit().getID() ); // assign gas miner to base
 				}
 			}
 		}

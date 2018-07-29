@@ -262,7 +262,7 @@ public class BuildingManager {
 			List<Pair<Position,Position>> miningRegionsList,		
 			ArrayList<Base> bBases,
 			BuildOrder bBuildOrder ) {
-		
+	
 		//  update bBuildOrder building placement
 		if ( bBuildOrder.nextIsStruct() && bBuildOrder.nextBuildLocationInvalid() ) {
 			bBuildOrder.updatePlannedBuildLocation(game, bStructMap, bBuildOrder.getNextStruct(), bBasePos, noBuildZones  );
@@ -403,7 +403,7 @@ public class BuildingManager {
 				Unit CC = bBase.getCC();
 				if (CC.isTraining()) continue;
 				if (CC.train(SCV)) {
-					CC.train(SCV);
+					//CC.train(SCV);
 					return true;	// tell buildingManager that we built a unit this frame
 				}
 			}

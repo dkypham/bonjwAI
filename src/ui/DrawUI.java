@@ -47,10 +47,25 @@ public class DrawUI {
 		game.drawTextScreen(10, 90, "supply total Effective: " + bResources.getSupplyTotalEffective() );
 		game.drawTextScreen(10, 100, "supply used: " + bResources.getSupplyUsed() );
 		
-		game.drawTextScreen(10,  120, "bBuildOrder: next struct: " + bBuildOrder.getNextStruct().toString() + 
-				" at " + bBuildOrder.getBuildOrder().get(0).getSupply() + " supply.");
-		game.drawTextScreen(10,  130, "buildIssued: " + bBuildOrder.getIsBuildIssued() );
-		game.drawTextScreen(10,  140, "supplyMet: " + bBuildOrder.checkIfSupplyMet(bResources) );
+		if ( bBuildOrder.nextIsStruct() ) {
+			game.drawTextScreen(10,  120, "bBuildOrder: next struct: " + bBuildOrder.getNextStruct().toString() + 
+					" at " + bBuildOrder.getBuildOrder().get(0).getSupply() + " supply.");
+			game.drawTextScreen(10,  130, "buildIssued: " + bBuildOrder.getIsBuildIssued() );
+			game.drawTextScreen(10,  140, "supplyMet: " + bBuildOrder.checkIfSupplyMet(bResources) );
+		}
+		else if ( bBuildOrder.nextIsTech() ) {
+			game.drawTextScreen(10,  120, "bBuildOrder: next tech: " + bBuildOrder.getNextTech().toString() + 
+					" at " + bBuildOrder.getBuildOrder().get(0).getSupply() + " supply.");
+			game.drawTextScreen(10,  130, "buildIssued: " + bBuildOrder.getIsBuildIssued() );
+			game.drawTextScreen(10,  140, "supplyMet: " + bBuildOrder.checkIfSupplyMet(bResources) );
+		}
+		else if ( bBuildOrder.nextIsUnit() ) {
+			game.drawTextScreen(10,  120, "bBuildOrder: next unit: " + bBuildOrder.getNextUnit().toString() + 
+					" at " + bBuildOrder.getBuildOrder().get(0).getSupply() + " supply.");
+			game.drawTextScreen(10,  130, "buildIssued: " + bBuildOrder.getIsBuildIssued() );
+			game.drawTextScreen(10,  140, "supplyMet: " + bBuildOrder.checkIfSupplyMet(bResources) );
+		}
+		
 		drawUnitID(game, bArmyMap);
 	}
 	
