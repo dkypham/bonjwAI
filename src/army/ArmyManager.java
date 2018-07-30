@@ -273,8 +273,7 @@ public class ArmyManager {
 		
 		int minDistance = -1;
 		Unit closestMarine = null;
-		
-		
+			
 		for ( Unit marine : marines ) {
 			// don't follow a marine being constructed and is already being followed
 			if ( marine.isCompleted()) {

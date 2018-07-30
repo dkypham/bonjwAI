@@ -17,7 +17,6 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import economy.Base;
-import economy.ResourceManager;
 import economy.Resources;
 import economy.SupplyManager;
 import economy.WorkerManager;

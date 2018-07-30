@@ -26,7 +26,7 @@ public class MapDraw {
 		}
 		//drawResourceZone(game, miningRegionsList);
 		//drawAllChokepoints(game);
-		drawRallyPoints( game, rallyPoints );
+		//drawRallyPoints( game, rallyPoints );
 		drawNoBuildZones( game, noBuildZones );
 		
 		drawNextBuildLocation(game, bBuildOrder);

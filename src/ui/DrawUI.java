@@ -17,6 +17,7 @@ import bwta.BaseLocation;
 import economy.WorkerManager;
 import economy.Base;
 import economy.Resources;
+import economy.SupplyManager;
 import idmap.MapUnitID;
 import map.MapDraw;
 import structure.BuildOrder;
@@ -65,6 +66,8 @@ public class DrawUI {
 			game.drawTextScreen(10,  130, "buildIssued: " + bBuildOrder.getIsBuildIssued() );
 			game.drawTextScreen(10,  140, "supplyMet: " + bBuildOrder.checkIfSupplyMet(bResources) );
 		}
+		
+		game.drawTextScreen(10, 160, "needSupply: " + SupplyManager.needSupplyCheck(bResources));
 		
 		drawUnitID(game, bArmyMap);
 	}
