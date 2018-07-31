@@ -88,7 +88,8 @@ public class Resources {
 		if ( (this.minsEffective - uT.mineralPrice() < 0) || (this.gasEffective - uT.gasPrice() < 0) ) {
 			return false;
 		}
-		if ( this.supplyTotalActual - this.supplyUsed - uT.supplyRequired() < 0 ) {
+		//if ( this.supplyTotalActual - this.supplyUsed - uT.supplyRequired() < 0 ) {
+		if ( this.supplyTotalEffective - this.supplyUsed - uT.supplyRequired() < 0 ) {
 			return false;
 		}
 		return true;
