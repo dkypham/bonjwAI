@@ -427,4 +427,108 @@ public class BuildingManager {
 		return false;
 	}
 	
+	public static void buildingManagerWithBuildQueue( Game game, Player self,
+			Multimap<UnitType, Integer> bArmyMap, Multimap<String, Integer> bRolesMap,
+			Multimap<UnitType, Integer> bStructMap,
+			int[] productionMode, Resources bResources,			
+			List<Pair<TilePosition,TilePosition>> noBuildZones,
+			ArrayList<BaseLocation> bBasePos,			
+			List<Pair<Position,Position>> miningRegionsList,		
+			ArrayList<Base> bBases,
+			BuildQueue bBuildQueue ) {
+	
+		//  update bBuildOrder building placement
+		if (  bBuildQueue.nextBuildLocationInvalid() ) {
+			bBuildQueue.updatePlannedBuildLocation(game, bStructMap, bBuildQueue.getBuildQueue().get(0), bBasePos, noBuildZones  );
+			System.out.println("BuildingManager: Next build placement" + bBuildQueue.getPlannedBuildLocation() );
+		}
+		
+		// supply met and no build issued
+		if ( !bBuildQueue.checkIfBuildIssued() ) {
+			// if next element is a struct
+			if ( bBuildQueue.getBuildQueue().get(0).isBuilding() ) { // is struct
+				UnitType structType = bBuildQueue.getBuildQueue().get(0);
+				// struct is add on
+				if ( structType.isAddon() ) {
+					if ( bResources.enoughResourcesBuildUnit(structType) ) {
+						for ( Integer buildsAddOnID : bStructMap.get(structType.whatBuilds().first)) {
+							Unit buildsAddOnStruct = game.getUnit(buildsAddOnID);
+							if ( buildsAddOnStruct.canBuildAddon(structType) ) {
+								buildsAddOnStruct.buildAddon(structType);
+								return;
+							}
+						}
+					}
+					return;
+				}
+				
+				// if enough resources, try to build
+				if ( bResources.enoughResourcesBuildUnit(structType) ) {
+					// struct is building
+					if ( issueBuildAtLocation(game, bArmyMap, bRolesMap, bBuildQueue.getPlannedBuildLocation(), 
+							structType, bBuildQueue )) {
+						// build command was issued
+						bResources.addMinAndGas( structType.mineralPrice(), structType.gasPrice() );
+						bBuildQueue.setIsBuildIssuedTrue();
+						bBuildQueue.setTimeBuildIssued( game.elapsedTime() );	// get time build command is issued for error checking
+						return;
+					}
+				}
+				// if not enough resources check if 60 percent to move SCV
+				else if ( bResources.checkIfSixtyPercent(structType) ) {
+					// move build scv to position if not already
+					Unit buildSCV = MapUnitID.getFirstUnitFromRolesMap(game, bRolesMap, uT_BuildSCV);
+					if ( buildSCV.isGatheringMinerals() ) { // if still mining, make patrol
+						System.out.println("Sending build SCV to patrol");
+						Pair<TilePosition,TilePosition> buildArea = MapMath.findBuildingArea(
+								bBuildQueue.getPlannedBuildLocation(), structType);
+						// make patrol area tighter
+						Position topLeft = buildArea.first.toPosition();
+						Position botRight = buildArea.second.toPosition();
+						int upDist = botRight.getY() - topLeft.getY();
+						int sideDist = botRight.getX() - botRight.getX();
+						topLeft = new Position((int)(topLeft.getX() + sideDist*.3),(int)(topLeft.getY() + upDist*.3));
+						botRight = new Position((int)(botRight.getX() - sideDist*.3),(int)(botRight.getY() - upDist*.3));
+						game.drawBoxMap(topLeft,botRight,Color.Black);
+						buildSCV.move( topLeft );
+						buildSCV.patrol( botRight, true);
+					}
+				}
+				
+				
+			}	
+			// if next element is a tech
+			/*
+			else if ( bBuildQueue.getBuildOrder().get(0).isTech() ) {
+				TechType techType = bBuildQueue.getNextTech();
+				if ( buildTech(game, bStructMap, bResources, bBuildQueue.getBuildOrder().get(0).getTT() )) {
+					bBuildQueue.removeTopOfBuildOrder();
+				}
+			}
+			*/
+		}
+		
+		// generic case ( buildOrderStruct supply + tech reads 500 )
+		
+		// else build UNIT
+		else {
+			if ( bBuildQueue.checkIfBuildIssued() ) { // do not build unit if building is queued
+				// check if time since set negative is > 20 seconds, then make it positive. 
+				// Usually if this is the case, the SCV did not sucessfully build
+				if ( bBuildQueue.tooMuchTimeBuildIssued(game.elapsedTime() )) {
+					if ( bBuildQueue.getIsBuildIssued() ) {
+						bBuildQueue.setIsBuildIssuedFalse(); // make it neg to pos		
+					}
+					else { 
+						System.out.println("BuildingManager: More than 20 seconds since build command was issued, but "
+								+ "buildOrderStruct has a positive supply value");
+					}
+				}
+				return;
+			}
+;
+			// issue build
+			buildUnit(game,self,bArmyMap,bStructMap,productionMode, bResources, bBases);		
+		}
+	}
 }

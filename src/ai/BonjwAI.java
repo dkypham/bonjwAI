@@ -27,6 +27,7 @@ import map.MapDraw;
 import map.MapInformation;
 import map.ScoutManager;
 import structure.BuildOrder;
+import structure.BuildQueue;
 import structure.BuildingManager;
 import structure.ListOfBuildOrders;
 import structure.BuildingPlacement;
@@ -71,6 +72,7 @@ public class BonjwAI extends DefaultBWListener {
 	private List< Pair<Position,Position> > rallyPoints = new ArrayList< Pair<Position,Position> >();
 		
 	BuildOrder bBuildOrder;
+	BuildQueue bBuildQueue;
 	
 	public void run() {
 		mirror.getModule().setEventListener(this);
@@ -209,6 +211,9 @@ public class BonjwAI extends DefaultBWListener {
 			BuildingManager.buildingManagerWithBuildOrder( game, self, bArmyMap, bRolesMap, bStructMap, productionMode,
 						bResources, noBuildZones, bBasePos, 
 						miningRegionsList, bBases, bBuildOrder );
+		}
+		else {
+			
 		}
 		
 		/**
