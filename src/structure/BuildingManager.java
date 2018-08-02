@@ -89,7 +89,7 @@ public class BuildingManager {
 		return false;
 	}
 	
-	public static boolean issueBuildAtLocation(Game game,
+	public static boolean issueBuildAtLocationBuildOrder(Game game,
 			Multimap<UnitType, Integer> bArmyMap,
 			Multimap<String, Integer> bRolesMap,
 			TilePosition pos,
@@ -97,6 +97,16 @@ public class BuildingManager {
 			BuildOrder bBuildOrder ) {
 		Unit buildSCV = MapUnitID.getFirstUnitFromRolesMap(game, bRolesMap, uT_BuildSCV); 
 		return buildSCV.build(building,bBuildOrder.getPlannedBuildLocation());
+	}
+	
+	public static boolean issueBuildAtLocationBuildQueue(Game game,
+			Multimap<UnitType, Integer> bArmyMap,
+			Multimap<String, Integer> bRolesMap,
+			TilePosition pos,
+			UnitType building,
+			BuildQueue bBuildQueue ) {
+		Unit buildSCV = MapUnitID.getFirstUnitFromRolesMap(game, bRolesMap, uT_BuildSCV); 
+		return buildSCV.build(building,bBuildQueue.getPlannedBuildLocation());
 	}
 	
 	public static int updateBuildStructTime( Game game ) {
