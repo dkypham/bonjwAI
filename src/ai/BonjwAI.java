@@ -208,12 +208,14 @@ public class BonjwAI extends DefaultBWListener {
 		
 		// if buildOrder is still in use
 		if ( !bBuildOrder.isCompleted() ) {
-			BuildingManager.buildingManagerWithBuildOrder( game, self, bArmyMap, bRolesMap, bStructMap, productionMode,
+			BuildingManager.buildOrderManager( game, self, bArmyMap, bRolesMap, bStructMap, productionMode,
 						bResources, noBuildZones, bBasePos, 
 						miningRegionsList, bBases, bBuildOrder );
 		}
 		else {
-			
+			BuildingManager.buildQueueManager(game, self, bArmyMap, bRolesMap, bStructMap, productionMode,
+					bResources, noBuildZones, bBasePos, 
+					miningRegionsList, bBases, bBuildQueue );
 		}
 		
 		/**
